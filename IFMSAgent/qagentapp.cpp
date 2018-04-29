@@ -5,6 +5,7 @@
 #include <QCoreApplication>
 #include <QThreadPool>
 #include <QThread>
+#include <QByteArray>
 
 #include "qagentapp.h"
 #include "qcommander.h"
@@ -39,22 +40,56 @@ QAgentApp::~QAgentApp()
 
 bool QAgentApp::startSession(int &argc, char **argv)
 {
+    bool ret = false;
+
     QThreadPool *thread_pool = QThreadPool::globalInstance();
     QCommander *thread = new QCommander(this);
     thread_pool->start(thread);
+
+    m_module1 = new QOTDRModule(this);
+    m_module1->setConnections();
+    ret = m_module1->setSerialPortParam(QString("/dev/ttyO2"));
+    if(ret != true){
+        return ret;
+    }
+
+    m_module2 = new QOTDRModule(this);
+    m_module2->setConnections();
+
+    ret = m_module2->setSerialPortParam(QString("/dev/ttyO3"));
+    if(ret != true){
+        return  ret;
+    }
 
     return true;
 }
 
 void QAgentApp::stopSession()
 {
+    if(m_module1 != NULL){
+        delete m_module1;
+        m_module1 = NULL;
+    }
 
+    if(m_module2 != NULL){
+        delete m_module2;
+        m_module2 = NULL;
+    }
 }
 
 bool QAgentApp::sendCommandToModule(QString cmdline, int moduleIndex)
 {
     QString tmp = QString("%1").arg(moduleIndex);
     message(cmdline, QString("COMMAND[").append(tmp).append(QString("]")));
+    if(moduleIndex == 0){
+        QByteArray  data0;
+        m_module1->sendCommandWithResponse(cmdline, &data0);
+    }
+
+    if(moduleIndex == 1){
+        QByteArray  data1;
+        m_module2->sendCommandWithResponse(cmdline, &data1);
+    }
 
     return true;
 }

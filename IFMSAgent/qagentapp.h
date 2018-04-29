@@ -6,6 +6,9 @@
 #include <QString>
 #include <QStringList>
 
+#include "qotdrmodule.h"
+
+
 class QAgentApp : public QCoreApplication
 {
     Q_OBJECT
@@ -53,6 +56,9 @@ public:
 
 protected:
     static QAgentApp         *m_app;
+
+    QOTDRModule              *m_module1;
+    QOTDRModule              *m_module2;
 };
 
 #endif // QAGENTAPP_H

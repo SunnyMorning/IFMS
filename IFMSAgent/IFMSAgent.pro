@@ -1,5 +1,6 @@
 QT -= gui
 QT += core dbus
+QT += serialport
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
@@ -18,8 +19,10 @@ DEFINES += D_RES_DIR=\\\"$${D_DATA_DIR}\\\"
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
-    qagentapp.cpp
+    qagentapp.cpp \
+    qotdrmodule.cpp
 
 HEADERS += \
     qagentapp.h \
-    qcommander.h
+    qcommander.h \
+    qotdrmodule.h
