@@ -5,6 +5,10 @@
 #include <QSerialPort>
 #include <QString>
 #include <QMutex>
+#include <QFileSystemWatcher>
+#include <QMap>
+
+#include    "qfingerdata.h"
 
 class QOTDRModule : public QObject
 {
@@ -18,7 +22,6 @@ public:
         STATE_GETINGSOR = 2,                // 正在获取SOR文件
         STATE_GETINGWAVELET = 3,            // 正在获取wavelet文件
         STATE_DOWNLOADING = 4               // 下载状态
-
     };
 
     // OTDR模块的错误类别
@@ -34,10 +37,15 @@ public:
         ERR43   = 43                        // Received command“UPDATE” while the download file has not been accepted
     };
 
-    explicit QOTDRModule(QObject *parent = nullptr);
+    explicit QOTDRModule(QObject *parent = nullptr, qint8 index = 0);
+
     ~QOTDRModule();
 
-    void setConnections();
+    void    setModuleIndex(qint8 index);
+    qint8   getModuleIndex();
+    void    initFingerBinFile(QString filename);
+    void    initModuleFingerData();
+    void    setConnections();
 
     OTDRModuleState getOTDRModuleState();
     void setOTDRModuleState(OTDRModuleState state);
@@ -58,13 +66,20 @@ signals:
 public slots:
     void onCatchException(const QString& info);
     void onRecvResponse(QString& cmdline, QByteArray& data);
+    void onFileChanged(QString filename);
 
 public:
 
 private:
-    QSerialPort *_pSerialPort;
+    qint8               _moduleIndex;
+    QSerialPort         *_pSerialPort;
     OTDRModuleState     _state;
     QMutex              _mutex;
+    QFileSystemWatcher          _watcher;
+    QStringList         _fileList;
+
+    QMap<QString, QFingerData*>  _OldFingers;
+    QMap<QString, QFingerData*>  _NewFingers;
 };
 
 #endif // QOTDRMODULE_H

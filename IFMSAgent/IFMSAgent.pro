@@ -18,11 +18,15 @@ DEFINES += D_RES_DIR=\\\"$${D_DATA_DIR}\\\"
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+include (./config.pri)
 SOURCES += main.cpp \
     qagentapp.cpp \
-    qotdrmodule.cpp
-
+    qotdrmodule.cpp \
+    qfingerdata.cpp \
+    qsorfilebase.cpp
 HEADERS += \
     qagentapp.h \
     qcommander.h \
-    qotdrmodule.h
+    qotdrmodule.h \
+    qfingerdata.h \
+    qsorfilebase.h

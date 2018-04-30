@@ -6,6 +6,8 @@
 #include <QThreadPool>
 #include <QThread>
 #include <QByteArray>
+#include <QDataStream>
+#include <QIODevice>
 
 #include "qagentapp.h"
 #include "qcommander.h"
@@ -21,11 +23,11 @@ static void initDir(const QString &path)
 
 QString QAgentApp::getAppName()     { return QString(IFMS_AGENT_NAME); }
 
-QString QAgentApp::getConfigDir()   { return QDir::homePath() + "/.config/" + getAppName(); }
-QString QAgentApp::getCacheDir()    { return QDir::homePath() + "/.cache/"  + getAppName(); }
+QString QAgentApp::getConfigDir()   { return QDir::homePath() + "/.config/" + getAppName() + "/"; }
+QString QAgentApp::getCacheDir()    { return QDir::homePath() + "/.cache/"  + getAppName() + "/"; }
 QString QAgentApp::getDataDir()     { return QString(DATA_DIR); }
 
-QString QAgentApp::getConfigFile()  { return getConfigDir() + "/settings.ini"; }
+QString QAgentApp::getConfigFile()  { return getConfigDir() + "settings.ini"; }
 
 QAgentApp::QAgentApp(int &argc, char **argv)
           :QCoreApplication(argc,argv)
@@ -42,24 +44,28 @@ bool QAgentApp::startSession(int &argc, char **argv)
 {
     bool ret = false;
 
+    initAppDirs();
+
     QThreadPool *thread_pool = QThreadPool::globalInstance();
     QCommander *thread = new QCommander(this);
     thread_pool->start(thread);
 
-    m_module1 = new QOTDRModule(this);
+    m_module1 = new QOTDRModule(this, 0);
+    m_module1->initModuleFingerData();
     m_module1->setConnections();
     ret = m_module1->setSerialPortParam(QString("/dev/ttyO2"));
-    if(ret != true){
-        return ret;
-    }
+//    if(ret != true){
+//        return ret;
+//    }
 
-    m_module2 = new QOTDRModule(this);
+    m_module2 = new QOTDRModule(this, 1);
+    m_module2->initModuleFingerData();
     m_module2->setConnections();
 
     ret = m_module2->setSerialPortParam(QString("/dev/ttyO3"));
-    if(ret != true){
-        return  ret;
-    }
+//    if(ret != true){
+//        return  ret;
+//    }
 
     return true;
 }
@@ -106,14 +112,21 @@ void QAgentApp::initAppDirs()
 //
 void QAgentApp::message(const QString &text, const QString &title, QObject *parent)
 {
-    qDebug() << "============"<< title <<"==============" << endl;
+    qDebug() << "\n============"<< title <<"==============" << endl;
     qDebug() << text ;
     qDebug() << "=================================" << endl;
 }
 
 void QAgentApp::warning(const QString &text, const QString &title, QObject *parent)
 {
-    qDebug() << "============WARNING==============" << endl;
+    qDebug() << "\n============WARNING==============" << endl;
+    qDebug() << text ;
+    qDebug() << "=================================" << endl;
+}
+
+void QAgentApp::error(const QString &text, const QString &title, QObject *parent)
+{
+    qDebug() << "\n============ERROR==============" << endl;
     qDebug() << text ;
     qDebug() << "=================================" << endl;
 }
@@ -158,9 +171,4 @@ void QAgentApp::showStatusMessage(const QString &msg, int ModuleIndex, int time)
 void QAgentApp::showStatusMessage(const QStringList &msgList, int ModuleIndex, int time)
 {
     emit statusMessage(msgList, ModuleIndex, time);
-}
-
-void QAgentApp::showProperties(const QStringList &files)
-{
-    emit properties(files);
 }
