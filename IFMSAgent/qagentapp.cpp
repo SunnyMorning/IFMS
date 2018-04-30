@@ -67,6 +67,9 @@ bool QAgentApp::startSession(int &argc, char **argv)
 //        return  ret;
 //    }
 
+    connect(m_module1, SIGNAL(sigOTDRTrap(QByteArray&)), this, SLOT(onOTDRTrap(QByteArray&)));
+    connect(m_module2, SIGNAL(sigOTDRTrap(QByteArray&)), this, SLOT(onOTDRTrap(QByteArray&)));
+
     return true;
 }
 
@@ -112,16 +115,16 @@ void QAgentApp::initAppDirs()
 //
 void QAgentApp::message(const QString &text, const QString &title, QObject *parent)
 {
-    qDebug() << "\n============"<< title <<"==============" << endl;
-    qDebug() << text ;
-    qDebug() << "=================================" << endl;
+//    qDebug() << "\n============"<< title <<"==============" << endl;
+    qDebug() << text << endl ;
+//    qDebug() << "=================================" << endl;
 }
 
 void QAgentApp::warning(const QString &text, const QString &title, QObject *parent)
 {
-    qDebug() << "\n============WARNING==============" << endl;
-    qDebug() << text ;
-    qDebug() << "=================================" << endl;
+//    qDebug() << "\n============WARNING==============" << endl;
+    qDebug() << text  << endl ;
+//    qDebug() << "=================================" << endl;
 }
 
 void QAgentApp::error(const QString &text, const QString &title, QObject *parent)
@@ -171,4 +174,11 @@ void QAgentApp::showStatusMessage(const QString &msg, int ModuleIndex, int time)
 void QAgentApp::showStatusMessage(const QStringList &msgList, int ModuleIndex, int time)
 {
     emit statusMessage(msgList, ModuleIndex, time);
+}
+
+//==================================
+void QAgentApp::onOTDRTrap(QByteArray &data)
+{
+// TODO: send trap to nms
+    message(QString(data));
 }

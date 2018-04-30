@@ -31,6 +31,7 @@ signals:
     void statusMessage(const QStringList &msgList, int ModuleIndex, int time);
 
 public slots:
+    void onOTDRTrap(QByteArray  &data);
 
 public:
     static QString getAppName();

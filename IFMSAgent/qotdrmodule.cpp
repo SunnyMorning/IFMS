@@ -25,6 +25,7 @@ QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QObject(parent)
     _pSerialPort = new QSerialPort(this);
     _state  = STATE_IDLING;
     _moduleIndex = index;
+    _keeprunning = 1;
 }
 
 QOTDRModule::~QOTDRModule()
@@ -33,6 +34,8 @@ QOTDRModule::~QOTDRModule()
         delete _pSerialPort;
         _pSerialPort = NULL;
     }
+
+    _keeprunning = 0;
 }
 
 void QOTDRModule::setModuleIndex(qint8 index)
@@ -116,6 +119,7 @@ void QOTDRModule::setConnections()
     connect(this, SIGNAL(sigRecvResponse(QString&,QByteArray&)), this, SLOT(onRecvResponse(QString&, QByteArray&)));
     connect(this, SIGNAL(sigSendCommand(QString&)), this, SLOT(onSendCommand(QString&)));
     connect(this, SIGNAL(sigSetProgress(qint16)), this, SLOT(onSetProgress(qint16)));
+    connect(this, SIGNAL(sigOTDRChanged(qint16)), this, SLOT(onOTDRChanged(qint16)));
 
 //  connect(&_watcher, SIGNAL(fileChanged(const QString)), this, SLOT(onFileChanged(QString)));
     connect(&_watcher, SIGNAL(directoryChanged(const QString)), this, SLOT(onFileChanged(QString)));
@@ -180,14 +184,14 @@ void QOTDRModule::sendCommandWithResponse(QString cmdline, QByteArray *data)
          else
         {
             emit sigCatchException("waitForReadyRead timeout");
-            QAgentApp::warning(QString("waitForReadyRead timeout"));
+//            QAgentApp::warning(QString("waitForReadyRead timeout"));
             return;
         }
     }
     else
     {
         emit sigCatchException("waitForBytesWritten timeout");
-        QAgentApp::warning(QString("waitForBytesWritten timeout"));
+//        QAgentApp::warning(QString("waitForBytesWritten timeout"));
         return;
     }
 }
@@ -221,6 +225,17 @@ void QOTDRModule::setProgress(qint16 progress)
     {
         emit this->sigSetProgress(progress);
     }
+}
+
+QByteArray QOTDRModule::generateOTDRTrapData(qint16 channel)
+{
+    QByteArray  data = QString("Traped on %1").arg(channel).toLatin1();
+    QString     filename = QFingerData::getIFMSFingerFileName(channel);
+    QFingerData    *oldFingerData = _OldFingers.value(filename);
+    QFingerData    *newFingerData = _NewFingers.value(filename);
+
+// TODO: 通过比较oldFingerDate和newFingerData生成trap数据包内容。
+    return data;
 }
 //===============
 
@@ -270,7 +285,11 @@ void QOTDRModule::onRecvResponse(QString &cmdline, QByteArray &data)
             filename = QFingerData::getIFMSFingerFileName(sorfile._channel);
 //TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
             if(sorfile.parseData(data.data(), data.length()) == true){
-                sorfile.toFingerData()->toIFMSFingerFile();
+                _OldFingers.swap(_NewFingers);
+                QFingerData *p = sorfile.toFingerData();
+                _NewFingers.insert(filename,p);
+                emit this->sigOTDRChanged(sorfile._channel);
+                p->toIFMSFingerFile();
             }
             _state  =  STATE_MEASURING;
          }
@@ -281,4 +300,11 @@ void QOTDRModule::onRecvResponse(QString &cmdline, QByteArray &data)
 void QOTDRModule::onFileChanged(QString filename)
 {
 
+}
+
+void QOTDRModule::onOTDRChanged(qint16 channel)
+{
+    QAgentApp::message(QString("OTDR channel %1 changed!").arg(channel));
+    QByteArray  data = generateOTDRTrapData(channel);
+    emit this->sigOTDRTrap(data);
 }

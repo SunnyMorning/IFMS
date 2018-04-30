@@ -43,7 +43,7 @@ public:
     explicit QOTDRModule(QObject *parent = nullptr, qint8 index = 0);
 
     ~QOTDRModule();
-
+    int     _keeprunning;
     void    setModuleIndex(qint8 index);
     qint8   getModuleIndex();
     void    initFingerBinFile(QString filename);
@@ -59,6 +59,7 @@ public:
                                          , QSerialPort::Parity parity = QSerialPort::NoParity \
                                          , QSerialPort::FlowControl fctrl = QSerialPort::NoFlowControl);
 
+    QByteArray generateOTDRTrapData(qint16 channel);
 
     void sendCommandWithResponse(QString cmdline, QByteArray *data);
 
@@ -81,7 +82,7 @@ public:
         }
 
         void run(){
-            forever{
+            do{
                 _client->sendStateCommand();
                 if(_client->isIdling()){
                     _client->setProgress(100);
@@ -98,7 +99,7 @@ public:
                 }
 
                 QThread::msleep(1500);
-            }
+            }while(_client->_keeprunning == 1);
 
         }
     private:
@@ -111,6 +112,8 @@ signals:
     void sigRecvResponse(QString &cmdline, QByteArray &data);
     void sigSendCommand(QString &cmdline);
     void sigSetProgress(qint16 progress);
+    void sigOTDRChanged(qint16 channel);
+    void sigOTDRTrap(QByteArray &data);
 
 public slots:
     void onCatchException(const QString& info);
@@ -118,15 +121,14 @@ public slots:
     void onFileChanged(QString filename);
     void onSendCommand(QString &cmdline);
     void onSetProgress(qint16 progress);
-
-
+    void onOTDRChanged(qint16 channel);
 
 private:
     qint8               _moduleIndex;
     QSerialPort         *_pSerialPort;
     OTDRModuleState     _state;
     QMutex              _mutex;
-    QFileSystemWatcher          _watcher;
+    QFileSystemWatcher  _watcher;
     QStringList         _fileList;
 
     QMap<QString, QFingerData*>  _OldFingers;

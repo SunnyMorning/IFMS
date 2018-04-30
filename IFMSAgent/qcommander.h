@@ -78,8 +78,11 @@ public:
                             qDebug() << "open " << filename << " error" << endl;
                         }
                         QByteArray blob = readFile.readAll();
-
-                        QString cmdline = QString("getsor? 2");
+                        qint16 channel = 2;
+                        if(qcmdlist.size() == 2){
+                            channel = ((QString)(qcmdlist.at(1))).toShort();
+                        }
+                        QString cmdline = QString("getsor? %1").arg(channel);
                          _agent->m_module2->onRecvResponse(cmdline, blob);
 
                          emit _agent->m_module1->sigRecvResponse(cmdline, blob);
