@@ -8,20 +8,36 @@
 #include <vector>
 #include <string>
 
+#include "qfingerdata.h"
+
 using namespace std;
 
-#define FOURINT(DATA, IT)   ((DATA[IT+3]<<(8*3))+(DATA[IT+2]<<(8*2))+(DATA[IT+1]<<(8))+DATA[IT])
-#define TWOINT(DATA,IT) ((DATA[IT+1]<<(8))+DATA[IT])
+//#define FOURINT(DATA, IT)   ((DATA[IT+3]<<(8*3))+(DATA[IT+2]<<(8*2))+(DATA[IT+1]<<(8))+DATA[IT])
+//#define TWOINT(DATA,IT) ((DATA[IT+1]<<(8))+DATA[IT])
 #define MAX_STRING_LEN 1000
 #define REVISION_NUM 200
 #define C_LIGHT_SPEED 299792458.0
 #define FLOAT   float
 #define INT     qint32
 #define UINT    quint32
-#define BYTE    qint8
+#define BYTE    char
 #define BOOL    bool
 #define TRUE    true
 #define FALSE   false
+
+static qint16   TWOINT(char* data, int len)
+{
+    qint16  temp;
+    memcpy(&temp, data+len, sizeof(temp));
+    return temp;
+}
+
+static qint32  FOURINT(char* data, int len)
+{
+    qint32  temp;
+    memcpy(&temp, data+len, sizeof(temp));
+    return temp;
+}
 
 class QSorFileBase : public QObject
 {
@@ -29,13 +45,15 @@ class QSorFileBase : public QObject
 public:
     explicit QSorFileBase(int channel=1, QObject *parent = nullptr);
 
+    qint16      _channel;
+
     struct  MapBlock
     {
         qint32  getsize();
         struct  blockInfo
         {
             vector<char>    ID;
-            short   RevisionNo;
+            qint16  RevisionNo;
             qint32  Size;
         };
         blockInfo   mapBlock;
@@ -203,7 +221,7 @@ public:
         unsigned short checksum;//校验码
     }m_checksum;
 
-    void vchar2string(vector<char> t, string f)
+    void vchar2string(vector<char> &t, string f)
     {
         t.assign(f.begin(),f.end());
     }
@@ -211,6 +229,7 @@ public:
 
     bool        checkSize(qint32 fileLen);
     bool        parseData(BYTE data[], int len);
+    QFingerData* toFingerData();
     quint16     crc16(qint8 d[], int len);
     int         readString(BYTE data[],vector<char>& vChar);
     QString     readString(BYTE data[],int startPos);
@@ -230,7 +249,7 @@ signals:
 public slots:
 
 private:
-    qint8       _channel;
+
 };
 
 #endif // QSORFILEBASE_H

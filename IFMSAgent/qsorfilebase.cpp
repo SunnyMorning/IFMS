@@ -6,6 +6,7 @@ QSorFileBase::QSorFileBase(int channel, QObject *parent) : QObject(parent)
 {
     _channel = channel;
 }
+
 BOOL QSorFileBase::parseData(BYTE fileData[],int len)
 {
 //    //清空其他OTDR设备厂商自定义的Block数据
@@ -75,7 +76,32 @@ BOOL QSorFileBase::parseData(BYTE fileData[],int len)
     }//eif
     return TRUE;
 }
-////////////////////////////////////////////////////////////////////////////////////
+
+QFingerData *QSorFileBase::toFingerData()
+{
+   QFingerData  *temp = new QFingerData;
+   int i = 0;
+   temp->mChannel = _channel;
+   temp->mIFMSFingerData.Channel = _channel;
+   temp->mIFMSFingerData.GroupIndex = m_fixedParas.groupIndex;
+   temp->mIFMSFingerData.NumberOfEvents = m_keyEvent.keyEventNum;
+
+   IFMSEvent_t  ifmsEvent;
+   for(i=0; i< m_keyEvent.keyEventNum; i++){
+
+        ifmsEvent.EventCode1 = m_keyEvent.vEvent.at(i).code.at(1);
+        ifmsEvent.EventCode0 = m_keyEvent.vEvent.at(i).code.at(0);
+        ifmsEvent.EventLoss = m_keyEvent.vEvent.at(i).eventLoss;
+        ifmsEvent.EventReflectance = m_keyEvent.vEvent.at(i).reflectance;
+        ifmsEvent.EventNo = i;
+        ifmsEvent.EventPosition = m_keyEvent.vEvent.at(i).propagationTime *( C_LIGHT_SPEED/ (m_fixedParas.groupIndex * pow(10.0,8)));
+
+        temp->mIFMSFingerData.vIFMSEvents.push_back(ifmsEvent);
+   }
+
+   return temp;
+}
+///////////////////////////////////////////////////////////////////////////////////
 //函数说明:读取MapBlock。
 //入口参数:data:BYTE数组;
 //出口参数:
@@ -95,7 +121,7 @@ INT QSorFileBase::readMap(BYTE data[])//
     //
     //m_parsePos=4;//修订版本号起始位置
     blockLen=4;
-    m_mapBlock.mapBlock.RevisionNo=TWOINT(data,blockLen);
+    memcpy(&m_mapBlock.mapBlock.RevisionNo, data+blockLen, sizeof(m_mapBlock.mapBlock.RevisionNo));
     //m_parsePos=6;//长度起始位置
     blockLen=6;
     m_mapBlock.mapBlock.Size=FOURINT(data,blockLen);

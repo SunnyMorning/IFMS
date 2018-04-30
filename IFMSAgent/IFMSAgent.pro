@@ -29,4 +29,5 @@ HEADERS += \
     qcommander.h \
     qotdrmodule.h \
     qfingerdata.h \
-    qsorfilebase.h
+    qsorfilebase.h \
+    ifmsfinger.h

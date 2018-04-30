@@ -52,6 +52,8 @@ public:
     static bool ask(const QString &title, const QString &text);
 
 public:
+    QOTDRModule                 *m_module1;
+    QOTDRModule                 *m_module2;
     QAgentApp         *app() { return m_app; }
     bool   startSession(int &argc, char **argv);
     void   stopSession();
@@ -59,9 +61,6 @@ public:
 
 protected:
     QAgentApp                   *m_app;
-
-    QOTDRModule                 *m_module1;
-    QOTDRModule                 *m_module2;
 };
 
 #endif // QAGENTAPP_H

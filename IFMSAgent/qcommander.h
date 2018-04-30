@@ -4,6 +4,11 @@
 #include <QObject>
 #include <QRunnable>
 #include <QThread>
+#include <QFile>
+#include <QDataStream>
+#include <QString>
+#include <QByteArray>
+#include <QIODevice>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +18,7 @@
 #include <QStringList>
 
 #include "qagentapp.h"
+#include "qsorfilebase.h"
 
 class QCommander : public QRunnable, public QThread
 {
@@ -28,6 +34,7 @@ public:
     {}
 
     int         moduleIndex;
+
 
     void run(){
         do{
@@ -62,6 +69,24 @@ public:
                 else if(qcmdlist.contains(QString("exit"), Qt::CaseInsensitive)){
                         _agent->exit(0);
                         _keeprunning = 0;
+                }
+                else if(qcmdlist.contains(QString("sor"), Qt::CaseInsensitive)){
+//                        QSorFileBase    sorfile;
+                        QString         filename = QAgentApp::getCacheDir()+QString("otdr_0000_160000_10000_CH3.sor");
+                        QFile           readFile(filename);
+                        if(!readFile.open(QIODevice::ReadOnly)){
+                            qDebug() << "open " << filename << " error" << endl;
+                        }
+                        QByteArray blob = readFile.readAll();
+
+                        QString cmdline = QString("getsor? 2");
+                         _agent->m_module2->onRecvResponse(cmdline, blob);
+
+                         emit _agent->m_module1->sigRecvResponse(cmdline, blob);
+
+//                        sorfile.parseData(blob.data(), blob.length());
+//                        qDebug() << "read sor test" <<endl;
+
                 }
                 else
                 {

@@ -2,6 +2,10 @@
 #define QFINGERDATA_H
 
 #include <QObject>
+#include <QByteArray>
+#include <QString>
+
+#include "ifmsfinger.h"
 
 #define CH1_FINGER_FILE     "IFMS_CH1_finger.bin"
 #define CH2_FINGER_FILE     "IFMS_CH2_finger.bin"
@@ -17,8 +21,14 @@ class QFingerData : public QObject
     Q_OBJECT
 public:
     explicit QFingerData(QObject *parent = nullptr);
-
+    QFingerData&  operator=(const QFingerData &other);
+    IFMSFinger_t        mIFMSFingerData;
+    qint16              mChannel;
+    void                toIFMSFingerFile();
+    QByteArray          toByteArray();
+    static QString      getIFMSFingerFileName(qint16 channel);
 signals:
+    void    sigFingerDataChanged(qint16 channel);
 
 public slots:
 };

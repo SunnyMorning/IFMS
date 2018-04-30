@@ -61,11 +61,11 @@ public:
 
 signals:
     void sigCatchException(const QString& info);
-    void sigRecvResponse(QString& cmdline, QByteArray& data);
+    void sigRecvResponse(QString &cmdline, QByteArray &data);
 
 public slots:
     void onCatchException(const QString& info);
-    void onRecvResponse(QString& cmdline, QByteArray& data);
+    void onRecvResponse(QString &cmdline, QByteArray &data);
     void onFileChanged(QString filename);
 
 public:

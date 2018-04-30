@@ -7,10 +7,13 @@
 #include <QDataStream>
 #include <QIODevice>
 #include <QThread>
+#include <QString>
+#include <QStringList>
 
 #include <iostream>
 #include "qotdrmodule.h"
 #include "qagentapp.h"
+#include "qsorfilebase.h"
 
 #define  WAIT_WRITE_TIMEOUT     1000
 #define  WAIT_READ_TIMEOUT      5000
@@ -45,44 +48,44 @@ void QOTDRModule::initModuleFingerData()
 {
     QString filename;
     if(getModuleIndex() == 0){
-        filename = QAgentApp::getCacheDir()+QString(CH1_FINGER_FILE);
+        filename = QFingerData::getIFMSFingerFileName(1);
         initFingerBinFile(filename);
          _OldFingers.insert(filename, new QFingerData(this));
          _NewFingers.insert(filename, new QFingerData(this));
 
-         filename = QAgentApp::getCacheDir()+QString(CH2_FINGER_FILE);
+         filename = QFingerData::getIFMSFingerFileName(2);
          initFingerBinFile(filename);
           _OldFingers.insert(filename, new QFingerData(this));
           _NewFingers.insert(filename, new QFingerData(this));
 
-          filename = QAgentApp::getCacheDir()+QString(CH3_FINGER_FILE);
+          filename = QFingerData::getIFMSFingerFileName(3);
           initFingerBinFile(filename);
            _OldFingers.insert(filename, new QFingerData(this));
            _NewFingers.insert(filename, new QFingerData(this));
 
-           filename = QAgentApp::getCacheDir()+QString(CH4_FINGER_FILE);
+           filename = QFingerData::getIFMSFingerFileName(4);
            initFingerBinFile(filename);
             _OldFingers.insert(filename, new QFingerData(this));
             _NewFingers.insert(filename, new QFingerData(this));
     }
 
     if(getModuleIndex() == 1 ){
-        filename = QAgentApp::getCacheDir()+QString(CH5_FINGER_FILE);
+        filename = QFingerData::getIFMSFingerFileName(5);
         initFingerBinFile(filename);
          _OldFingers.insert(filename, new QFingerData(this));
          _NewFingers.insert(filename, new QFingerData(this));
 
-         filename = QAgentApp::getCacheDir()+QString(CH6_FINGER_FILE);
+         filename = QFingerData::getIFMSFingerFileName(6);
          initFingerBinFile(filename);
           _OldFingers.insert(filename, new QFingerData(this));
           _NewFingers.insert(filename, new QFingerData(this));
 
-          filename = QAgentApp::getCacheDir()+QString(CH7_FINGER_FILE);
+          filename = QFingerData::getIFMSFingerFileName(7);
           initFingerBinFile(filename);
            _OldFingers.insert(filename, new QFingerData(this));
            _NewFingers.insert(filename, new QFingerData(this));
 
-           filename = QAgentApp::getCacheDir()+QString(CH8_FINGER_FILE);
+           filename = QFingerData::getIFMSFingerFileName(8);
            initFingerBinFile(filename);
             _OldFingers.insert(filename, new QFingerData(this));
             _NewFingers.insert(filename, new QFingerData(this));
@@ -175,9 +178,27 @@ void QOTDRModule::onCatchException(const QString& info)
 
 }
 
-void QOTDRModule::onRecvResponse(QString& cmdline, QByteArray& data)
+void QOTDRModule::onRecvResponse(QString &cmdline, QByteArray &data)
 {
+// TODO: 获取到sorfile之后转变成fingerdata[channel]
+    QSorFileBase    sorfile;
+    QString         filename;
+    QStringList     qcmdlist = cmdline.split(" ", QString::SkipEmptyParts);
 
+    int cmdcount = qcmdlist.size();
+    if(qcmdlist.contains(QString("getsor?"))){
+        if(cmdcount == 2){
+            QString channel = qcmdlist.at(1);
+            qint16 ch = channel.toShort();
+            sorfile._channel = _moduleIndex*4+ch;
+            filename = QFingerData::getIFMSFingerFileName(sorfile._channel);
+
+        }
+    }
+
+    if(sorfile.parseData(data.data(), data.length()) == true){
+        sorfile.toFingerData()->toIFMSFingerFile();
+    }
 }
 
 void QOTDRModule::onFileChanged(QString filename)
