@@ -7,6 +7,9 @@
 #include <QMutex>
 #include <QFileSystemWatcher>
 #include <QMap>
+#include <QThread>
+#include <QRunnable>
+#include <QThreadPool>
 
 #include    "qfingerdata.h"
 
@@ -59,16 +62,64 @@ public:
 
     void sendCommandWithResponse(QString cmdline, QByteArray *data);
 
+    void sendStateCommand();
+    void sendScanCommand();
+
+    bool isIdling(){
+        return (_state == STATE_IDLING);
+    }
+
+    void setProgress(qint16 progress);
+
+    class Sender: public QRunnable, public QThread{
+    public:
+        Sender(QOTDRModule  *client){
+            _client = client;
+            _progress = 0;
+        }
+        ~Sender(){
+        }
+
+        void run(){
+            forever{
+                _client->sendStateCommand();
+                if(_client->isIdling()){
+                    _client->setProgress(100);
+                    QThread::msleep(1000);
+                    _client->sendScanCommand();
+                }
+                else
+                {
+                    _progress += 10;
+                    if(_progress >= 90){
+                        _progress = 90;
+                    }
+                    _client->setProgress(_progress);
+                }
+
+                QThread::msleep(1500);
+            }
+
+        }
+    private:
+        QOTDRModule *_client;
+        qint16       _progress;
+    };
+
 signals:
     void sigCatchException(const QString& info);
     void sigRecvResponse(QString &cmdline, QByteArray &data);
+    void sigSendCommand(QString &cmdline);
+    void sigSetProgress(qint16 progress);
 
 public slots:
     void onCatchException(const QString& info);
     void onRecvResponse(QString &cmdline, QByteArray &data);
     void onFileChanged(QString filename);
+    void onSendCommand(QString &cmdline);
+    void onSetProgress(qint16 progress);
 
-public:
+
 
 private:
     qint8               _moduleIndex;

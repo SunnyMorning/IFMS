@@ -9,6 +9,7 @@
 #include <QThread>
 #include <QString>
 #include <QStringList>
+#include <QChar>
 
 #include <iostream>
 #include "qotdrmodule.h"
@@ -113,8 +114,15 @@ void QOTDRModule::setConnections()
 {
     connect(this, SIGNAL(sigCatchException(const QString&)), this, SLOT(onCatchException(const QString&)));
     connect(this, SIGNAL(sigRecvResponse(QString&,QByteArray&)), this, SLOT(onRecvResponse(QString&, QByteArray&)));
-//    connect(&_watcher, SIGNAL(fileChanged(const QString)), this, SLOT(onFileChanged(QString)));
+    connect(this, SIGNAL(sigSendCommand(QString&)), this, SLOT(onSendCommand(QString&)));
+    connect(this, SIGNAL(sigSetProgress(qint16)), this, SLOT(onSetProgress(qint16)));
+
+//  connect(&_watcher, SIGNAL(fileChanged(const QString)), this, SLOT(onFileChanged(QString)));
     connect(&_watcher, SIGNAL(directoryChanged(const QString)), this, SLOT(onFileChanged(QString)));
+
+    QThreadPool *thread_pool = QThreadPool::globalInstance();
+    QOTDRModule::Sender *thread = new QOTDRModule::Sender(this);
+    thread_pool->start(thread);
 }
 
 QOTDRModule::OTDRModuleState QOTDRModule::getOTDRModuleState()
@@ -147,6 +155,17 @@ bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate b
 void QOTDRModule::sendCommandWithResponse(QString cmdline, QByteArray *data)
 {
     QMutexLocker locker(&_mutex);
+    QAgentApp::message(cmdline, QString(QChar(_moduleIndex)));
+    if(cmdline.startsWith(QString("getsor")), Qt::CaseInsensitive)
+    {
+        _state = STATE_GETINGSOR;
+    }
+    if(cmdline.startsWith((QString("waveform")),Qt::CaseInsensitive)){
+        _state = STATE_GETINGWAVELET;
+    }
+    if(cmdline.startsWith((QString("scan")),Qt::CaseInsensitive)){
+        _state = STATE_MEASURING;
+    }
     _pSerialPort->write(cmdline.toLatin1());
     if(_pSerialPort->waitForBytesWritten(WAIT_WRITE_TIMEOUT))
     {
@@ -173,6 +192,53 @@ void QOTDRModule::sendCommandWithResponse(QString cmdline, QByteArray *data)
     }
 }
 
+void QOTDRModule::sendStateCommand()
+{
+// 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
+    QString cmdline = QString("STATE?");
+    if((_state != STATE_GETINGSOR ) && (_state != STATE_GETINGWAVELET)){
+        emit    this->onSendCommand(cmdline);
+    }
+}
+
+
+void QOTDRModule::sendScanCommand()
+{
+// 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
+    QString cmdline = QString("SCAN");
+    if(_state == STATE_IDLING){
+        emit    this->onSendCommand(cmdline);
+        _state = STATE_MEASURING;
+    }
+}
+
+void QOTDRModule::setProgress(qint16 progress)
+{
+    if(isIdling()){
+        emit this->sigSetProgress(100);
+    }
+    else
+    {
+        emit this->sigSetProgress(progress);
+    }
+}
+//===============
+
+void QOTDRModule::onSendCommand(QString &cmdline)
+{
+    QByteArray  data;
+// 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
+    if((_state != STATE_GETINGSOR ) && (_state != STATE_GETINGWAVELET)){
+        sendCommandWithResponse(cmdline, &data);
+    }
+}
+
+
+void QOTDRModule::onSetProgress(qint16 progress)
+{
+
+}
+
 void QOTDRModule::onCatchException(const QString& info)
 {
 
@@ -183,22 +249,33 @@ void QOTDRModule::onRecvResponse(QString &cmdline, QByteArray &data)
 // TODO: 获取到sorfile之后转变成fingerdata[channel]
     QSorFileBase    sorfile;
     QString         filename;
+
+    QString         responseString = QString(data);
+    if(QString::compare(responseString, QString("STATE 0")), Qt::CaseInsensitive){
+        _state = STATE_IDLING;
+    }
+    else
+    {
+        _state = STATE_MEASURING;
+    }
+
     QStringList     qcmdlist = cmdline.split(" ", QString::SkipEmptyParts);
 
     int cmdcount = qcmdlist.size();
-    if(qcmdlist.contains(QString("getsor?"))){
+    if(qcmdlist.contains(QString("getsor?"))){ // 获取SOR文件
         if(cmdcount == 2){
             QString channel = qcmdlist.at(1);
             qint16 ch = channel.toShort();
             sorfile._channel = _moduleIndex*4+ch;
             filename = QFingerData::getIFMSFingerFileName(sorfile._channel);
-
-        }
+//TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
+            if(sorfile.parseData(data.data(), data.length()) == true){
+                sorfile.toFingerData()->toIFMSFingerFile();
+            }
+            _state  =  STATE_MEASURING;
+         }
     }
 
-    if(sorfile.parseData(data.data(), data.length()) == true){
-        sorfile.toFingerData()->toIFMSFingerFile();
-    }
 }
 
 void QOTDRModule::onFileChanged(QString filename)
