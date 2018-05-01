@@ -1,3 +1,7 @@
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include "qpstproduct.h"
 
 QPSTProduct::QPSTProduct(QObject *parent) : QObject(parent)
@@ -142,12 +146,14 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
+    static long ledpw1 = 0;
+
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &ledpw1/* XXX: a pointer to the scalar's data */,
+                                     sizeof(ledpw1)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -170,13 +176,14 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+     static long ledpw2 = 1;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &ledpw2/* XXX: a pointer to the scalar's data */,
+                                     sizeof(ledpw2)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -198,13 +205,14 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    
+    static long ledstatus = 1;
+
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &ledstatus/* XXX: a pointer to the scalar's data */,
+                                     sizeof(ledstatus)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -227,13 +235,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long bootmode = 0;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &bootmode/* XXX: a pointer to the scalar's data */,
+                                     sizeof(bootmode)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -250,12 +260,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -263,28 +273,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -304,13 +314,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+     static long swModuleNum = 0;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swModuleNum/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swModuleNum)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -333,13 +345,14 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+    static long interval  = 10;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &interval/* XXX: a pointer to the scalar's data */,
+                                     sizeof(interval)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -356,12 +369,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -369,28 +382,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -410,13 +423,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long swCurrPort = 0;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swCurrPort/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swCurrPort)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -439,13 +454,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long swAttType = 1;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swAttType/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swAttType)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -462,12 +479,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -475,28 +492,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -517,13 +534,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long swAttPort = 80;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swAttPort/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swAttPort)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -540,12 +559,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -553,28 +572,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -596,12 +615,14 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
     
+    static long swConnType = 1;
+
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swConnType/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swConnType)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -618,41 +639,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
-        case MODE_SET_FREE:
-            /* XXX: free resources allocated in RESERVE1 and/or
-               RESERVE2.  Something failed somewhere, and the states
-               below won't be called. */
-            break;
+//        case MODE_SET_FREE:
+//            /* XXX: free resources allocated in RESERVE1 and/or
+//               RESERVE2.  Something failed somewhere, and the states
+//               below won't be called. */
+//            break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -673,13 +694,18 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+    struct sockaddr_in sa;
+
+    inet_pton(AF_INET, "192.168.1.1", &(sa.sin_addr));
+
+    in_addr_t   it = sa.sin_addr.s_addr;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_IPADDRESS,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &it/* XXX: a pointer to the scalar's data */,
+                                     sizeof(it)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -696,41 +722,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
-        case MODE_SET_FREE:
-            /* XXX: free resources allocated in RESERVE1 and/or
-               RESERVE2.  Something failed somewhere, and the states
-               below won't be called. */
-            break;
+//        case MODE_SET_FREE:
+//            /* XXX: free resources allocated in RESERVE1 and/or
+//               RESERVE2.  Something failed somewhere, and the states
+//               below won't be called. */
+//            break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -751,13 +777,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long swIpPort = 1611;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swIpPort/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swIpPort)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -774,41 +802,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
-        case MODE_SET_FREE:
-            /* XXX: free resources allocated in RESERVE1 and/or
-               RESERVE2.  Something failed somewhere, and the states
-               below won't be called. */
-            break;
+//        case MODE_SET_FREE:
+//            /* XXX: free resources allocated in RESERVE1 and/or
+//               RESERVE2.  Something failed somewhere, and the states
+//               below won't be called. */
+//            break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -829,13 +857,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long swUartBd = 115200;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swUartBd/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swUartBd)/* XXX: the length of the data in bytes */);
             break;
 
         /*
@@ -852,41 +882,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-        case MODE_SET_RESERVE2:
-            /* XXX malloc "undo" storage buffer */
-            if (/* XXX if malloc, or whatever, failed: */) {
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-            }
-            break;
+//        case MODE_SET_RESERVE2:
+//            /* XXX malloc "undo" storage buffer */
+//            if (/* XXX if malloc, or whatever, failed: */) {
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+//            }
+//            break;
 
-        case MODE_SET_FREE:
-            /* XXX: free resources allocated in RESERVE1 and/or
-               RESERVE2.  Something failed somewhere, and the states
-               below won't be called. */
-            break;
+//        case MODE_SET_FREE:
+//            /* XXX: free resources allocated in RESERVE1 and/or
+//               RESERVE2.  Something failed somewhere, and the states
+//               below won't be called. */
+//            break;
 
-        case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-            }
-            break;
+//        case MODE_SET_ACTION:
+//            /* XXX: perform the value change here */
+//            if (/* XXX: error? */) {
+//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
+//            }
+//            break;
 
-        case MODE_SET_COMMIT:
-            /* XXX: delete temporary storage */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-            }
-            break;
+//        case MODE_SET_COMMIT:
+//            /* XXX: delete temporary storage */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+//            }
+//            break;
 
-        case MODE_SET_UNDO:
-            /* XXX: UNDO and return to previous value for the object */
-            if (/* XXX: error? */) {
-                /* try _really_really_ hard to never get to this point */
-                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-            }
-            break;
+//        case MODE_SET_UNDO:
+//            /* XXX: UNDO and return to previous value for the object */
+//            if (/* XXX: error? */) {
+//                /* try _really_really_ hard to never get to this point */
+//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+//            }
+//            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -906,13 +936,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+     static long swTotalNum = 4;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swTotalNum/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swTotalNum)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -934,13 +966,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+    static long swCurrNum = 0;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swCurrNum/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swCurrNum)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -962,13 +996,15 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+
+     static long swStatus = 1;
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     /* XXX: a pointer to the scalar's data */,
-                                     /* XXX: the length of the data in bytes */);
+                                     &swStatus/* XXX: a pointer to the scalar's data */,
+                                     sizeof(swStatus)/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -2171,7 +2207,38 @@ int
 int
 QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
 {
+     static long modstatus = 0;
+     netsnmp_session     _session;
+//    netsnmp_session     *_ss;
+//    char           *trap = NULL;
+
+//    char peername[256];
+//    char community[256];
+//    strcpy(peername,"192.168.0.12:1622");
+//    strcpy(community,"public");
+//    init_snmp(QAgentApp::getAppName().toLatin1());
+//     snmp_sess_init(&_session);
+//    _session.paramName = peername;
+//    _session.community = (u_char*)community;
+//    _session.community_len = strlen(community);
+//    _session.version = SNMP_VERSION_2c;
+//    _ss = snmp_add(&_session, netsnmp_transport_open_client("snmptrap", _session.peername),NULL,NULL);
+
+//    if(_ss == NULL){
+//        snmp_sess_perror("snmptrap", &_session);
+//    }
+    //    const oid objid_sysuptime[]={1,3,6,1,2,1,1,3,0};
+    //    const oid objid_snmptrap[]={1,3,6,1,6,3,1,1,4,1,0};
+    //    const oid objid_enterprise[] = {1,3,6,1,4,1,48391};
+    //    const oid pstIFMS1000MeasureEvent_oid[] = { 1,3,6,1,4,1,48391,3,5,5,1,0};
+    ////    const oid pstIFMS1000MeasureStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,2,1,6,0 /* insert index here */ };
+
+
+    //    long    sysuptime;
+    //    char    csysuptime[20];
+
     netsnmp_variable_list  *var_list = NULL;
+    const oid snmptrap_oid[]={1,3,6,1,6,3,1,1,4,1,0};
     const oid pstIFMS1000MeasureEvent_oid[] = { 1,3,6,1,4,1,48391,3,5,5,1 };
     const oid pstIFMS1000MeasureStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,2,1,6, /* insert index here */ };
 
@@ -2179,7 +2246,7 @@ QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
      * Set the snmpTrapOid.0 value
      */
     snmp_varlist_add_variable(&var_list,
-        snmptrap_oid, snmptrap_oid_len,
+        snmptrap_oid, OID_LENGTH(snmptrap_oid),
         ASN_OBJECT_ID,
         pstIFMS1000MeasureEvent_oid, sizeof(pstIFMS1000MeasureEvent_oid));
 
@@ -2187,10 +2254,10 @@ QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
      * Add any objects from the trap definition
      */
     snmp_varlist_add_variable(&var_list,
-        pstIFMS1000MeasureStatus_oid, OID_LENGTH(pstIFMS1000MeasureStatus_oid),
+        pstIFMS1000MeasureEvent_oid, OID_LENGTH(pstIFMS1000MeasureEvent_oid),
         ASN_INTEGER,
         /* Set an appropriate value for pstIFMS1000MeasureStatus */
-        NULL, 0);
+        &modstatus, sizeof(modstatus));
 
     /*
      * Add any extra (optional) objects here
@@ -2202,6 +2269,5 @@ QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
      */
     send_v2trap( var_list );
     snmp_free_varbind( var_list );
-
     return SNMP_ERR_NOERROR;
 }

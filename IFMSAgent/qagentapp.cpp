@@ -197,4 +197,5 @@ void QAgentApp::onOTDRTrap(QByteArray &data)
 {
 // TODO: send trap to nms
     message(QString(data));
+    QPSTProduct::send_pstIFMS1000MeasureEvent_trap();
 }
