@@ -1,0 +1,448 @@
++--pstRoot(48391)
+   +--pstReg(1)
+   |  +--pstModules(1)
+   |     +--pstGlobalModule(1)
+   |
+   +--pstGeneric(2)
+   |  +--pstSystem(1)
+   |     |
+   |     +--pstSystemBasicManagement(1)
+   |     |  |
+   |     |  +-- -RW- String    devName(1)
+   |     |  |        Size: 32
+   |     |  +-- -RW- IpAddr    devIpAddr(2)
+   |     |  +-- -RW- IpAddr    devGateway(3)
+   |     |  +-- -RW- IpAddr    devNetMask(4)
+   |     |  +-- -RW- Integer32 saveCurrentConfiguration(5)
+   |     |  |        Range: 1
+   |     |  +-- -RW- Integer32 reset2Factory(6)
+   |     |  |        Range: 1
+   |     |  +-- -RW- Integer32 reboot(7)
+   |     |
+   |     +--pstSystemVerInfo(2)
+   |     |  |
+   |     |  +-- -R-- String    pstHwVer(1)
+   |     |  |        Size: 32
+   |     |  +-- -R-- String    pstSwVer(2)
+   |     |  |        Size: 32
+   |     |  +-- -R-- String    pstFwVer(3)
+   |     |  |        Size: 32
+   |     |  +-- -R-- String    pstModel(4)
+   |     |  |        Size: 32
+   |     |  +-- -R-- String    pstSn(5)
+   |     |  |        Size: 32
+   |     |  +-- -R-- String    devMacAddress(6)
+   |     |           Size: 17
+   |     |
+   |     +--pstSystemTrapInfo(3)
+   |     |  |
+   |     |  +-- -RW- Integer32 pstSystemTrapFuncEn(1)
+   |     |  |        Range: 0..1
+   |     |  |
+   |     |  +--pstSystemTrapTargetTable(2)
+   |     |     |
+   |     |     +--pstSystemTrapTargetEntry(1)
+   |     |        |  Index: pstSystemTrapTargetName
+   |     |        |
+   |     |        +-- ---- String    pstSystemTrapTargetName(1)
+   |     |        |        Size: 1..32
+   |     |        +-- -RW- IpAddr    pstSystemTrapTargetIpAddr(2)
+   |     |        +-- -RW- String    pstSystemTrapTargetCommunity(3)
+   |     |        |        Size: 1..32
+   |     |        +-- -RW- Integer32 pstSystemTrapTargetTrapVersion(4)
+   |     |        |        Range: 0..1
+   |     |        +-- CR-- INTEGER   pstSystemTrapTargetRowStatus(5)
+   |     |
+   |     +--pstSystemStatus(4)
+   |     |  |
+   |     |  +-- -R-- Integer32 pstSystemFanTotalNum(1)
+   |     |  +-- -R-- Integer32 pstSystemPowerTotalNum(2)
+   |     |  |
+   |     |  +--pstSystemFanTable(3)
+   |     |  |  |
+   |     |  |  +--pstSystemFanEntry(1)
+   |     |  |     |  Index: pstSystemFanIndex
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 pstSystemFanIndex(1)
+   |     |  |     +-- -R-- Integer32 pstSystemFanStatus(2)
+   |     |  |     |        Range: 0..1
+   |     |  |     +-- -R-- Integer32 pstSystemFanSpeed(3)
+   |     |  |
+   |     |  +--pstSystemPowerTable(4)
+   |     |  |  |
+   |     |  |  +--pstSystemPowerEntry(1)
+   |     |  |     |  Index: pstSystemPowerIndex
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 pstSystemPowerIndex(1)
+   |     |  |     +-- -R-- Integer32 pstSystemPowerStatus(2)
+   |     |  |     +-- -R-- String    pstSystemPowerVoltage(3)
+   |     |  |     |        Size: 1..16
+   |     |  |     +-- -R-- String    pstSystemPowerCurrent(4)
+   |     |  |              Size: 1..16
+   |     |  |
+   |     |  +-- -R-- String    pstSystemTemperature(5)
+   |     |           Size: 1..16
+   |     |
+   |     +--pstSystemOnlineUpgrade(5)
+   |     |  |
+   |     |  +-- -RW- IpAddr    pstSystemFtpSrvIp(1)
+   |     |  +-- -RW- String    pstSystemFtpUserName(2)
+   |     |  |        Size: 1..16
+   |     |  +-- -RW- String    pstSystemFtpUserPwd(3)
+   |     |  |        Size: 1..16
+   |     |  +-- -RW- String    pstSystemFtpFileName(4)
+   |     |  |        Size: 1..64
+   |     |  +-- -RW- Integer32 pstSystemUpgFileType(5)
+   |     |  |        Range: 1..3
+   |     |  +-- -RW- Integer32 pstSystemUpgDstSlot(6)
+   |     |  +-- -RW- Integer32 pstSystemUpgAction(7)
+   |     |  |        Range: 1..2
+   |     |  +-- -R-- Integer32 pstSystemUpgStatus(8)
+   |     |  |        Range: 0..3
+   |     |  +-- -R-- String    pstSystemUpgResultInfo(9)
+   |     |           Size: 0..64
+   |     |
+   |     +--pstSystemProductInfo(6)
+   |        +-- -R-- Integer32 pstSystemProductType(1)
+   |
+   +--pstProducts(3)
+   |  +--pstIFMS1000(5)
+   |     |
+   |     +--pstIFMS1000PortInfoTable(1)
+   |     |  |
+   |     |  +--pstIFMS1000PortInfoEntry(1)
+   |     |     |  Index: pstIFMS1000PortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000PortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -R-- String    pstIFMS1000PortRxPwr(2)
+   |     |     |        Size: 1..32
+   |     |     +-- -R-- String    pstIFMS1000PortTxPwr(3)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- Integer32 pstIFMS1000PortWorkMode(4)
+   |     |     |        Range: 1..2
+   |     |     +-- -R-- Integer32 pstIFMS1000PortActive(5)
+   |     |     |        Range: 0..1
+   |     |     +-- -RW- Integer32 pstIFMS1000PortFiberAppType(6)
+   |     |     |        Range: 1..2
+   |     |     +-- -R-- Integer32 pstIFMS1000PortRunningStatus(7)
+   |     |              Range: 1..2
+   |     |
+   |     +--pstIFMS1000MeasureTable(2)
+   |     |  |
+   |     |  +--pstIFMS1000MeasureEntry(1)
+   |     |     |  Index: pstIFMS1000MTPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000MTPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- String    pstIFMS1000MeasureStartPosition(2)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000MeasureEndPosition(3)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000MeasureRefIndex(4)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000MeasureResolution(5)
+   |     |     |        Size: 1..32
+   |     |     +-- -R-- Integer32 pstIFMS1000MeasureStatus(6)
+   |     |     +-- -RW- Integer32 pstIFMS1000MeasureAction(7)
+   |     |     +-- -R-- String    pstIFMS1000MeasureResultFile(8)
+   |     |     |        Size: 1..128
+   |     |     +-- -R-- String    pstIFMS1000MeasureResultRawDataFile(9)
+   |     |     |        Size: 1..128
+   |     |     +-- -R-- Integer32 pstIFMS1000MeasureProgressStatus(10)
+   |     |     |        Range: 0..100
+   |     |     +-- -RW- String    pstIFMS1000MeasureResultRawPointFile(11)
+   |     |              Size: 1..32
+   |     |
+   |     +--pstIFMS1000FingerTable(3)
+   |     |  |
+   |     |  +--pstIFMS1000FingerEntry(1)
+   |     |     |  Index: pstIFMS1000FTPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000FTPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- String    pstIFMS1000FingerStartPosition(2)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000FingerEndPosition(3)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000FingerRefIndex(4)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000FingerResolution(5)
+   |     |     |        Size: 1..32
+   |     |     +-- -R-- String    pstIFMS1000FingerCreateTime(6)
+   |     |     |        Size: 1..64
+   |     |     +-- -R-- Integer32 pstIFMS1000FingerFileStatus(7)
+   |     |     |        Range: 0..2
+   |     |     +-- -RW- Integer32 pstIFMS1000FingerAction(8)
+   |     |     |        Range: 1..4
+   |     |     +-- -R-- Integer32 pstIFMS1000FingerActionStatus(9)
+   |     |     |        Range: 0..3
+   |     |     +-- -R-- String    pstIFMS1000FingerSavedFileName(10)
+   |     |     |        Size: 1..128
+   |     |     +-- -R-- String    pstIFMS1000FingerCurrentFileName(11)
+   |     |              Size: 1..128
+   |     |
+   |     +--pstIFMS1000DiffInfo(4)
+   |     |  |
+   |     |  +--pstIFMS1000DiffTotalTable(1)
+   |     |  |  |
+   |     |  |  +--pstIFMS1000DiffTotalEntry(1)
+   |     |  |     |  Index: pstIFMS1000DtPortNum
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 pstIFMS1000DtPortNum(1)
+   |     |  |     +-- -R-- Integer32 pstIFMS1000DtTotalNum(2)
+   |     |  |
+   |     |  +--pstIFMS1000DiffInfoTable(2)
+   |     |     |
+   |     |     +--pstIFMS1000DiffInfoEntry(1)
+   |     |        |  Index: pstIFMS1000DiffInfoPortNum, pstIFMS1000DiffInfoPortItemIndex
+   |     |        |
+   |     |        +-- -R-- Integer32 pstIFMS1000DiffInfoPortNum(1)
+   |     |        +-- -R-- Integer32 pstIFMS1000DiffInfoPortItemIndex(2)
+   |     |        +-- -R-- String    pstIFMS1000DiffInfoDistance(3)
+   |     |        |        Size: 1..32
+   |     |        +-- -R-- String    pstIFMS1000DiffInfoNVal(4)
+   |     |        |        Size: 1..32
+   |     |        +-- -R-- String    pstIFMS1000DiffInfodBVal(5)
+   |     |        |        Size: 1..32
+   |     |        +-- -R-- Integer32 pstIFMS1000DiffInfoDiffType(6)
+   |     |        +-- -R-- Unsigned  pstIFMS1000DiffInfoPointId(7)
+   |     |
+   |     +--pstIFMS1000Notifications(5)
+   |     |  +--pstIFMS1000MeasureEvent(1)
+   |     |
+   |     +--pstIFMS1000LedStatus(6)
+   |     |  +--pstIFMS1000SystemLed(1)
+   |     |  |  +-- -R-- Integer32 pstIFMS1000SysLedPW1(1)
+   |     |  |  +-- -R-- Integer32 pstIFMS1000SysLedPW2(2)
+   |     |  |  +-- -R-- Integer32 pstIFMS1000SysLedStatus(3)
+   |     |  |
+   |     |  +--pstIFMS1000PortLedTable(2)
+   |     |     |
+   |     |     +--pstIFMS1000PortLedEntry(1)
+   |     |        |  Index: pstIFMS1000PortLedPortNum
+   |     |        |
+   |     |        +-- -R-- Integer32 pstIFMS1000PortLedPortNum(1)
+   |     |        +-- -R-- Integer32 pstIFMS1000PortLedStatus(2)
+   |     |
+   |     +--pstIFMS1000DiagnoseTable(7)
+   |     |  |
+   |     |  +--pstIFMS1000DiagnoseEntry(1)
+   |     |     |  Index: pstIFMS1000DgPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000DgPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgLaserACBias(2)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgLaserDCBias(3)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgLaserACModulation(4)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgLaserDCModulation(5)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- Integer32 pstIFMS1000DgLaserEn(6)
+   |     |     |        Range: 0..1
+   |     |     +-- -RW- Integer32 pstIFMS1000DgPwm(7)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgSeed(8)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgPrbs(9)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgAverage(10)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgRegAddr(11)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgRegValue(12)
+   |     |     +-- -RW- String    pstIFMS1000DgMaskStartPoint(13)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgMaskStopPoint(14)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- Integer32 pstIFMS1000DgMaskAction(15)
+   |     |     |        Range: 1..5
+   |     |     +-- -RW- String    pstIFMS1000DgMeasureDeltaThld(16)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgCutPointThld(17)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- Integer32 pstIFMS1000DgPeriod(18)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgDAC(19)
+   |     |     +-- -RW- Integer32 pstIFMS1000DgCounterClockMode(20)
+   |     |     |        Range: 0..1
+   |     |     +-- -RW- Integer32 pstIFMS1000DgScanRunType(21)
+   |     |     |        Range: 1..2
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgOpt(22)
+   |     |     +-- -RW- String    pstIFMS1000DgFiberOffset(23)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgTestWaveLen(24)
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgPRT(25)
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgPPW(26)
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgPPrescale(27)
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgPAvg(28)
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgPGain(29)
+   |     |     +-- -R-- Unsigned  pstIFMS1000DgPAdcData(30)
+   |     |     +-- -RW- Unsigned  pstIFMS1000DgPE2promAction(31)
+   |     |              Range: 1..2
+   |     |
+   |     +--pstIFMS1000DebugRegTable(8)
+   |     |  |
+   |     |  +--pstIFMS1000DebugRegEntry(1)
+   |     |     |  Index: pstIFMS1000DbPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000DbPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- Integer32 pstIFMS1000DbRegAddr(11)
+   |     |     +-- -RW- Integer32 pstIFMS1000DbRegValue(12)
+   |     |
+   |     +--pstIFMS1000DebugDACTable(9)
+   |     |  |
+   |     |  +--pstIFMS1000DebugDACEntry(1)
+   |     |     |  Index: pstIFMS1000DacTPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000DacTPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- Integer32 pstIFMS1000DacTChannelNum(2)
+   |     |     +-- -RW- Integer32 pstIFMS1000TDacValue(3)
+   |     |
+   |     +--pstIFMS1000DebugE2promTable(10)
+   |     |  |
+   |     |  +--pstIFMS1000DebugE2promEntry(1)
+   |     |     |  Index: pstIFMS1000DbE2TPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000DbE2TPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- Integer32 pstIFMS1000DbE2TAddr(2)
+   |     |     +-- -RW- Integer32 pstIFMS1000DbE2TValue(3)
+   |     |
+   |     +--pstIFMS1000SysConf(11)
+   |     |  |
+   |     |  +-- -RW- Integer32 pstIFMS1000BootMode(1)
+   |     |
+   |     +--pstIFMS1000ExtendAlarmTable(12)
+   |     |  |
+   |     |  +--pstIFMS1000ExtendAlarmEntry(1)
+   |     |     |  Index: pstIFMS1000EAPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000EAPortNum(1)
+   |     |     +-- -RW- Unsigned  pstIFMS1000ExtendAlarm(2)
+   |     |
+   |     +--pstIFMS1000ExpertExtendTable(13)
+   |     |  |
+   |     |  +--pstIFMS1000ExpertExtendEntry(1)
+   |     |     |  Index: pstIFMS1000EEPortNum
+   |     |     |
+   |     |     +-- -R-- Integer32 pstIFMS1000EEPortNum(1)
+   |     |     |        Range: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgPBias1(2)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgPBias2(3)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgPModulation1(4)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- String    pstIFMS1000DgPModulation2(5)
+   |     |     |        Size: 1..8
+   |     |     +-- -RW- Integer32 pstIFMS1000DgPBackScatter(6)
+   |     |     +-- -RW- String    pstIFMS1000DgPMeasureDeltaThld(7)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgPCutPointThld(8)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgPMFactor(9)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgFaultCriticalThld(10)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgFaultMajorThld(11)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgFaultMinorThld(12)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgPAFactor(13)
+   |     |     |        Size: 1..32
+   |     |     +-- -RW- String    pstIFMS1000DgPBFactor(14)
+   |     |              Size: 1..32
+   |     |
+   |     +--pstIFMS1000PonConfTable(14)
+   |     |  |
+   |     |  +--pstIFMS1000PonConfEntry(1)
+   |     |     |  Index: pctPortNum
+   |     |     |
+   |     |     +-- -R-- Unsigned  pctPortNum(1)
+   |     |     +-- -RW- Unsigned  pctSp1LocItem(2)
+   |     |
+   |     +--pstIFMS1000ParamsV32(15)
+   |     |  |
+   |     |  +--pstIFMS1000ParamsV32TotalNumTable(1)
+   |     |  |  |
+   |     |  |  +--pstIFMS1000ParamsV32TotalNumEntry(1)
+   |     |  |     |  Index: v32TPortNum
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 v32TPortNum(1)
+   |     |  |     |        Range: 1..8
+   |     |  |     +-- -R-- Integer32 v32PortTotalNum(2)
+   |     |  |
+   |     |  +--pstIFMS1000ParamsV32NameTable(2)
+   |     |  |  |
+   |     |  |  +--pstIFMS1000ParamsV32NameEntry(1)
+   |     |  |     |  Index: v32PortNum, v32ParamNameNum
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 v32PortNum(1)
+   |     |  |     |        Range: 1..8
+   |     |  |     +-- -R-- Integer32 v32ParamNameNum(2)
+   |     |  |     +-- -R-- String    v32ParamName(3)
+   |     |  |              Size: 1..32
+   |     |  |
+   |     |  +--pstIFMS1000ParamsV32ValTable(3)
+   |     |     |
+   |     |     +--pstIFMS1000ParamsV32ValEntry(1)
+   |     |        |  Index: v32ValPortNum, v32ParamValNum
+   |     |        |
+   |     |        +-- -R-- Integer32 v32ValPortNum(1)
+   |     |        |        Range: 1..8
+   |     |        +-- -R-- Integer32 v32ParamValNum(2)
+   |     |        +-- -RW- Unsigned  v32ParamVal(3)
+   |     |
+   |     +--pstIFMS1000ParamsS32(16)
+   |     |  |
+   |     |  +--pstIFMS1000ParamsS32TotalNumTable(1)
+   |     |  |  |
+   |     |  |  +--pstIFMS1000ParamsS32TotalNumEntry(1)
+   |     |  |     |  Index: s32TPortNum
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 s32TPortNum(1)
+   |     |  |     |        Range: 1..8
+   |     |  |     +-- -R-- Integer32 s32PortTotalNum(2)
+   |     |  |
+   |     |  +--pstIFMS1000ParamsS32NameTable(2)
+   |     |  |  |
+   |     |  |  +--pstIFMS1000ParamsS32NameEntry(1)
+   |     |  |     |  Index: s32PortNum, s32ParamNameNum
+   |     |  |     |
+   |     |  |     +-- -R-- Integer32 s32PortNum(1)
+   |     |  |     |        Range: 1..8
+   |     |  |     +-- -R-- Integer32 s32ParamNameNum(2)
+   |     |  |     +-- -R-- String    s32ParamNameVal(3)
+   |     |  |              Size: 1..32
+   |     |  |
+   |     |  +--pstIFMS1000ParamsS32ValTable(3)
+   |     |     |
+   |     |     +--pstIFMS1000ParamsS32ValEntry(1)
+   |     |        |  Index: s32ValPortNum, s32ParamValNum
+   |     |        |
+   |     |        +-- -R-- Integer32 s32ValPortNum(1)
+   |     |        |        Range: 1..8
+   |     |        +-- -R-- Integer32 s32ParamValNum(2)
+   |     |        +-- -RW- String    s32ParamVal(3)
+   |     |                 Size: 1..32
+   |     |
+   |     +--pstIFMS1000SwitchInfo(17)
+   |     |  |
+   |     |  +-- -R-- Integer32 pstIFMS1000SwitchModuleNum(1)
+   |     |  +-- -RW- Integer32 pstIFMS1000SwitchInterval(2)
+   |     |  +-- -R-- Integer32 pstIFMS1000SwitchCurrentPort(3)
+   |     |
+   |     +--pstIFMS1000ExternalSwitchInfo(18)
+   |        |
+   |        +-- -RW- Integer32 pstIFMS1000ExtSwitchAttType(1)
+   |        +-- -RW- Integer32 pstIFMS1000ExtSwitchAttachPort(2)
+   |        +-- -RW- Integer32 pstIFMS1000ExtSwitchConnType(3)
+   |        +-- -RW- IpAddr    pstIFMS1000ExtSwitchIpAddr(4)
+   |        +-- -RW- Integer32 pstIFMS1000ExtSwitchIpPort(5)
+   |        +-- -RW- Integer32 pstIFMS1000ExtSwitchUartBaud(6)
+   |        +-- -R-- Integer32 pstIFMS1000ExtSwitchTotalSwitchNum(7)
+   |        +-- -R-- Integer32 pstIFMS1000ExtSwitchCurrentNum(8)
+   |        +-- -R-- Integer32 pstIFMS1000ExtSwitchStatus(9)
+   |
+   +--pstCaps(4)
+   +--pstReqs(5)
+   +--pstExpr(6)

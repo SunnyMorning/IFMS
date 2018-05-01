@@ -8,8 +8,14 @@ INCLUDEPATH += $$PWD
 
 win32: LIBS += -L$$PWD/../../../usr/lib/ -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs -lnetsnmptrapd
 
-INCLUDEPATH += $$PWD/../../../usr/include
-DEPENDPATH += $$PWD/../../../usr/include
 
-#win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../../../usr/lib/netsnmp.lib
-#else:win32-g++: PRE_TARGETDEPS += $$PWD/../../../usr/lib/libnetsnmp.a
+unix:!macx: LIBS += -L$$PWD/../../../../../../usr/local/lib/ -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs -lnetsnmptrapd
+
+INCLUDEPATH += $$PWD/''
+DEPENDPATH += $$PWD/''
+
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmp.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmpagent.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmphelpers.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmpmibs.a
+unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmptrapd.a

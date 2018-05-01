@@ -8,9 +8,12 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <QIODevice>
+#include <QSettings>
+#include <QVariant>
 
 #include "qagentapp.h"
 #include "qcommander.h"
+#include "qpst.h"
 
 #define DATA_DIR    D_RES_DIR
 #define IFMS_AGENT_NAME     "ifms"
@@ -48,7 +51,11 @@ bool QAgentApp::startSession(int &argc, char **argv)
 
     QThreadPool *thread_pool = QThreadPool::globalInstance();
     QCommander *thread = new QCommander(this);
+    QPST       *pstThread = new QPST(this);
+
     thread_pool->start(thread);
+    thread_pool->start(pstThread);
+
 
     m_module1 = new QOTDRModule(this, 0);
     m_module1->initModuleFingerData();
@@ -110,6 +117,15 @@ void QAgentApp::initAppDirs()
 
     initDir(configDir);
     initDir(cacheDir);
+
+    QSettings setting(getConfigFile(),QSettings::IniFormat);
+        setting.beginGroup("config");
+           setting.setValue("page",QVariant(1.5));
+           setting.beginWriteArray(QString("system"));
+               setting.setValue("site",QVariant("http://www.cppblog.com/gaimor/"));
+               setting.setValue("maker",QVariant("Gaimor"));
+           setting.endArray();
+        setting.endGroup();
 }
 
 //

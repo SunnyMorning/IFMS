@@ -23,11 +23,19 @@ SOURCES += main.cpp \
     qagentapp.cpp \
     qotdrmodule.cpp \
     qfingerdata.cpp \
-    qsorfilebase.cpp
+    qsorfilebase.cpp \
+    qpstsystem.cpp \
+    qpstproduct.cpp
 HEADERS += \
     qagentapp.h \
     qcommander.h \
     qotdrmodule.h \
     qfingerdata.h \
     qsorfilebase.h \
-    ifmsfinger.h
+    ifmsfinger.h \
+    qpst.h \
+    qpstsystem.h \
+    qpstproduct.h
+
+DISTFILES += \
+    pstRoot
