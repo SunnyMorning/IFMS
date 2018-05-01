@@ -42,7 +42,7 @@ public:
 
         init_agent(SUB_AGENT);
 
-        _product->init_pstObjects();
+        _product->init_pstIFMS1000();
         _system->init_pstObjects();
 
         init_snmp(SUB_AGENT);
