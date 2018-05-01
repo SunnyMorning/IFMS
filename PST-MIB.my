@@ -1,0 +1,98 @@
+--
+-- PST-MIB.my
+--
+
+	PST-MIB DEFINITIONS ::= BEGIN
+ 
+		IMPORTS
+			enterprises, MODULE-IDENTITY, OBJECT-IDENTITY			
+				FROM SNMPv2-SMI;
+	
+	
+		-- 1.3.6.1.4.1.48391.1.1.1
+		pstGlobalModule MODULE-IDENTITY 
+			LAST-UPDATED "201311052042Z"		-- November 05, 2013 at 20:42 GMT
+			ORGANIZATION 
+				"Organization."
+			CONTACT-INFO 
+				"Contact-info."
+			DESCRIPTION 
+				"Description."
+			::= { pstModules 1 }
+
+		
+	
+--
+-- Node definitions
+--
+	
+		-- 1.3.6.1.4.1.48391
+		pstRoot OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"The root of the OID sub-tree assigned to Company by the Internet Assigned Numbers Authority (IANA)"
+			::= { enterprises 48391 }
+
+		
+		-- 1.3.6.1.4.1.48391.1
+		pstReg OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree for registrations"
+			::= { pstRoot 1 }
+
+		
+		-- 1.3.6.1.4.1.48391.1.1
+		pstModules OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree to register the values assigned to modules with the MODULE-IDENTITY construct"
+			::= { pstReg 1 }
+
+		
+		-- 1.3.6.1.4.1.48391.2
+		pstGeneric OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree for common object and event definitions"
+			::= { pstRoot 2 }
+
+		
+		-- 1.3.6.1.4.1.48391.3
+		pstProducts OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree for specific object and event definitions"
+			::= { pstRoot 3 }
+
+		
+		-- 1.3.6.1.4.1.48391.4
+		pstCaps OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree for agent profiles"
+			::= { pstRoot 4 }
+
+		
+		-- 1.3.6.1.4.1.48391.5
+		pstReqs OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree for management application requirements"
+			::= { pstRoot 5 }
+
+		
+		-- 1.3.6.1.4.1.48391.6
+		pstExpr OBJECT-IDENTITY
+			STATUS current
+			DESCRIPTION 
+				"Sub-tree for experimental definitions"
+			::= { pstRoot 6 }
+
+		
+	
+	END
+
+--
+-- PST-MIB.my
+--
