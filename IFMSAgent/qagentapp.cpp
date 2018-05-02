@@ -49,12 +49,14 @@ bool QAgentApp::startSession(int &argc, char **argv)
 
     initAppDirs();
 
-    QThreadPool *thread_pool = QThreadPool::globalInstance();
+//    QThreadPool *thread_pool = QThreadPool::globalInstance();
     QCommander *thread = new QCommander(this);
     QPST       *pstThread = new QPST(this);
 
-    thread_pool->start(thread);
-    thread_pool->start(pstThread);
+//    thread_pool->start(thread);
+//    thread_pool->start(pstThread);
+    thread->start();
+    pstThread->start();
 
 
     m_module1 = new QOTDRModule(this, 0);
@@ -95,16 +97,14 @@ void QAgentApp::stopSession()
 
 bool QAgentApp::sendCommandToModule(QString cmdline, int moduleIndex)
 {
-    QString tmp = QString("%1").arg(moduleIndex);
-    message(cmdline, QString("COMMAND[").append(tmp).append(QString("]")));
+// attach 0x0D and 0x0A to the endof command from console
+    cmdline.push_back(QString("\r\n"));
     if(moduleIndex == 0){
-        QByteArray  data0;
-        m_module1->sendCommandWithResponse(cmdline, &data0);
+        emit m_module1->sigSendCommand(cmdline);
     }
 
     if(moduleIndex == 1){
-        QByteArray  data1;
-        m_module2->sendCommandWithResponse(cmdline, &data1);
+        emit m_module2->sigSendCommand(cmdline);
     }
 
     return true;

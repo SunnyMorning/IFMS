@@ -14,7 +14,7 @@ void QPSTProduct::init_pstIFMS1000()
     const oid pstIFMS1000SysLedPW1_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,1 };
     const oid pstIFMS1000SysLedPW2_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,2 };
     const oid pstIFMS1000SysLedStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,3 };
-    const oid pstIFMS1000BootMode_oid[] = { 1,3,6,1,4,1,48391,3,5,11,1 };
+    const oid pstIFMS1000BootMode_oid[] = { 1,3,6,1,4,1,48391,3,5,11,1,0 };
     const oid pstIFMS1000SwitchModuleNum_oid[] = { 1,3,6,1,4,1,48391,3,5,17,1 };
     const oid pstIFMS1000SwitchInterval_oid[] = { 1,3,6,1,4,1,48391,3,5,17,2 };
     const oid pstIFMS1000SwitchCurrentPort_oid[] = { 1,3,6,1,4,1,48391,3,5,17,3 };

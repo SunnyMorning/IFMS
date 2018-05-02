@@ -1,6 +1,5 @@
 #include "qpstsystem.h"
 
-static oid reboot_oid[] = {1,3,6,1,4,1,48391,2,1,1,7,0};
 
 QPSTSystem::QPSTSystem(QObject *parent) : QObject(parent)
 {
@@ -50,5 +49,6 @@ int QPSTSystem::handle_reboot(netsnmp_mib_handler *handler, \
 
 void QPSTSystem::init_pstObjects()
 {
+    const oid reboot_oid[] = {1,3,6,1,4,1,48391,2,1,1,7,0};
     netsnmp_register_long_instance("reboot", reboot_oid, OID_LENGTH(reboot_oid),&reboot, handle_reboot);
 }

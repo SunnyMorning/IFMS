@@ -18,6 +18,10 @@ DEFINES += D_RES_DIR=\\\"$${D_DATA_DIR}\\\"
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+target.path = /usr/bin/
+INSTALLS += target
+
+
 include (./config.pri)
 SOURCES += main.cpp \
     qagentapp.cpp \
@@ -38,4 +42,8 @@ HEADERS += \
     qpstproduct.h
 
 DISTFILES += \
-    pstRoot
+    pstRoot \
+    ../PST-IFMS1000-MIB.my \
+    ../PST-MIB.my \
+    ../PST-SYSTEM-MIB.my \
+    ../snmpd.conf

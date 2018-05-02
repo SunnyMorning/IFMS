@@ -17,13 +17,14 @@
 #include "qsorfilebase.h"
 
 #define  WAIT_WRITE_TIMEOUT     1000
-#define  WAIT_READ_TIMEOUT      5000
+#define  WAIT_READ_TIMEOUT      8000
 
 
 QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QObject(parent)
 {
     _pSerialPort = new QSerialPort(this);
     _state  = STATE_IDLING;
+    _MeasuredChannels.OTDRModule.channels = 0;
     _moduleIndex = index;
     _keeprunning = 1;
 }
@@ -34,7 +35,7 @@ QOTDRModule::~QOTDRModule()
         delete _pSerialPort;
         _pSerialPort = NULL;
     }
-
+    _state  = STATE_IDLING;
     _keeprunning = 0;
 }
 
@@ -184,14 +185,14 @@ void QOTDRModule::sendCommandWithResponse(QString cmdline, QByteArray *data)
          else
         {
             emit sigCatchException("waitForReadyRead timeout");
-//            QAgentApp::warning(QString("waitForReadyRead timeout"));
+            QAgentApp::warning(QString("waitForReadyRead timeout"));
             return;
         }
     }
     else
     {
         emit sigCatchException("waitForBytesWritten timeout");
-//        QAgentApp::warning(QString("waitForBytesWritten timeout"));
+        QAgentApp::warning(QString("waitForBytesWritten timeout"));
         return;
     }
 }
@@ -199,19 +200,31 @@ void QOTDRModule::sendCommandWithResponse(QString cmdline, QByteArray *data)
 void QOTDRModule::sendStateCommand()
 {
 // 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
-    QString cmdline = QString("STATE?");
+    QString cmdline = QString("STATE?\r\n");
     if((_state != STATE_GETINGSOR ) && (_state != STATE_GETINGWAVELET)){
-        emit    this->onSendCommand(cmdline);
+        emit    this->sigSendCommand(cmdline);
     }
 }
 
+void QOTDRModule::sendGetSorCommand()
+{
+    int i = 0;
+    for(i=0;i<4;i++){
+        QString cmdline = QString("getsor? %i\r\n").arg(i);
+        if(_state == STATE_IDLING ){
+                emit this->sigSendCommand(cmdline);
+                _state = STATE_GETINGSOR;
+        }
+        QThread::sleep(10);
+    }
+}
 
 void QOTDRModule::sendScanCommand()
 {
 // 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
-    QString cmdline = QString("SCAN");
+    QString cmdline = QString("SCAN\r\n");
     if(_state == STATE_IDLING){
-        emit    this->onSendCommand(cmdline);
+        emit    this->sigSendCommand(cmdline);
         _state = STATE_MEASURING;
     }
 }
@@ -266,7 +279,7 @@ void QOTDRModule::onRecvResponse(QString &cmdline, QByteArray &data)
     QString         filename;
 
     QString         responseString = QString(data);
-    if(QString::compare(responseString, QString("STATE 0")), Qt::CaseInsensitive){
+    if(QString::compare(responseString, QString("STATE 0\r\n")), Qt::CaseInsensitive){
         _state = STATE_IDLING;
     }
     else
@@ -284,14 +297,22 @@ void QOTDRModule::onRecvResponse(QString &cmdline, QByteArray &data)
             sorfile._channel = _moduleIndex*4+ch;
             filename = QFingerData::getIFMSFingerFileName(sorfile._channel);
 //TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
-            if(sorfile.parseData(data.data(), data.length()) == true){
+            int  OSRLen = 0;
+            memcpy(&OSRLen, data.left(4).data(), sizeof(OSRLen));
+
+            QByteArray  OSRRawData = data.mid(4);
+
+            if(sorfile.parseData(OSRRawData.data(), OSRLen) == true){
                 _OldFingers.swap(_NewFingers);
                 QFingerData *p = sorfile.toFingerData();
                 _NewFingers.insert(filename,p);
                 emit this->sigOTDRChanged(sorfile._channel);
                 p->toIFMSFingerFile();
             }
-            _state  =  STATE_MEASURING;
+            else
+            {
+                _state = STATE_IDLING;
+            }
          }
     }
 
@@ -305,6 +326,37 @@ void QOTDRModule::onFileChanged(QString filename)
 void QOTDRModule::onOTDRChanged(qint16 channel)
 {
     QAgentApp::message(QString("OTDR channel %1 changed!").arg(channel));
+
+    if(channel%4 == 1){
+        _MeasuredChannels.OTDRModule.I.ch1 = 1;
+    }
+    if(channel%4 == 2){
+        _MeasuredChannels.OTDRModule.I.ch2 = 1;
+    }
+    if(channel%4 == 3){
+        _MeasuredChannels.OTDRModule.I.ch3 = 1;
+    }
+    if(channel%4 == 4){
+        _MeasuredChannels.OTDRModule.I.ch4 = 1;
+    }
+/*
+    if(channel == 5){
+        _MeasuredChannels.OTDRModule.I.ch5 = 1;
+    }
+    if(channel == 6){
+        _MeasuredChannels.OTDRModule.I.ch6 = 1;
+    }
+    if(channel == 7){
+        _MeasuredChannels.OTDRModule.I.ch7 = 1;
+    }
+    if(channel == 8){
+        _MeasuredChannels.OTDRModule.I.ch8 = 1;
+    }
+*/
+    if(_MeasuredChannels.OTDRModule.channels == 0x0F){
+        _state = STATE_MEASURED;
+    }
+
     QByteArray  data = generateOTDRTrapData(channel);
     emit this->sigOTDRTrap(data);
 }

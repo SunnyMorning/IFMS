@@ -9,6 +9,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QIODevice>
+#include <QDebug>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,9 +21,9 @@
 #include "qagentapp.h"
 #include "qsorfilebase.h"
 
-class QCommander : public QRunnable, public QThread
+class QCommander : public QThread
 {
-//    Q_OBJECT
+    Q_OBJECT
 public:
     explicit QCommander(QAgentApp *agent = NULL, QObject *parent = NULL)
     {
@@ -52,13 +53,13 @@ public:
             cmdcount = qcmdlist.size();
             if(cmdcount < 1)
             {
-                _agent->warning(QString("Please enter a command:"));
+                 printf("Please enter a command:");
             }
             else
             {
                 if(qcmdlist.contains(QString("module"), Qt::CaseInsensitive)){
                     if(qcmdlist.size() < 2){
-                        _agent->warning(("Wrong module command format!"));
+                        printf("\nWrong module command format!\n");
                     }
                     else
                     {
@@ -70,12 +71,13 @@ public:
                         _agent->exit(0);
                         _keeprunning = 0;
                 }
+#ifdef HAVE_SOR_FILES
                 else if(qcmdlist.contains(QString("sor"), Qt::CaseInsensitive)){
-//                        QSorFileBase    sorfile;
+
                         QString         filename = QAgentApp::getCacheDir()+QString("otdr_0000_160000_10000_CH3.sor");
                         QFile           readFile(filename);
                         if(!readFile.open(QIODevice::ReadOnly)){
-                            qDebug() << "open " << filename << " error" << endl;
+                             printf("\n open %s failed!\n", filename.toLatin1());
                         }
                         QByteArray blob = readFile.readAll();
                         qint16 channel = 2;
@@ -86,11 +88,8 @@ public:
                          _agent->m_module2->onRecvResponse(cmdline, blob);
 
                          emit _agent->m_module1->sigRecvResponse(cmdline, blob);
-
-//                        sorfile.parseData(blob.data(), blob.length());
-//                        qDebug() << "read sor test" <<endl;
-
                 }
+#endif
                 else
                 {
                     _agent->sendCommandToModule(qcmdline,moduleIndex);

@@ -16,9 +16,9 @@
 #include "qpstproduct.h"
 #include "qpstsystem.h"
 
-class QPST : public QRunnable, public QThread
+class QPST : public QThread
 {
-//    Q_OBJECT
+    Q_OBJECT
 public:
     explicit QPST(QObject *agent = NULL)
     {
@@ -31,7 +31,6 @@ public:
     ~QPST(){
 
     }
-
 
 
     void run(){

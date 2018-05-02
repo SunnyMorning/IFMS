@@ -1,5 +1,7 @@
 #include <QChar>
 
+#include <math.h>
+
 #include "qsorfilebase.h"
 
 QSorFileBase::QSorFileBase(int channel, QObject *parent) : QObject(parent)

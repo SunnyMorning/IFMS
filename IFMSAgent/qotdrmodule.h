@@ -22,9 +22,10 @@ public:
     {
         STATE_IDLING = 0,                   // 空闲状态
         STATE_MEASURING = 1,                // 测量状态
-        STATE_GETINGSOR = 2,                // 正在获取SOR文件
-        STATE_GETINGWAVELET = 3,            // 正在获取wavelet文件
-        STATE_DOWNLOADING = 4               // 下载状态
+        STATE_MEASURED  = 2,                //
+        STATE_GETINGSOR = 3,                // 正在获取SOR文件
+        STATE_GETINGWAVELET = 4,            // 正在获取wavelet文件
+        STATE_DOWNLOADING = 5               // 下载状态
     };
 
     // OTDR模块的错误类别
@@ -65,14 +66,19 @@ public:
 
     void sendStateCommand();
     void sendScanCommand();
+    void sendGetSorCommand();
 
     bool isIdling(){
         return (_state == STATE_IDLING);
     }
 
+    bool isMeasured(){
+        return (_state == STATE_MEASURED);
+    }
+
     void setProgress(qint16 progress);
 
-    class Sender: public QRunnable, public QThread{
+    class Sender: public QRunnable{
     public:
         Sender(QOTDRModule  *client){
             _client = client;
@@ -82,11 +88,19 @@ public:
         }
 
         void run(){
+            _client->sendScanCommand();
+
             do{
+                QThread::msleep(1500);
                 _client->sendStateCommand();
                 if(_client->isIdling()){
-                    _client->setProgress(100);
+                    _client->setProgress(90);
+                    _client->sendGetSorCommand();
                     QThread::msleep(1000);
+                }
+                else if(_client->isMeasured())
+                {
+                    _client->setProgress(100);
                     _client->sendScanCommand();
                 }
                 else
@@ -98,7 +112,6 @@ public:
                     _client->setProgress(_progress);
                 }
 
-                QThread::msleep(1500);
             }while(_client->_keeprunning == 1);
 
         }
@@ -130,6 +143,7 @@ private:
     QMutex              _mutex;
     QFileSystemWatcher  _watcher;
     QStringList         _fileList;
+    IFMSChannels_t      _MeasuredChannels;
 
     QMap<QString, QFingerData*>  _OldFingers;
     QMap<QString, QFingerData*>  _NewFingers;
