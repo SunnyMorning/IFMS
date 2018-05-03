@@ -22,7 +22,7 @@ public:
     void showProperties(const QStringList &files);
 
 protected:
-    void    initAppDirs();
+    void    initAppData();
     void    initFingerBin(QString filename, qint16 ch);
 
 signals:

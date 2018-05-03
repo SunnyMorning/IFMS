@@ -7,6 +7,8 @@
 QSorFileBase::QSorFileBase(int channel, QObject *parent) : QObject(parent)
 {
     _channel = channel;
+    m_keyEvent.keyEventNum = 0;
+    m_keyEvent.vEvent.clear();
 }
 
 BOOL QSorFileBase::parseData(BYTE fileData[],int len)

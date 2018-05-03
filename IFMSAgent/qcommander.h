@@ -71,23 +71,40 @@ public:
                         _agent->exit(0);
                         _keeprunning = 0;
                 }
+                else if(qcmdline.contains(QString("idle 1"), Qt::CaseInsensitive))
+                {
+                     QByteArray blob = QByteArray(QString("STATE 0\r\n").toLatin1());
+                     emit _agent->m_module1->sigRecvResponse(qcmdline, blob);
+                }
+                else if(qcmdline.contains(QString("idle 2"),Qt::CaseInsensitive))
+                {
+                    QByteArray blob = QByteArray(QString("STATE 0\r\n").toLatin1());
+                    emit _agent->m_module2->sigRecvResponse(qcmdline, blob);
+                }
 #ifdef HAVE_SOR_FILES
                 else if(qcmdlist.contains(QString("sor"), Qt::CaseInsensitive)){
 
                         QString         filename = QAgentApp::getCacheDir()+QString("otdr_0000_160000_10000_CH3.sor");
                         QFile           readFile(filename);
                         if(!readFile.open(QIODevice::ReadOnly)){
-                             printf("\n open %s failed!\n", filename.toLatin1());
+                             qDebug() << "\n open " << filename << " failed!\n";
                         }
                         QByteArray blob = readFile.readAll();
+                        int len = blob.length();
+                        char leng[4] ={0};
+                        memcpy(leng, &len, sizeof(len));
+                        QByteArray data(leng, 4);
+                        data.append(blob);
+
                         qint16 channel = 2;
                         if(qcmdlist.size() == 2){
                             channel = ((QString)(qcmdlist.at(1))).toShort();
                         }
                         QString cmdline = QString("getsor? %1").arg(channel);
-                         _agent->m_module2->onRecvResponse(cmdline, blob);
-
-                         emit _agent->m_module1->sigRecvResponse(cmdline, blob);
+                        if(blob.size() > 4){
+                         emit _agent->m_module1->sigRecvResponse(cmdline, data);
+                         emit _agent->m_module2->sigRecvResponse(cmdline, data);
+                        }
                 }
 #endif
                 else

@@ -10,6 +10,7 @@
 #include <QThread>
 #include <QRunnable>
 #include <QThreadPool>
+#include <QDebug>
 
 #include    "qfingerdata.h"
 
@@ -24,8 +25,24 @@ public:
         STATE_MEASURING = 1,                // 测量状态
         STATE_MEASURED  = 2,                //
         STATE_GETINGSOR = 3,                // 正在获取SOR文件
-        STATE_GETINGWAVELET = 4,            // 正在获取wavelet文件
-        STATE_DOWNLOADING = 5               // 下载状态
+        STATE_GETINGSOR1 = 4,                // 正在获取SOR文件
+        STATE_GETINGSOR2 = 5,                // 正在获取SOR文件
+        STATE_GETINGSOR3 = 6,                // 正在获取SOR文件
+        STATE_GETINGSOR4 = 7,                // 正在获取SOR文件
+        STATE_GOTSOR1 = 8,                // 正在获取SOR文件
+        STATE_GOTSOR2 = 9,                // 正在获取SOR文件
+        STATE_GOTSOR3 = 10,                // 正在获取SOR文件
+        STATE_GOTSOR4 = 11,                // 正在获取SOR文件
+        STATE_GETINGWAVELET = 12,            // 正在获取wavelet文件
+        STATE_GETINGWAVELET1 = 13,            // 正在获取wavelet文件
+        STATE_GETINGWAVELET2 = 14,            // 正在获取wavelet文件
+        STATE_GETINGWAVELET3 = 15,            // 正在获取wavelet文件
+        STATE_GETINGWAVELET4 = 16,            // 正在获取wavelet文件
+        STATE_GOTWAVELET1 = 17,            // 正在获取wavelet文件
+        STATE_GOTGWAVELET2 = 18,            // 正在获取wavelet文件
+        STATE_GOTWAVELET3 = 19,            // 正在获取wavelet文件
+        STATE_GOTWAVELET4 = 20,            // 正在获取wavelet文件
+        STATE_DOWNLOADING = 21               // 下载状态
     };
 
     // OTDR模块的错误类别
@@ -69,11 +86,19 @@ public:
     void sendGetSorCommand();
 
     bool isIdling(){
-        return (_state == STATE_IDLING);
+        return (getOTDRModuleState() == STATE_IDLING);
     }
 
     bool isMeasured(){
-        return (_state == STATE_MEASURED);
+        return (getOTDRModuleState() == STATE_MEASURED);
+    }
+
+    bool isMeasuring(){
+        return (getOTDRModuleState() == STATE_MEASURING);
+    }
+
+    bool isGettingSOR(){
+        return ((getOTDRModuleState()>= STATE_GETINGSOR)&&(getOTDRModuleState()< STATE_GOTSOR4));
     }
 
     void setProgress(qint16 progress);
@@ -92,7 +117,8 @@ public:
 
             do{
                 QThread::msleep(1500);
-                _client->sendStateCommand();
+                qDebug() << "state:" <<_client->getModuleIndex() << ":" << _client->getOTDRModuleState() << endl;
+
                 if(_client->isIdling()){
                     _client->setProgress(90);
                     _client->sendGetSorCommand();
@@ -103,12 +129,18 @@ public:
                     _client->setProgress(100);
                     _client->sendScanCommand();
                 }
-                else
+                else if(_client->isMeasuring())
                 {
                     _progress += 10;
-                    if(_progress >= 90){
-                        _progress = 90;
+                    if(_progress >= 80){
+                        _progress = 80;
                     }
+                    _client->setProgress(_progress);
+                    _client->sendStateCommand();
+                }
+                else if(_client->isGettingSOR())
+                {
+                    _progress = 90;
                     _client->setProgress(_progress);
                 }
 

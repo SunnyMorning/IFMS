@@ -2207,11 +2207,11 @@ int
 int
 QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
 {
-        char peername[256];
-        char community[256];
-        strcpy(peername,"192.168.0.12:1622");
-        strcpy(community,"public");
-     snmpd_free_trapsinks();
+     char peername[256];
+     char community[256];
+     strcpy(peername,"192.168.0.12:1622");
+     strcpy(community,"public");
+//     snmpd_free_trapsinks();
      create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
      static long modstatus = 0;
 //     netsnmp_session     _session;

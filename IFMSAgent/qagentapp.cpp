@@ -110,7 +110,7 @@ bool QAgentApp::sendCommandToModule(QString cmdline, int moduleIndex)
     return true;
 }
 
-void QAgentApp::initAppDirs()
+void QAgentApp::initAppData()
 {
     QString configDir = getConfigDir();
     QString cacheDir  = getCacheDir();
@@ -119,13 +119,37 @@ void QAgentApp::initAppDirs()
     initDir(cacheDir);
 
     QSettings setting(getConfigFile(),QSettings::IniFormat);
-        setting.beginGroup("config");
-           setting.setValue("page",QVariant(1.5));
-           setting.beginWriteArray(QString("system"));
-               setting.setValue("site",QVariant("http://www.cppblog.com/gaimor/"));
-               setting.setValue("maker",QVariant("Gaimor"));
-           setting.endArray();
+    setting.beginGroup("pstRoot");
+        setting.beginGroup("pstSystem");
+            setting.beginGroup("pstSystemBasicManagement");
+
+
+            setting.endGroup();
+            setting.beginGroup("pstSystemVerInfo");
+
+
+            setting.endGroup();
+            setting.beginGroup("pstSystemTrapInfo");
+
+
+            setting.endGroup();
+            setting.beginGroup("pstSystemStatus");
+
+
+            setting.endGroup();
+            setting.beginGroup("pstSystemOnlineUpgrade");
+
+
+            setting.endGroup();
+            setting.beginGroup("pstSystemProductInfo");
+
+
+            setting.endGroup();
         setting.endGroup();
+    setting.beginGroup("pstIFMS1000");
+
+    setting.endGroup();
+    setting.endGroup();
 }
 
 //
