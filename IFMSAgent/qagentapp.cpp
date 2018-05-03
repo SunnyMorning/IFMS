@@ -47,7 +47,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 {
     bool ret = false;
 
-    initAppDirs();
+    initAppData();
 
 //    QThreadPool *thread_pool = QThreadPool::globalInstance();
     QCommander *thread = new QCommander(this);
@@ -112,6 +112,9 @@ bool QAgentApp::sendCommandToModule(QString cmdline, int moduleIndex)
 
 void QAgentApp::initAppData()
 {
+
+
+
     QString configDir = getConfigDir();
     QString cacheDir  = getCacheDir();
 
@@ -122,15 +125,25 @@ void QAgentApp::initAppData()
     setting.beginGroup("pstRoot");
         setting.beginGroup("pstSystem");
             setting.beginGroup("pstSystemBasicManagement");
-
-
+								setting.setValue("devName", QString("IFMS1000"));
+								setting.setValue("devIpAddr", QString("192.168.1.100"));
+								setting.setValue("devGateway", QString("192.168.1.1"));
+								setting.setValue("devNetMask", QString("255.255.255.0"));
+								setting.setValue("saveCurrentConfiguration", 0);
+								setting.setValue("reset2Factory", 0);
+								setting.setValue("reboot",0);
             setting.endGroup();
             setting.beginGroup("pstSystemVerInfo");
-
-
-            setting.endGroup();
+								setting.setValue("pstHwVer", QString("1.0"));
+								setting.setValue("pstSwVer", QString("1.0"));
+								setting.setValue("pstModel", QString("IFMS1000"));
+								setting.setValue("pstSn", QString("123456789"));
+								setting.setValue("pstFwVer", QString("1.0"));
+								setting.setValue("devMacAddress", QString("aa:bb:cc:dd:ee:ff"));
+						setting.endGroup();
             setting.beginGroup("pstSystemTrapInfo");
-
+								setting.setValue("pstSystemTrapFuncEn", 1);
+								
 
             setting.endGroup();
             setting.beginGroup("pstSystemStatus");
@@ -150,6 +163,7 @@ void QAgentApp::initAppData()
 
     setting.endGroup();
     setting.endGroup();
+    setting.sync();
 }
 
 //

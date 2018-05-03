@@ -44,7 +44,7 @@ public:
             QStringList     qcmdlist;
             int             cmdcount;
 
-            printf("IFMS[%d]>#",moduleIndex);
+            printf("[0x%x] IFMS[%d]>#",  QThread::currentThreadId(),moduleIndex);
             std::getline(std::cin, cmdline);
 
             qcmdline = QString::fromStdString(cmdline);
@@ -53,7 +53,7 @@ public:
             cmdcount = qcmdlist.size();
             if(cmdcount < 1)
             {
-                 printf("Please enter a command:");
+                 printf("[0x%x] Please enter a command:", QThread::currentThreadId());
             }
             else
             {

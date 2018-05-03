@@ -117,7 +117,7 @@ public:
 
             do{
                 QThread::msleep(1500);
-                qDebug() << "state:" <<_client->getModuleIndex() << ":" << _client->getOTDRModuleState() << endl;
+                qDebug() <<  QThread::currentThreadId() << ": state:" <<_client->getModuleIndex() << ":" << _client->getOTDRModuleState() << endl;
 
                 if(_client->isIdling()){
                     _client->setProgress(90);

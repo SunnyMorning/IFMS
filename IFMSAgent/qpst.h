@@ -15,12 +15,13 @@
 
 #include "qpstproduct.h"
 #include "qpstsystem.h"
+#include "qagentapp.h"
 
 class QPST : public QThread
 {
     Q_OBJECT
 public:
-    explicit QPST(QObject *agent = NULL)
+    explicit QPST(QAgentApp *agent = NULL)
     {
         _agent = agent;
         _product = new QPSTProduct(agent);
@@ -42,7 +43,7 @@ public:
         init_agent(SUB_AGENT);
 
         _product->init_pstIFMS1000();
-        _system->init_pstObjects();
+        _system->init_pstSystem();
 
         init_snmp(SUB_AGENT);
 
@@ -56,7 +57,7 @@ public:
     }
 
 private:
-    QObject   *_agent;
+    QAgentApp   *_agent;
     QPSTProduct *_product;
     QPSTSystem  *_system;
     int         _keeprunning;

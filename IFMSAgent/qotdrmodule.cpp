@@ -163,6 +163,7 @@ bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate b
 
 void QOTDRModule::sendCommandWithResponse(QString cmdline, QByteArray *data)
 {
+    printf("[0x%x] QOTDRModule", QThread::currentThreadId());
     QMutexLocker locker(&_mutex);
     QAgentApp::message(cmdline, QString(QChar(_moduleIndex)));
 
