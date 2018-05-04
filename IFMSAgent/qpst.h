@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QThread>
 #include <QRunnable>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -15,24 +17,28 @@
 
 #include "qpstproduct.h"
 #include "qpstsystem.h"
-#include "qagentapp.h"
+
+static QMutex gPST_mutex;
 
 class QPST : public QThread
 {
     Q_OBJECT
 public:
-    explicit QPST(QAgentApp *agent = NULL)
+    explicit QPST(QObject *agent = NULL);
+    ~QPST();
+
+    void initConnections();
+
+    void setKeepRunning(int running)
     {
-        _agent = agent;
-        _product = new QPSTProduct(agent);
-        _system  = new QPSTSystem(agent);
-        _keeprunning = 1;
+         QMutexLocker locker(&gPST_mutex);
+        _keeprunning = running;
     }
 
-    ~QPST(){
-
+    int getKeepRunning(){
+         QMutexLocker locker(&gPST_mutex);
+         return _keeprunning;
     }
-
 
     void run(){
         netsnmp_enable_subagent();
@@ -50,21 +56,28 @@ public:
 
         do{
             agent_check_and_process(1);
-        }while(_keeprunning == 1);
+        }while(getKeepRunning() == 1);
 
         snmp_shutdown(SUB_AGENT);
         shutdown_agent();
     }
 
 private:
-    QAgentApp   *_agent;
+    QObject     *_agent;
     QPSTProduct *_product;
     QPSTSystem  *_system;
+
     int         _keeprunning;
 
 signals:
+    void sigOTDRChanged(quint16 module, quint16 channel);
+    void sigOTDRTrap(quint16 module, QByteArray &data);
+
 
 public slots:
+    void onSigOTDRChanged(quint16 module, quint16 channel);
+    void onSigOTDRTrap(quint16 module, QByteArray& data);
+
 };
 
 #endif // QPST_H

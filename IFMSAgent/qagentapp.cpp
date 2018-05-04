@@ -10,6 +10,8 @@
 #include <QIODevice>
 #include <QSettings>
 #include <QVariant>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "qagentapp.h"
 #include "qcommander.h"
@@ -23,6 +25,9 @@ static void initDir(const QString &path)
     QDir dir;
     if (!dir.exists(path)) dir.mkpath(path);
 }
+
+static QMutex   gAgentApp_mutex;
+static quint16  _currentModule;
 
 QString QAgentApp::getAppName()     { return QString(IFMS_AGENT_NAME); }
 
@@ -49,66 +54,72 @@ bool QAgentApp::startSession(int &argc, char **argv)
 
     initAppData();
 
-//    QThreadPool *thread_pool = QThreadPool::globalInstance();
-    QCommander *thread = new QCommander(this);
-    QPST       *pstThread = new QPST(this);
+    _module1 = new QOTDRModule(this, 0);
+    _module1->initModuleFingerData();
+    _module1->setConnections();
 
-//    thread_pool->start(thread);
-//    thread_pool->start(pstThread);
-    thread->start();
+
+    _module2 = new QOTDRModule(this, 1);
+    _module2->initModuleFingerData();
+    _module2->setConnections();
+
+    command_thread = new QCommander(this);
+    command_thread->start();
+
+    pstThread = new QPST(this);
+    pstThread->initConnections();
     pstThread->start();
 
+    connect(command_thread, SIGNAL(sigExit(qint32)), this, SLOT(onSigExit(qint32)));
+    connect(command_thread, SIGNAL(sigSwitchModule(quint16)), this, SLOT(onSwitchModule(quint16)));
 
-    m_module1 = new QOTDRModule(this, 0);
-    m_module1->initModuleFingerData();
-    m_module1->setConnections();
-    ret = m_module1->setSerialPortParam(QString("/dev/ttyO2"));
-//    if(ret != true){
-//        return ret;
-//    }
+    connect(command_thread, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)));
+    connect(command_thread, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SIGNAL(sigSendCommandToModule(quint16, QString&)));
+    connect(command_thread, SIGNAL(sigModuleStartMonitor(quint16)), this, SIGNAL(sigModuleStartMonitor(quint16)));
+    connect(command_thread, SIGNAL(sigModuleStopMonitor(quint16)), this, SIGNAL(sigModuleStopMonitor(quint16)));
 
-    m_module2 = new QOTDRModule(this, 1);
-    m_module2->initModuleFingerData();
-    m_module2->setConnections();
+    connect(this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SLOT(onSigModuleRecvResponse(quint16, QString&, QByteArray&)));
+    connect(this, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SLOT(onSigSendCommandToModule(quint16, QString&)));
+    connect(this, SIGNAL(sigModuleStartMonitor(quint16)), this, SLOT(onSigModuleStartMonitor(quint16)));
+    connect(this, SIGNAL(sigModuleStopMonitor(quint16)), this, SLOT(onSigModuleStopMonitor(quint16)));
 
-    ret = m_module2->setSerialPortParam(QString("/dev/ttyO3"));
-//    if(ret != true){
-//        return  ret;
-//    }
 
-    connect(m_module1, SIGNAL(sigOTDRTrap(QByteArray&)), this, SLOT(onOTDRTrap(QByteArray&)));
-    connect(m_module2, SIGNAL(sigOTDRTrap(QByteArray&)), this, SLOT(onOTDRTrap(QByteArray&)));
+    connect(_module1, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
+    connect(_module1, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
+    connect(_module2, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
+    connect(_module2, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
+
+// FOR DEBUG ONLY
+    emit sigModuleStartMonitor(0);
+    emit sigModuleStartMonitor(1);
+    emit command_thread->sigSwitchModule(0);
 
     return true;
 }
 
 void QAgentApp::stopSession()
 {
-    if(m_module1 != NULL){
-        delete m_module1;
-        m_module1 = NULL;
+    if(_module1 != NULL){
+        delete _module1;
+        _module1 = NULL;
     }
 
-    if(m_module2 != NULL){
-        delete m_module2;
-        m_module2 = NULL;
+    if(_module2 != NULL){
+        delete _module2;
+        _module2 = NULL;
+    }
+
+    if(command_thread->isRunning()){
+        command_thread->terminate();
+        command_thread->wait(1000);
+    }
+
+    if(pstThread->isRunning()){
+        pstThread->terminate();
+        pstThread->wait(1000);
     }
 }
 
-bool QAgentApp::sendCommandToModule(QString cmdline, int moduleIndex)
-{
-// attach 0x0D and 0x0A to the endof command from console
-    cmdline.push_back(QString("\r\n"));
-    if(moduleIndex == 0){
-        emit m_module1->sigSendCommand(cmdline);
-    }
-
-    if(moduleIndex == 1){
-        emit m_module2->sigSendCommand(cmdline);
-    }
-
-    return true;
-}
 
 void QAgentApp::initAppData()
 {
@@ -167,53 +178,62 @@ void QAgentApp::initAppData()
 }
 
 //
-void QAgentApp::message(const QString &text, const QString &title, QObject *parent)
+void QAgentApp::message(quint16 module, const QString &text, const QString &title, QObject *parent)
 {
+    QMutexLocker  locker(&gAgentApp_mutex);
+    if(module == _currentModule){
 //    qDebug() << "\n============"<< title <<"==============" << endl;
     qDebug() << text << endl ;
 //    qDebug() << "=================================" << endl;
+    }
 }
 
-void QAgentApp::warning(const QString &text, const QString &title, QObject *parent)
+void QAgentApp::warning(quint16 module, const QString &text, const QString &title, QObject *parent)
 {
-//    qDebug() << "\n============WARNING==============" << endl;
+    QMutexLocker  locker(&gAgentApp_mutex);
+    if(module == _currentModule){
+    //    qDebug() << "\n============WARNING==============" << endl;
     qDebug() << text  << endl ;
-//    qDebug() << "=================================" << endl;
+    //    qDebug() << "=================================" << endl;
+    }
 }
 
-void QAgentApp::error(const QString &text, const QString &title, QObject *parent)
+void QAgentApp::error(quint16 module, const QString &text, const QString &title, QObject *parent)
 {
+    QMutexLocker  locker(&gAgentApp_mutex);
+    if(module == _currentModule){
     qDebug() << "\n============ERROR==============" << endl;
     qDebug() << text ;
     qDebug() << "=================================" << endl;
+    }
 }
 
-bool QAgentApp::confirm(const QString &text, const QString &title, QObject *parent)
+bool QAgentApp::confirm(quint16 module, const QString &text, const QString &title, QObject *parent)
 {
 
 }
 
-void QAgentApp::message(const QString &text, QObject *parent)
+void QAgentApp::message(quint16 module, const QString &text, QObject *parent)
 {
 
 }
 
-void QAgentApp::warning(const QString &text, QObject *parent)
+void QAgentApp::warning(quint16 module, const QString &text, QObject *parent)
 {
 
 }
 
-bool QAgentApp::confirm(const QString &text, QObject *parent)
+bool QAgentApp::confirm(quint16 module, const QString &text, QObject *parent)
 {
     return true;
 }
 
-void QAgentApp::msg(const QString &title, const QString &text)
+void QAgentApp::msg(quint16 module, const QString &title, const QString &text)
 {
 
 }
 
-bool QAgentApp::ask(const QString &title, const QString &text)
+bool QAgentApp::ask(quint16 module, const QString &title, const QString &text)
 {
     return true;
 }
@@ -230,10 +250,83 @@ void QAgentApp::showStatusMessage(const QStringList &msgList, int ModuleIndex, i
     emit statusMessage(msgList, ModuleIndex, time);
 }
 
-//==================================
-void QAgentApp::onOTDRTrap(QByteArray &data)
+////==================================
+//void QAgentApp::onOTDRTrap(quint16 module, QByteArray &data)
+//{
+//// TODO: send trap to nms
+//    message(module, QString(data));
+//    QPSTProduct::send_pstIFMS1000MeasureEvent_trap();
+//}
+
+void QAgentApp::onSigExit(qint32 num)
 {
-// TODO: send trap to nms
-    message(QString(data));
-    QPSTProduct::send_pstIFMS1000MeasureEvent_trap();
+    command_thread->setKeepRunning(0);
+    command_thread->wait(1000);
+
+    pstThread->setKeepRunning(0);
+    pstThread->wait(1000);
+
+    _module1->setKeepRunning(0);
+    _module1->wait(1000);
+
+    _module2->setKeepRunning(0);
+    _module2->wait(1000);
+
+    this->exit(num);
+}
+
+void QAgentApp::onSwitchModule(quint16 module)
+{
+    _currentModule = module;
+}
+
+void QAgentApp::onSigModuleRecvResponse(quint16 module, QString& cmdline, QByteArray& data)
+{
+    if(module == 0){
+        _module1->setOTDRModuleState(QOTDRModule::OTDRModuleState::STATE_IDLING);
+    }
+    else
+    {
+        _module2->setOTDRModuleState(QOTDRModule::OTDRModuleState::STATE_IDLING);
+    }
+}
+
+void QAgentApp::onSigSendCommandToModule(quint16 module, QString& cmdline)
+{
+    message(_currentModule,QString(">%1").arg(cmdline));
+}
+
+void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
+{
+    if(moduleIndex == 0){
+        if(_module1){
+            _module1->setKeepRunning(1);
+            _module1->start();
+
+        }
+    }
+    if(moduleIndex == 1){
+        if(_module2){
+            _module2->setKeepRunning(1);
+            _module2->start();
+        }
+    }
+}
+
+void QAgentApp::onSigModuleStopMonitor(quint16 moduleIndex)
+{
+    if(moduleIndex == 0){
+        if(_module1){
+            _module1->setKeepRunning(0);
+            _module1->exit(0);
+            _module1->wait();
+        }
+    }
+    if(moduleIndex == 1){
+        if(_module2){
+            _module2->setKeepRunning(2);
+            _module2->exit(0);
+            _module2->wait();
+        }
+    }
 }

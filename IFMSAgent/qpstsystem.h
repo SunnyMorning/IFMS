@@ -12,9 +12,8 @@
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include <net-snmp/agent/agent_handler.h>
-#include <qagentapp.h>
 
-static QMutex   mutex;
+static QMutex   gPSTSystem_mutex;
 static long     reboot = 0;
 
 /* column number definitions for table pstSystemTrapTargetTable */
@@ -82,7 +81,7 @@ signals:
 public slots:
 
 private:
-    QAgentApp       *_agent;
+    QObject       *_agent;
 };
 
 #endif // QPSTSYSTEM_H

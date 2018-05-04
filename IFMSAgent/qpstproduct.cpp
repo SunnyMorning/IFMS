@@ -1,12 +1,19 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <QObject>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "qpstproduct.h"
 
+#include "qagentapp.h"
+
+static QMutex PSTProduct_mutex;
+
 QPSTProduct::QPSTProduct(QObject *parent) : QObject(parent)
 {
-    _agent = (QAgentApp*)parent;
+    _agent =  parent;
 }
 
 void QPSTProduct::init_pstIFMS1000()
@@ -2207,6 +2214,7 @@ int
 int
 QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
 {
+     QMutexLocker locker(&PSTProduct_mutex);
      char peername[256];
      char community[256];
      strcpy(peername,"192.168.0.12:1622");

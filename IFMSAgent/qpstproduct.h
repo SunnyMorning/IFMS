@@ -12,7 +12,6 @@
 #include <net-snmp/agent/agent_handler.h>
 #include <net-snmp/agent/agent_trap.h>
 
-#include <qagentapp.h>
 
 /* column number definitions for table pstIFMS1000PortInfoTable */
        #define COLUMN_PSTIFMS1000PORTNUM		1
@@ -239,7 +238,7 @@ signals:
 public slots:
 
 private:
-    QAgentApp       *_agent;
+    QObject       *_agent;
 };
 
 #endif // QPSTPRODUCT_H

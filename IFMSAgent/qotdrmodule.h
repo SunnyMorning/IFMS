@@ -10,11 +10,12 @@
 #include <QThread>
 #include <QRunnable>
 #include <QThreadPool>
+#include <QDateTime>
 #include <QDebug>
 
 #include    "qfingerdata.h"
 
-class QOTDRModule : public QObject
+class QOTDRModule : public QThread
 {
     Q_OBJECT
 public:
@@ -62,6 +63,8 @@ public:
 
     ~QOTDRModule();
     int     _keeprunning;
+    void    setKeepRunning(int running);
+    int     getKeepRunning();
     void    setModuleIndex(qint8 index);
     qint8   getModuleIndex();
     void    initFingerBinFile(QString filename);
@@ -77,9 +80,9 @@ public:
                                          , QSerialPort::Parity parity = QSerialPort::NoParity \
                                          , QSerialPort::FlowControl fctrl = QSerialPort::NoFlowControl);
 
-    QByteArray generateOTDRTrapData(qint16 channel);
+    QByteArray generateOTDRTrapData(quint16 module, qint16 channel);
 
-    void sendCommandWithResponse(QString cmdline, QByteArray *data);
+    void sendCommandWithResponse(quint16 module, QString cmdline, QByteArray *data);
 
     void sendStateCommand();
     void sendScanCommand();
@@ -97,86 +100,94 @@ public:
         return (getOTDRModuleState() == STATE_MEASURING);
     }
 
+    bool isGetSOR(){
+        return (getOTDRModuleState() == STATE_GETINGSOR);
+    }
+
     bool isGettingSOR(){
         return ((getOTDRModuleState()>= STATE_GETINGSOR)&&(getOTDRModuleState()< STATE_GOTSOR4));
     }
 
     void setProgress(qint16 progress);
 
-    class Sender: public QRunnable{
-    public:
-        Sender(QOTDRModule  *client){
-            _client = client;
-            _progress = 0;
-        }
-        ~Sender(){
-        }
-
         void run(){
-            _client->sendScanCommand();
+            qDebug() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
+
+            sendScanCommand();
+
 
             do{
-                QThread::msleep(1500);
-                qDebug() <<  QThread::currentThreadId() << ": state:" <<_client->getModuleIndex() << ":" << _client->getOTDRModuleState() << endl;
-
-                if(_client->isIdling()){
-                    _client->setProgress(90);
-                    _client->sendGetSorCommand();
+                qDebug() << "\n Monitoring on module: " << _moduleIndex << " " << _progress << endl;
+                QThread::msleep(500);
+                if(isIdling()||isGetSOR()){
+                    setProgress(80);
+                    sendGetSorCommand();
                     QThread::msleep(1000);
                 }
-                else if(_client->isMeasured())
+                else if(isMeasured())
                 {
-                    _client->setProgress(100);
-                    _client->sendScanCommand();
+                    setProgress(100);
+                    sendScanCommand();
+                    setProgress(0);
                 }
-                else if(_client->isMeasuring())
+                else if(isMeasuring())
                 {
-                    _progress += 10;
-                    if(_progress >= 80){
-                        _progress = 80;
+                    _progress += 3;
+                    if(_progress >= 70){
+                        _progress = 70;
                     }
-                    _client->setProgress(_progress);
-                    _client->sendStateCommand();
+                    setProgress(_progress);
+                    sendStateCommand();
+                    if(_lastScanTime.addSecs(30) < QDateTime::currentDateTimeUtc())
+                    {
+                          setOTDRModuleState(STATE_GETINGSOR);
+                    }
                 }
-                else if(_client->isGettingSOR())
+                else if(isGettingSOR())
                 {
-                    _progress = 90;
-                    _client->setProgress(_progress);
+                    if(_lastGetSorTime.addSecs(30) < QDateTime::currentDateTimeUtc())
+                    {
+                          setOTDRModuleState(STATE_MEASURED);
+                    }
+                    _progress += 3;
+                    if(_progress >= 90){
+                        _progress = 90;
+                    }
+                    setProgress(_progress);
                 }
 
-            }while(_client->_keeprunning == 1);
+            }while(getKeepRunning() == 1);
+
+            qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
 
         }
-    private:
-        QOTDRModule *_client;
-        qint16       _progress;
-    };
 
 signals:
-    void sigCatchException(const QString& info);
-    void sigRecvResponse(QString &cmdline, QByteArray &data);
-    void sigSendCommand(QString &cmdline);
-    void sigSetProgress(qint16 progress);
-    void sigOTDRChanged(qint16 channel);
-    void sigOTDRTrap(QByteArray &data);
+    void sigCatchException(quint16 module, const QString& info);
+    void sigRecvResponse(quint16 module, QString &cmdline, QByteArray &data);
+    void sigSendCommand(quint16 module, QString &cmdline);
+    void sigSetProgress(quint16 module, quint16 progress);
+    void sigOTDRChanged(quint16 module, quint16 channel);
+    void sigOTDRTrap(quint16 module, QByteArray &data);
 
 public slots:
-    void onCatchException(const QString& info);
-    void onRecvResponse(QString &cmdline, QByteArray &data);
-    void onFileChanged(QString filename);
-    void onSendCommand(QString &cmdline);
-    void onSetProgress(qint16 progress);
-    void onOTDRChanged(qint16 channel);
+    void onCatchException(quint16 module, const QString& info);
+    void onRecvResponse(quint16 module, QString &cmdline, QByteArray &data);
+    void onFileChanged(quint16 module, QString filename);
+    void onSendCommand(quint16 module, QString &cmdline);
+    void onSetProgress(quint16 module, quint16 progress);
+    void onOTDRChanged(quint16 module, quint16 channel);
 
 private:
     qint8               _moduleIndex;
     QSerialPort         *_pSerialPort;
     OTDRModuleState     _state;
-    QMutex              _mutex;
+    QDateTime           _lastScanTime;
+    QDateTime           _lastGetSorTime;
     QFileSystemWatcher  _watcher;
     QStringList         _fileList;
     IFMSChannels_t      _MeasuredChannels;
-
+    quint16             _progress;
     QMap<QString, QFingerData*>  _OldFingers;
     QMap<QString, QFingerData*>  _NewFingers;
 };

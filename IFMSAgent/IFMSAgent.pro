@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     qfingerdata.cpp \
     qsorfilebase.cpp \
     qpstsystem.cpp \
-    qpstproduct.cpp
+    qpstproduct.cpp \
+    qpst.cpp
 HEADERS += \
     qagentapp.h \
     qcommander.h \
