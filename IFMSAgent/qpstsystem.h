@@ -4,17 +4,17 @@
 #include <QObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QSettings>
 
-#include <stdbool.h>
-#include <stdlib.h>
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-features.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 #include <net-snmp/agent/agent_handler.h>
 
+#include "qpstsystemprivate.h"
+
 static QMutex   gPSTSystem_mutex;
-static long     reboot = 0;
 
 /* column number definitions for table pstSystemTrapTargetTable */
        #define COLUMN_PSTSYSTEMTRAPTARGETNAME		1
@@ -33,13 +33,15 @@ static long     reboot = 0;
        #define COLUMN_PSTSYSTEMPOWERSTATUS		2
        #define COLUMN_PSTSYSTEMPOWERVOLTAGE		3
        #define COLUMN_PSTSYSTEMPOWERCURRENT		4
-       
+
 class QPSTSystem : public QObject
 {
     Q_OBJECT
 public:
     explicit QPSTSystem(QObject *parent = 0);
-
+	
+    QPSTSystemPrivate	m_pstSystem;
+    void init_pstSystemData();
     void init_pstSystem();
 
 static Netsnmp_Node_Handler handle_devName;
@@ -81,7 +83,7 @@ signals:
 public slots:
 
 private:
-    QObject       *_agent;
+
 };
 
 #endif // QPSTSYSTEM_H

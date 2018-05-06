@@ -2,9 +2,8 @@
 #define QPSTPRODUCT_H
 
 #include <QObject>
+#include <QSettings>
 
-#include <stdbool.h>
-#include <stdlib.h>
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-features.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -12,6 +11,7 @@
 #include <net-snmp/agent/agent_handler.h>
 #include <net-snmp/agent/agent_trap.h>
 
+#include "qpstproductprivate.h"
 
 /* column number definitions for table pstIFMS1000PortInfoTable */
        #define COLUMN_PSTIFMS1000PORTNUM		1
@@ -165,13 +165,22 @@
        #define COLUMN_S32PARAMVALNUM		2
        #define COLUMN_S32PARAMVAL		3
 
+
 class QPSTProduct : public QObject
 {
     Q_OBJECT
 public:
     explicit QPSTProduct(QObject *parent = 0);
 
+    void init_pstIFMS1000Data();
     void init_pstIFMS1000(void);
+
+    QPSTProductPrivate  m_pstIFMS1000;
+
+    static long get_pstIFMS1000SysLedPW1(QObject *agent);
+    static long get_pstIFMS1000SysLedPW2(QObject *agent);
+    static long get_pstIFMS1000SysLedStatus(QObject *agent);
+
 // SCALAR
     static Netsnmp_Node_Handler handle_pstIFMS1000SysLedPW1;
     static Netsnmp_Node_Handler handle_pstIFMS1000SysLedPW2;
@@ -191,54 +200,55 @@ public:
     static Netsnmp_Node_Handler handle_pstIFMS1000ExtSwitchStatus;
 
 // Table
-    static void initialize_table_pstIFMS1000PortInfoTable(void);
+    void initialize_table_pstIFMS1000PortInfoTable(void);
     static Netsnmp_Node_Handler pstIFMS1000PortInfoTable_handler;
-    static void initialize_table_pstIFMS1000MeasureTable(void);
+    void initialize_table_pstIFMS1000MeasureTable(void);
     static Netsnmp_Node_Handler pstIFMS1000MeasureTable_handler;
-    static void initialize_table_pstIFMS1000FingerTable(void);
+    void initialize_table_pstIFMS1000FingerTable(void);
     static Netsnmp_Node_Handler pstIFMS1000FingerTable_handler;
-    static void initialize_table_pstIFMS1000DiffTotalTable(void);
+    void initialize_table_pstIFMS1000DiffTotalTable(void);
     static Netsnmp_Node_Handler pstIFMS1000DiffTotalTable_handler;
-    static void initialize_table_pstIFMS1000DiffInfoTable(void);
+    void initialize_table_pstIFMS1000DiffInfoTable(void);
     static Netsnmp_Node_Handler pstIFMS1000DiffInfoTable_handler;
-    static void initialize_table_pstIFMS1000PortLedTable(void);
+    void initialize_table_pstIFMS1000PortLedTable(void);
     static Netsnmp_Node_Handler pstIFMS1000PortLedTable_handler;
-    static void initialize_table_pstIFMS1000DiagnoseTable(void);
+    void initialize_table_pstIFMS1000DiagnoseTable(void);
     static Netsnmp_Node_Handler pstIFMS1000DiagnoseTable_handler;
-    static void initialize_table_pstIFMS1000DebugRegTable(void);
+    void initialize_table_pstIFMS1000DebugRegTable(void);
     static Netsnmp_Node_Handler pstIFMS1000DebugRegTable_handler;
-    static void initialize_table_pstIFMS1000DebugDACTable(void);
+    void initialize_table_pstIFMS1000DebugDACTable(void);
     static Netsnmp_Node_Handler pstIFMS1000DebugDACTable_handler;
-    static void initialize_table_pstIFMS1000DebugE2promTable(void);
+    void initialize_table_pstIFMS1000DebugE2promTable(void);
     static Netsnmp_Node_Handler pstIFMS1000DebugE2promTable_handler;
-    static void initialize_table_pstIFMS1000ExtendAlarmTable(void);
+    void initialize_table_pstIFMS1000ExtendAlarmTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ExtendAlarmTable_handler;
-    static void initialize_table_pstIFMS1000ExpertExtendTable(void);
+    void initialize_table_pstIFMS1000ExpertExtendTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ExpertExtendTable_handler;
-    static void initialize_table_pstIFMS1000PonConfTable(void);
+    void initialize_table_pstIFMS1000PonConfTable(void);
     static Netsnmp_Node_Handler pstIFMS1000PonConfTable_handler;
-    static void initialize_table_pstIFMS1000ParamsV32TotalNumTable(void);
+    void initialize_table_pstIFMS1000ParamsV32TotalNumTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ParamsV32TotalNumTable_handler;
-    static void initialize_table_pstIFMS1000ParamsV32NameTable(void);
+    void initialize_table_pstIFMS1000ParamsV32NameTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ParamsV32NameTable_handler;
-    static void initialize_table_pstIFMS1000ParamsV32ValTable(void);
+    void initialize_table_pstIFMS1000ParamsV32ValTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ParamsV32ValTable_handler;
-    static void initialize_table_pstIFMS1000ParamsS32TotalNumTable(void);
+    void initialize_table_pstIFMS1000ParamsS32TotalNumTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ParamsS32TotalNumTable_handler;
-    static void initialize_table_pstIFMS1000ParamsS32NameTable(void);
+    void initialize_table_pstIFMS1000ParamsS32NameTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ParamsS32NameTable_handler;
-    static void initialize_table_pstIFMS1000ParamsS32ValTable(void);
+    void initialize_table_pstIFMS1000ParamsS32ValTable(void);
     static Netsnmp_Node_Handler pstIFMS1000ParamsS32ValTable_handler;
 
 // Trap
-    static int send_pstIFMS1000MeasureEvent_trap(void);
+    int send_pstIFMS1000MeasureEvent_trap(void);
 
 signals:
 
 public slots:
+    void setModuleMeasuringProgess(quint16 module, quint16 progress);
 
 private:
-    QObject       *_agent;
+
 };
 
 #endif // QPSTPRODUCT_H

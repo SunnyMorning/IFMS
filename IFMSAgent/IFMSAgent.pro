@@ -30,7 +30,9 @@ SOURCES += main.cpp \
     qsorfilebase.cpp \
     qpstsystem.cpp \
     qpstproduct.cpp \
-    qpst.cpp
+    qpst.cpp \
+    qpstsystemprivate.cpp \
+    qpstproductprivate.cpp
 HEADERS += \
     qagentapp.h \
     qcommander.h \
@@ -40,7 +42,9 @@ HEADERS += \
     ifmsfinger.h \
     qpst.h \
     qpstsystem.h \
-    qpstproduct.h
+    qpstproduct.h \
+    qpstsystemprivate.h \
+    qpstproductprivate.h
 
 DISTFILES += \
     pstRoot \

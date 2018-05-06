@@ -97,10 +97,10 @@ public:
                 {
                     emit sigModuleStopMonitor(moduleIndex);
                 }
-#ifdef HAVE_SOR_FILES
-                else if(qcmdlist.contains(QString("sor"), Qt::CaseInsensitive)){
+#ifdef DEBUG_ON
+                else if(qcmdlist.contains(QString("getsor?"), Qt::CaseInsensitive)){
 
-                        QString         filename = QAgentApp::getCacheDir()+QString("otdr_0000_160000_10000_CH3.sor");
+                        QString         filename = QString("/home/dustin/.cache/ifms/otdr_0000_160000_10000_CH3.sor");
                         QFile           readFile(filename);
                         if(!readFile.open(QIODevice::ReadOnly)){
                              qDebug() << "\n open " << filename << " failed!\n";
@@ -134,7 +134,7 @@ public:
             QThread::msleep(500);
         }while(getKeepRunning() == 1);
 
-        qDebug() << "\n Exit Experter mode...."<<endl;
+        qDebug() << "\n Exit Expert mode...."<<endl;
     }
 
 signals:

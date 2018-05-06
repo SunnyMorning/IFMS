@@ -18,26 +18,29 @@
 #include "qsorfilebase.h"
 
 #define  WAIT_WRITE_TIMEOUT     1000
-#define  WAIT_READ_TIMEOUT      1000
+#define  WAIT_READ_TIMEOUT      4000
+
+#define  UART_OF_MODULE1        "/dev/ttyO2"
+#define  UART_OF_MODULE2        "/dev/ttyO3"
+
 
 static QMutex   gOTDRModule_mutex;
 
 
 QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QThread(parent)
 {
-    _pSerialPort = new QSerialPort;
     _state  = STATE_MEASURED;
     _MeasuredChannels.OTDRModule.channels = 0;
     _moduleIndex = index;
     _keeprunning = 1;
     _progress = 0;
-
+    _pSerialPort = new QSerialPort();
     if(_moduleIndex == 0){
-        setSerialPortParam(QString("/dev/ttyO2"));
+        setSerialPortParam(QString(UART_OF_MODULE1));
     }
     else
     {
-        setSerialPortParam(QString("/dev/ttyO3"));
+        setSerialPortParam(QString(UART_OF_MODULE2));
     }
 }
 
@@ -170,6 +173,7 @@ bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate b
 {
     QMutexLocker locker(&gOTDRModule_mutex);
     bool ret = false;
+
     _pSerialPort->setPortName(serialPort);
     _pSerialPort->setBaudRate(baudrate);
     _pSerialPort->setDataBits(databits);
@@ -180,6 +184,7 @@ bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate b
     if(ret!= true){
         QAgentApp::error(_moduleIndex, QString("Failed to open port %1, error: %2").arg(serialPort).arg(_pSerialPort->error()));
     }
+
     return ret;
 }
 

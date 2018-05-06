@@ -115,10 +115,9 @@ public:
 
             sendScanCommand();
 
-
             do{
                 qDebug() << "\n Monitoring on module: " << _moduleIndex << " " << _progress << endl;
-                QThread::msleep(500);
+                QThread::msleep(1500);
                 if(isIdling()||isGetSOR()){
                     setProgress(80);
                     sendGetSorCommand();
@@ -132,7 +131,7 @@ public:
                 }
                 else if(isMeasuring())
                 {
-                    _progress += 3;
+                    _progress += 9;
                     if(_progress >= 70){
                         _progress = 70;
                     }
@@ -149,7 +148,7 @@ public:
                     {
                           setOTDRModuleState(STATE_MEASURED);
                     }
-                    _progress += 3;
+                    _progress += 9;
                     if(_progress >= 90){
                         _progress = 90;
                     }

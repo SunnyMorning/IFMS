@@ -27,7 +27,7 @@ static void initDir(const QString &path)
 }
 
 static QMutex   gAgentApp_mutex;
-static quint16  _currentModule;
+static quint16  _currentModule = 0;
 
 QString QAgentApp::getAppName()     { return QString(IFMS_AGENT_NAME); }
 
@@ -51,9 +51,7 @@ QAgentApp::~QAgentApp()
 bool QAgentApp::startSession(int &argc, char **argv)
 {
     bool ret = false;
-
-    initAppData();
-
+    onSwitchModule(0);
     _module1 = new QOTDRModule(this, 0);
     _module1->initModuleFingerData();
     _module1->setConnections();
@@ -64,11 +62,15 @@ bool QAgentApp::startSession(int &argc, char **argv)
     _module2->setConnections();
 
     command_thread = new QCommander(this);
+
+    pstThread = QPST::getInstance();
+    pstThread->initConnections();
+
+
+    pstThread->start();
     command_thread->start();
 
-    pstThread = new QPST(this);
-    pstThread->initConnections();
-    pstThread->start();
+    initAppData(pstThread);
 
     connect(command_thread, SIGNAL(sigExit(qint32)), this, SLOT(onSigExit(qint32)));
     connect(command_thread, SIGNAL(sigSwitchModule(quint16)), this, SLOT(onSwitchModule(quint16)));
@@ -86,8 +88,10 @@ bool QAgentApp::startSession(int &argc, char **argv)
 
     connect(_module1, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
     connect(_module1, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
+    connect(_module1, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
     connect(_module2, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
     connect(_module2, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
+    connect(_module2, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
 
 // FOR DEBUG ONLY
     emit sigModuleStartMonitor(0);
@@ -121,9 +125,11 @@ void QAgentApp::stopSession()
 }
 
 
-void QAgentApp::initAppData()
+void QAgentApp::initAppData(QPST* p)
 {
-
+// TODO: Initial PST data and store them to settings.ini
+//    p->m_product->init_pstIFMS1000Data();
+//    p->m_system->init_pstSystemData();
 
 
     QString configDir = getConfigDir();

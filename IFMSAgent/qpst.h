@@ -6,6 +6,17 @@
 #include <QRunnable>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QDebug>
+#include <QReadWriteLock>
+#include <QAtomicPointer>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <vector>
+
+#include "qpstproduct.h"
+#include "qpstsystem.h"
 
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -15,18 +26,17 @@
 #define  SUB_AGENT              "QPST"
 #define  AGENTX_MASTER_SOCKET   "tcp:localhost:1705"
 
-#include "qpstproduct.h"
-#include "qpstsystem.h"
-
 static QMutex gPST_mutex;
 
 class QPST : public QThread
 {
     Q_OBJECT
 public:
-    explicit QPST(QObject *agent = NULL);
     ~QPST();
+    static QPST* getInstance(void);
 
+    QPSTProduct *m_product;
+    QPSTSystem  *m_system;
     void initConnections();
 
     void setKeepRunning(int running)
@@ -40,6 +50,8 @@ public:
          return _keeprunning;
     }
 
+
+
     void run(){
         netsnmp_enable_subagent();
         netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_X_SOCKET,AGENTX_MASTER_SOCKET);
@@ -48,8 +60,8 @@ public:
 
         init_agent(SUB_AGENT);
 
-        _product->init_pstIFMS1000();
-        _system->init_pstSystem();
+        m_product->init_pstIFMS1000();
+        m_system->init_pstSystem();
 
         init_snmp(SUB_AGENT);
 
@@ -63,21 +75,24 @@ public:
     }
 
 private:
-    QObject     *_agent;
-    QPSTProduct *_product;
-    QPSTSystem  *_system;
+    QPST(QObject *agent = NULL);
+    QPST(const QPST &);//禁止拷贝构造函数。
+    QPST & operator=(const QPST &);//禁止赋值拷贝函数。
+
+    QReadWriteLock internalMutex;//函数使用的读写锁
 
     int         _keeprunning;
 
 signals:
     void sigOTDRChanged(quint16 module, quint16 channel);
     void sigOTDRTrap(quint16 module, QByteArray &data);
+    void sigSetProgress(quint16 module, quint16 progress);
 
 
 public slots:
     void onSigOTDRChanged(quint16 module, quint16 channel);
     void onSigOTDRTrap(quint16 module, QByteArray& data);
-
+    void onSigSetProgress(quint16 module, quint16 progress);
 };
 
 #endif // QPST_H

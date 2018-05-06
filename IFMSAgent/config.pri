@@ -15,7 +15,7 @@ CONFIG(X86_64, ARM|X86_64) {
     unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmpmibs.a
     unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../../usr/local/lib/libnetsnmptrapd.a
 
-    DEFINES += HAVE_SOR_FILES=1
+    DEFINES += DEBUG_ON=1
 } else {
 
 

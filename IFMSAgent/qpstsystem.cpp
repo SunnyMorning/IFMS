@@ -1,13 +1,24 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <QObject>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "qpstsystem.h"
 #include "qagentapp.h"
+#include "qpst.h"
+
+static QObject       *system_agent;
 
 QPSTSystem::QPSTSystem(QObject *parent) : QObject(parent)
 {
-    _agent = parent;
+    system_agent = parent;
+    init_pstSystemData();
+}
+
+void QPSTSystem::init_pstSystemData(){
+    m_pstSystem.init_pstData();
 }
 
 void QPSTSystem::init_pstSystem()

@@ -4,16 +4,48 @@
 #include <QObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QSettings>
+#include <QString>
 
 #include "qpstproduct.h"
-
 #include "qagentapp.h"
+#include "qpst.h"
+
+netsnmp_feature_require(table_dataset)
+netsnmp_feature_require(table_set_multi_add_default_row)
 
 static QMutex PSTProduct_mutex;
+static QObject       *product_agent;
 
 QPSTProduct::QPSTProduct(QObject *parent) : QObject(parent)
 {
-    _agent =  parent;
+    product_agent =  parent;
+    init_pstIFMS1000Data();
+}
+
+void QPSTProduct::init_pstIFMS1000Data()
+{
+    m_pstIFMS1000.init_pstData();
+}
+
+long QPSTProduct::get_pstIFMS1000SysLedPW1(QObject *agent){
+    QPST *p = (QPST*)agent;
+    return p->m_product->m_pstIFMS1000.get_pstIFMS1000SysLedPW1(agent);
+}
+long QPSTProduct::get_pstIFMS1000SysLedPW2(QObject *agent){
+    QPST *p = (QPST*)agent;
+    return p->m_product->m_pstIFMS1000.get_pstIFMS1000SysLedPW2(agent);
+}
+long QPSTProduct::get_pstIFMS1000SysLedStatus(QObject *agent){
+    QPST *p = (QPST*)agent;
+    return p->m_product->m_pstIFMS1000.get_pstIFMS1000SysLedStatus(agent);
+}
+
+void QPSTProduct::setModuleMeasuringProgess(quint16 module, quint16 progress)
+{
+    QPST *p = QPST::getInstance();
+    p->m_product->m_pstIFMS1000.setModuleMeasuringProgess(module, progress);
+
 }
 
 void QPSTProduct::init_pstIFMS1000()
@@ -153,7 +185,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    static long ledpw1 = 0;
+    long ledpw1 = get_pstIFMS1000SysLedPW1(product_agent);
 
     switch(reqinfo->mode) {
 
@@ -183,7 +215,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-     static long ledpw2 = 1;
+    long ledpw2 = get_pstIFMS1000SysLedPW2(product_agent);
     
     switch(reqinfo->mode) {
 
@@ -212,7 +244,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    static long ledstatus = 1;
+    long ledstatus = get_pstIFMS1000SysLedStatus(product_agent);
 
     switch(reqinfo->mode) {
 
@@ -1066,7 +1098,7 @@ void
                                             COLUMN_PSTIFMS1000PORTRUNNINGSTATUS, ASN_INTEGER, 0,
                                             NULL, 0,
                               0);
-    
+    table_set->table->store_indexes = 1;
     /* registering the table with the master agent */
     /* note: if you don't need a subhandler to deal with any aspects
        of the request, change pstIFMS1000PortInfoTable_handler to "NULL" */
@@ -1075,6 +1107,45 @@ void
                                                         OID_LENGTH(pstIFMS1000PortInfoTable_oid),
                                                         HANDLER_CAN_RWRITE),
                             table_set, NULL);
+
+    int i = 0;
+    netsnmp_table_row *row;
+    for(i=0; i< NUMBER_OF_CHANNES;i++){
+        pstIFMS1000PortInfoEntry info = m_pstIFMS1000.PortInfoTable.at(i);
+
+        row = netsnmp_create_table_data_row();
+
+
+        /***************************************************
+         * Adding indexes
+         */
+        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
+                    "adding indexes to table pstIFMS1000PortInfoTable\n"));
+        netsnmp_table_row_add_index(row,
+                               ASN_INTEGER,  /* index: pstIFMS1000PortNum */
+                               &info.pstIFMS1000PortNum,sizeof(info.pstIFMS1000PortNum));
+
+
+
+        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
+                "adding column types to table pstIFMS1000PortInfoTable\n"));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTNUM, ASN_INTEGER, \
+                               &info.pstIFMS1000PortNum, sizeof(info.pstIFMS1000PortNum));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTRXPWR, ASN_OCTET_STR, \
+                               info.pstIFMS1000PortRxPwr, strlen(info.pstIFMS1000PortRxPwr));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTTXPWR, ASN_OCTET_STR, \
+                               info.pstIFMS1000PortTxPwr, strlen(info.pstIFMS1000PortTxPwr));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTWORKMODE, ASN_INTEGER, \
+                               &info.pstIFMS1000PortWorkMode, sizeof(info.pstIFMS1000PortWorkMode));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTACTIVE, ASN_INTEGER, \
+                               &info.pstIFMS1000PortActive, sizeof(info.pstIFMS1000PortActive));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTFIBERAPPTYPE, ASN_INTEGER, \
+                               &info.pstIFMS1000PortFiberAppType, sizeof(info.pstIFMS1000PortFiberAppType));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTRUNNINGSTATUS, ASN_INTEGER, \
+                               &info.pstIFMS1000PortRunningStatus, sizeof(info.pstIFMS1000PortRunningStatus));
+        netsnmp_table_dataset_add_row(table_set, row);
+    }
+        netsnmp_register_auto_data_table(table_set, NULL);
 }
 /** Initialize the pstIFMS1000MeasureTable table by defining its contents and how it's structured */
 void
@@ -1133,6 +1204,55 @@ void
                                                         OID_LENGTH(pstIFMS1000MeasureTable_oid),
                                                         HANDLER_CAN_RWRITE),
                             table_set, NULL);
+
+    int i = 0;
+    netsnmp_table_row *row;
+    for(i=0; i< NUMBER_OF_CHANNES;i++){
+        pstIFMS1000MeasureEntry info = m_pstIFMS1000.MeasureTable.at(i);
+
+        row = netsnmp_create_table_data_row();
+
+
+        /***************************************************
+         * Adding indexes
+         */
+        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
+                    "adding indexes to table pstIFMS1000PortInfoTable\n"));
+        netsnmp_table_row_add_index(row,
+                               ASN_INTEGER,  /* index: pstIFMS1000PortNum */
+                               &info.pstIFMS1000MTPortNum,sizeof(info.pstIFMS1000MTPortNum));
+
+
+
+        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
+                "adding column types to table pstIFMS1000PortInfoTable\n"));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MTPORTNUM, ASN_INTEGER, \
+                               &info.pstIFMS1000MTPortNum, sizeof(info.pstIFMS1000MTPortNum));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURESTARTPOSITION, ASN_OCTET_STR, \
+                               info.pstIFMS1000MeasureStartPosition, strlen(info.pstIFMS1000MeasureStartPosition));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREENDPOSITION, ASN_OCTET_STR, \
+                               info.pstIFMS1000MeasureEndPosition, strlen(info.pstIFMS1000MeasureEndPosition));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREREFINDEX, ASN_OCTET_STR, \
+                               info.pstIFMS1000MeasureRefIndex, strlen(info.pstIFMS1000MeasureRefIndex));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESOLUTION, ASN_OCTET_STR, \
+                               info.pstIFMS1000MeasureResolution, strlen(info.pstIFMS1000MeasureResolution));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURESTATUS, ASN_INTEGER, \
+                               &info.pstIFMS1000MeasureStatus, sizeof(info.pstIFMS1000MeasureStatus));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREACTION, ASN_INTEGER, \
+                               &info.pstIFMS1000MeasureAction, sizeof(info.pstIFMS1000MeasureAction));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESULTFILE, ASN_OCTET_STR, \
+                               &info.pstIFMS1000MeasureResultFile[0], info.pstIFMS1000MeasureResultFile.size());
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE, ASN_OCTET_STR, \
+                               &info.pstIFMS1000MeasureResultRawDataFile[0], info.pstIFMS1000MeasureResultRawDataFile.size());
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS, ASN_INTEGER, \
+                               &info.pstIFMS1000MeasureProgressStatus, sizeof(info.pstIFMS1000MeasureProgressStatus));
+        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE, ASN_OCTET_STR, \
+                               &info.pstIFMS1000MeasureResultRawPointFile[0], info.pstIFMS1000MeasureResultRawPointFile.size());
+
+
+        netsnmp_table_dataset_add_row(table_set, row);
+    }
+        netsnmp_register_auto_data_table(table_set, NULL);
 }
 /** Initialize the pstIFMS1000FingerTable table by defining its contents and how it's structured */
 void
@@ -1969,6 +2089,525 @@ int
        already been processed by the master table_dataset handler, but
        this gives you chance to act on the request in some other way
        if need be. */
+#if 0
+    netsnmp_request_info *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata  *table_data;
+    netsnmp_tdata_row *table_row;
+    pstIFMS1000MeasureEntry *table_entry;
+    int             ret;
+    netsnmp_session *sess = NULL;
+    char           *secName;
+//    /* column number definitions for table pstIFMS1000MeasureTable */
+//           #define COLUMN_PSTIFMS1000MTPORTNUM		1
+//           #define COLUMN_PSTIFMS1000MEASURESTARTPOSITION		2
+//           #define COLUMN_PSTIFMS1000MEASUREENDPOSITION		3
+//           #define COLUMN_PSTIFMS1000MEASUREREFINDEX		4
+//           #define COLUMN_PSTIFMS1000MEASURERESOLUTION		5
+//           #define COLUMN_PSTIFMS1000MEASURESTATUS		6
+//           #define COLUMN_PSTIFMS1000MEASUREACTION		7
+//           #define COLUMN_PSTIFMS1000MEASURERESULTFILE		8
+//           #define COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE		9
+//           #define COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS		10
+//           #define COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE		11
+    DEBUGMSGTL(( "pstIFMS1000MeasureTable", "pstIFMS1000MeasureTable_handler called.\n"));
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request = requests; request; request = request->next) {
+            table_entry = (pstIFMS1000MeasureEntry *)
+                netsnmp_tdata_extract_entry(request);
+            table_info = netsnmp_extract_table_info(request);
+
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000MTPORTNUM:
+             {   snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+                                           0);
+                qDebug() << *(request->requestvb->name) << endl;
+                qDebug() << request->requestvb->index << endl;
+                qDebug() << request->requestvb->buf << endl;
+                qDebug() << request->requestvb->data << endl;
+             }
+                break;
+            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+//                snmp_set_var_typed_value(request->requestvb, ASN_OCTET_STR,
+//                                           m_pstIFMS1000.pstIFMS1000MeasureStartPosition, );
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+//                snmp_set_var_typed_value(request->requestvb, ASN_OBJECT_ID,
+//                                         (u_char *) table_entry->
+//                                         alarmVariable,
+//                                         table_entry->alarmVariable_len *
+//                                         sizeof(oid));
+                break;
+            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+//                                           table_entry->alarmSampleType);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+//                                           table_entry->alarmValue);
+                break;
+            case COLUMN_PSTIFMS1000MEASURESTATUS:
+//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+//                                           table_entry->alarmStartupAlarm);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREACTION:
+//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+//                                           table_entry->
+//                                           alarmRisingThreshold);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTFILE:
+//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+//                                           table_entry->
+//                                           alarmFallingThreshold);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE:
+//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
+//                                           table_entry->
+//                                           alarmRisingEventIndex);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS:
+            {    long progress = 39;
+                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,progress);
+                break;
+            }
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+//                snmp_set_var_typed_value(request->requestvb, ASN_OCTET_STR,
+//                                         (u_char *) table_entry->
+//                                         alarmOwner,
+//                                         table_entry->alarmOwner_len);
+                break;
+            }
+        }
+        break;
+
+//        /*
+//         * Write-support
+//         */
+//    case MODE_SET_RESERVE1:
+//        for (request = requests; request; request = request->next) {
+//            table_entry = (struct pstIFMS1000MeasureEntry *)
+//                netsnmp_tdata_extract_entry(request);
+//            table_info = netsnmp_extract_table_info(request);
+
+//            switch (table_info->colnum) {
+//            case COLUMN_ALARMINTERVAL:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMVARIABLE:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_type_and_max_size'
+//                 */
+//                break;
+//            case COLUMN_ALARMSAMPLETYPE:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMSTARTUPALARM:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMRISINGTHRESHOLD:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMFALLINGTHRESHOLD:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMRISINGEVENTINDEX:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMFALLINGEVENTINDEX:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            case COLUMN_ALARMOWNER:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_type_and_max_size'
+//                 */
+//                break;
+//            case COLUMN_ALARMSTATUS:
+//                /*
+//                 * or possibly 'netsnmp_check_vb_int_range'
+//                 */
+//                ret = netsnmp_check_vb_int(request->requestvb);
+//                if (ret != SNMP_ERR_NOERROR) {
+//                    netsnmp_set_request_error(reqinfo, request, ret);
+//                    return SNMP_ERR_NOERROR;
+//                }
+//                break;
+//            default:
+//                netsnmp_set_request_error(reqinfo, request,
+//                                          SNMP_ERR_NOTWRITABLE);
+//                return SNMP_ERR_NOERROR;
+//            }
+//        }
+//        break;
+
+//    case MODE_SET_RESERVE2:
+//        for (request = requests; request; request = request->next) {
+//            table_row = netsnmp_tdata_extract_row(request);
+//            table_data = netsnmp_tdata_extract_table(request);
+//            table_info = netsnmp_extract_table_info(request);
+
+//            switch (table_info->colnum) {
+//            case COLUMN_ALARMINTERVAL:
+//            case COLUMN_ALARMVARIABLE:
+//            case COLUMN_ALARMSAMPLETYPE:
+//            case COLUMN_ALARMSTARTUPALARM:
+//            case COLUMN_ALARMRISINGTHRESHOLD:
+//            case COLUMN_ALARMFALLINGTHRESHOLD:
+//            case COLUMN_ALARMRISINGEVENTINDEX:
+//            case COLUMN_ALARMFALLINGEVENTINDEX:
+//            case COLUMN_ALARMOWNER:
+//            case COLUMN_ALARMSTATUS:
+//                if (!table_row) {
+//                    table_row =
+//                        alarmTable_createEntry(table_data,
+//                                               *table_info->indexes->val.
+//                                               integer);
+//                    if (table_row) {
+//                        netsnmp_insert_tdata_row(request, table_row);
+//                    } else {
+//                        netsnmp_set_request_error(reqinfo, request,
+//                                                  SNMP_ERR_RESOURCEUNAVAILABLE);
+//                        return SNMP_ERR_NOERROR;
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//        break;
+
+//    case MODE_SET_FREE:
+//        for (request = requests; request; request = request->next) {
+//            table_entry = (struct pstIFMS1000MeasureEntry *)
+//                netsnmp_tdata_extract_entry(request);
+//            table_row = netsnmp_tdata_extract_row(request);
+//            table_data = netsnmp_tdata_extract_table(request);
+//            table_info = netsnmp_extract_table_info(request);
+
+//            switch (table_info->colnum) {
+//            case COLUMN_ALARMINTERVAL:
+//            case COLUMN_ALARMVARIABLE:
+//            case COLUMN_ALARMSAMPLETYPE:
+//            case COLUMN_ALARMSTARTUPALARM:
+//            case COLUMN_ALARMRISINGTHRESHOLD:
+//            case COLUMN_ALARMFALLINGTHRESHOLD:
+//            case COLUMN_ALARMRISINGEVENTINDEX:
+//            case COLUMN_ALARMFALLINGEVENTINDEX:
+//            case COLUMN_ALARMOWNER:
+//            case COLUMN_ALARMSTATUS:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                }
+//                break;
+//            }
+//        }
+//        break;
+
+//    case MODE_SET_ACTION:
+//        for (request = requests; request; request = request->next) {
+//            table_entry = (struct pstIFMS1000MeasureEntry *)
+//                netsnmp_tdata_extract_entry(request);
+//            table_info = netsnmp_extract_table_info(request);
+
+//            switch (table_info->colnum) {
+//            case COLUMN_ALARMINTERVAL:
+//                table_entry->old_alarmInterval =
+//                    table_entry->alarmInterval;
+//                table_entry->alarmInterval =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMVARIABLE:
+//                table_entry->alarmVariable_len =
+//                    request->requestvb->val_len / sizeof(oid);
+//                memset(table_entry->alarmVariable, 0,
+//                       sizeof(table_entry->alarmVariable));
+//                memcpy(table_entry->alarmVariable,
+//                       request->requestvb->val.objid,
+//                       request->requestvb->val_len);
+//                break;
+//            case COLUMN_ALARMSAMPLETYPE:
+//                table_entry->old_alarmSampleType =
+//                    table_entry->alarmSampleType;
+//                table_entry->alarmSampleType =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMSTARTUPALARM:
+//                table_entry->old_alarmStartupAlarm =
+//                    table_entry->alarmStartupAlarm;
+//                table_entry->alarmStartupAlarm =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMRISINGTHRESHOLD:
+//                table_entry->old_alarmRisingThreshold =
+//                    table_entry->alarmRisingThreshold;
+//                table_entry->alarmRisingThreshold =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMFALLINGTHRESHOLD:
+//                table_entry->old_alarmFallingThreshold =
+//                    table_entry->alarmFallingThreshold;
+//                table_entry->alarmFallingThreshold =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMRISINGEVENTINDEX:
+//                table_entry->old_alarmRisingEventIndex =
+//                    table_entry->alarmRisingEventIndex;
+//                table_entry->alarmRisingEventIndex =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMFALLINGEVENTINDEX:
+//                table_entry->old_alarmFallingEventIndex =
+//                    table_entry->alarmFallingEventIndex;
+//                table_entry->alarmFallingEventIndex =
+//                    *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_ALARMOWNER:
+//                memcpy(table_entry->old_alarmOwner,
+//                       table_entry->alarmOwner,
+//                       sizeof(table_entry->alarmOwner));
+//                table_entry->old_alarmOwner_len =
+//                    table_entry->alarmOwner_len;
+//                memset(table_entry->alarmOwner, 0,
+//                       sizeof(table_entry->alarmOwner));
+//                memcpy(table_entry->alarmOwner,
+//                       request->requestvb->val.string,
+//                       request->requestvb->val_len);
+//                table_entry->alarmOwner_len = request->requestvb->val_len;
+//                break;
+//            case COLUMN_ALARMSTATUS:
+//                table_entry->old_alarmStatus = table_entry->alarmStatus;
+//                table_entry->alarmStatus =
+//                    *request->requestvb->val.integer;
+//                break;
+//            }
+//        }
+//        break;
+
+//    case MODE_SET_UNDO:
+//        for (request = requests; request; request = request->next) {
+//            table_entry = (struct pstIFMS1000MeasureEntry *)
+//                netsnmp_tdata_extract_entry(request);
+//            table_row = netsnmp_tdata_extract_row(request);
+//            table_data = netsnmp_tdata_extract_table(request);
+//            table_info = netsnmp_extract_table_info(request);
+
+//            switch (table_info->colnum) {
+//            case COLUMN_ALARMINTERVAL:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmInterval =
+//                        table_entry->old_alarmInterval;
+//                    table_entry->old_alarmInterval = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMVARIABLE:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    memcpy(table_entry->alarmVariable,
+//                           table_entry->old_alarmVariable,
+//                           sizeof(table_entry->alarmVariable));
+//                    memset(table_entry->old_alarmVariable, 0,
+//                           sizeof(table_entry->alarmVariable));
+//                    table_entry->alarmVariable_len =
+//                        table_entry->old_alarmVariable_len;
+//                }
+//                break;
+//            case COLUMN_ALARMSAMPLETYPE:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmSampleType =
+//                        table_entry->old_alarmSampleType;
+//                    table_entry->old_alarmSampleType = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMSTARTUPALARM:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmStartupAlarm =
+//                        table_entry->old_alarmStartupAlarm;
+//                    table_entry->old_alarmStartupAlarm = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMRISINGTHRESHOLD:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmRisingThreshold =
+//                        table_entry->old_alarmRisingThreshold;
+//                    table_entry->old_alarmRisingThreshold = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMFALLINGTHRESHOLD:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmFallingThreshold =
+//                        table_entry->old_alarmFallingThreshold;
+//                    table_entry->old_alarmFallingThreshold = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMRISINGEVENTINDEX:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmRisingEventIndex =
+//                        table_entry->old_alarmRisingEventIndex;
+//                    table_entry->old_alarmRisingEventIndex = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMFALLINGEVENTINDEX:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmFallingEventIndex =
+//                        table_entry->old_alarmFallingEventIndex;
+//                    table_entry->old_alarmFallingEventIndex = 0;
+//                }
+//                break;
+//            case COLUMN_ALARMOWNER:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    memcpy(table_entry->alarmOwner,
+//                           table_entry->old_alarmOwner,
+//                           sizeof(table_entry->alarmOwner));
+//                    memset(table_entry->old_alarmOwner, 0,
+//                           sizeof(table_entry->alarmOwner));
+//                    table_entry->alarmOwner_len =
+//                        table_entry->old_alarmOwner_len;
+//                }
+//                break;
+//            case COLUMN_ALARMSTATUS:
+//                if (table_entry && !table_entry->valid) {
+//                    alarmTable_removeEntry(table_data, table_row);
+//                } else {
+//                    table_entry->alarmStatus =
+//                        table_entry->old_alarmStatus;
+//                    table_entry->old_alarmStatus = 0;
+//                }
+//                break;
+//            }
+//        }
+//        break;
+
+//    case MODE_SET_COMMIT:
+//        for (request = requests; request; request = request->next) {
+//            table_entry = (struct pstIFMS1000MeasureEntry *)
+//                netsnmp_tdata_extract_entry(request);
+//            table_info = netsnmp_extract_table_info(request);
+
+//            switch (table_info->colnum) {
+//            case COLUMN_ALARMINTERVAL:
+//            case COLUMN_ALARMVARIABLE:
+//            case COLUMN_ALARMSAMPLETYPE:
+//            case COLUMN_ALARMSTARTUPALARM:
+//            case COLUMN_ALARMRISINGTHRESHOLD:
+//            case COLUMN_ALARMFALLINGTHRESHOLD:
+//            case COLUMN_ALARMRISINGEVENTINDEX:
+//            case COLUMN_ALARMFALLINGEVENTINDEX:
+//            case COLUMN_ALARMOWNER:
+//                if (table_entry && !table_entry->valid) {
+//                    table_entry->valid = 1;
+//                }
+//                break;
+//            case COLUMN_ALARMSTATUS:
+//                switch (*request->requestvb->val.integer) {
+//                case RMON1_ENTRY_VALID:
+//                    alarmTable_enable( table_entry );
+//                    break;
+//                case RMON1_ENTRY_UNDER_CREATION:
+//                    alarmTable_disable( table_entry );
+//#if 0
+//                    table_entry->session = (netsnmp_session *)
+//                        netsnmp_iquery_pdu_session(reqinfo->asp->pdu);
+//#else
+//                    secName = netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
+//                                                    NETSNMP_DS_AGENT_INTERNAL_SECNAME);
+//                    if (secName) {
+//                        sess   = netsnmp_iquery_user_session(secName);
+//                        netsnmp_query_set_default_session(sess);
+//                        DEBUGMSGTL(("rmon:alarmTable", "user name %s\n", secName));
+//                    } else {
+//                        snmp_log(LOG_ERR, "user name %s not found\n", secName);
+//                        config_perror("Unknown user name\n");
+//                    }
+
+//                    if (NULL == sess) {
+//                        sess = netsnmp_query_get_default_session();
+//                        if (NULL == sess) {
+//                            config_perror
+//                                ("You must specify a default user name using the agentSecName token\n");
+//                            return SNMP_ERR_NOERROR;
+//                        }
+//                    }
+//#endif
+//                    break;
+//                case RMON1_ENTRY_INVALID:
+//                    table_row = netsnmp_tdata_extract_row(request);
+//                    table_data = netsnmp_tdata_extract_table(request);
+//                    alarmTable_removeEntry(table_data, table_row);
+//                }
+//                break;
+//            }
+//        }
+//        break;
+    }
+#endif
     return SNMP_ERR_NOERROR;
 }
 
