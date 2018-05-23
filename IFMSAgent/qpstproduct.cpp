@@ -1058,1869 +1058,5884 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
 // Table
 
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000PortInfoTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000PortNum
+                ) {
+    struct pstIFMS1000PortInfoTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PortInfoTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000PortInfoTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000PortNum = pstIFMS1000PortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000PortNum),
+                                 sizeof(entry->pstIFMS1000PortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000PortInfoTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000PortInfoTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000PortInfoTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000PortInfoTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000MeasureTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000MTPortNum
+                ) {
+    struct pstIFMS1000MeasureTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000MeasureTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000MeasureTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000MTPortNum = pstIFMS1000MTPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000MTPortNum),
+                                 sizeof(entry->pstIFMS1000MTPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000MeasureTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000MeasureTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000MeasureTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000FingerTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000FTPortNum
+                ) {
+    struct pstIFMS1000FingerTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000FingerTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000FingerTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000FTPortNum = pstIFMS1000FTPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000FTPortNum),
+                                 sizeof(entry->pstIFMS1000FTPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000FingerTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000FingerTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000FingerTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000FingerTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DiffTotalTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DtPortNum
+                ) {
+    struct pstIFMS1000DiffTotalTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiffTotalTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DiffTotalTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DtPortNum = pstIFMS1000DtPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DtPortNum),
+                                 sizeof(entry->pstIFMS1000DtPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DiffTotalTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DiffTotalTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DiffTotalTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DiffTotalTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DiffInfoTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DiffInfoPortNum
+                 , long  pstIFMS1000DiffInfoPortItemIndex
+                ) {
+    struct pstIFMS1000DiffInfoTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiffInfoTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DiffInfoTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DiffInfoPortNum = pstIFMS1000DiffInfoPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DiffInfoPortNum),
+                                 sizeof(entry->pstIFMS1000DiffInfoPortNum));
+    entry->pstIFMS1000DiffInfoPortItemIndex = pstIFMS1000DiffInfoPortItemIndex;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DiffInfoPortItemIndex),
+                                 sizeof(entry->pstIFMS1000DiffInfoPortItemIndex));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DiffInfoTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DiffInfoTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DiffInfoTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DiffInfoTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000PortLedTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000PortLedPortNum
+                ) {
+    struct pstIFMS1000PortLedTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PortLedTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000PortLedTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000PortLedPortNum = pstIFMS1000PortLedPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000PortLedPortNum),
+                                 sizeof(entry->pstIFMS1000PortLedPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000PortLedTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000PortLedTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000PortLedTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000PortLedTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DiagnoseTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DgPortNum
+                ) {
+    struct pstIFMS1000DiagnoseTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiagnoseTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DiagnoseTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DgPortNum = pstIFMS1000DgPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DgPortNum),
+                                 sizeof(entry->pstIFMS1000DgPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DiagnoseTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DiagnoseTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DiagnoseTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DiagnoseTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DebugRegTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DbPortNum
+                ) {
+    struct pstIFMS1000DebugRegTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugRegTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DebugRegTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DbPortNum = pstIFMS1000DbPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DbPortNum),
+                                 sizeof(entry->pstIFMS1000DbPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DebugRegTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DebugRegTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DebugRegTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DebugRegTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DebugDACTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DacTPortNum
+                ) {
+    struct pstIFMS1000DebugDACTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugDACTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DebugDACTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DacTPortNum = pstIFMS1000DacTPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DacTPortNum),
+                                 sizeof(entry->pstIFMS1000DacTPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+void
+static pstIFMS1000DebugDACTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DebugDACTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DebugDACTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DebugDACTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DebugE2promTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DbE2TPortNum
+                ) {
+    struct pstIFMS1000DebugE2promTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugE2promTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DebugE2promTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DbE2TPortNum = pstIFMS1000DbE2TPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DbE2TPortNum),
+                                 sizeof(entry->pstIFMS1000DbE2TPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DebugE2promTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DebugE2promTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DebugE2promTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DebugE2promTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ExtendAlarmTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000EAPortNum
+                ) {
+    struct pstIFMS1000ExtendAlarmTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ExtendAlarmTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ExtendAlarmTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000EAPortNum = pstIFMS1000EAPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000EAPortNum),
+                                 sizeof(entry->pstIFMS1000EAPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+void
+static pstIFMS1000ExtendAlarmTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ExtendAlarmTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ExtendAlarmTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ExtendAlarmTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ExpertExtendTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000EEPortNum
+                ) {
+    struct pstIFMS1000ExpertExtendTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ExpertExtendTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ExpertExtendTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000EEPortNum = pstIFMS1000EEPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000EEPortNum),
+                                 sizeof(entry->pstIFMS1000EEPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ExpertExtendTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ExpertExtendTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ExpertExtendTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ExpertExtendTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000PonConfTable_createEntry(netsnmp_tdata *table_data
+                 , u_long  pctPortNum
+                ) {
+    struct pstIFMS1000PonConfTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PonConfTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000PonConfTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pctPortNum = pctPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_UNSIGNED,
+                                 &(entry->pctPortNum),
+                                 sizeof(entry->pctPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000PonConfTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000PonConfTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000PonConfTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000PonConfTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsV32TotalNumTable_createEntry(netsnmp_tdata *table_data
+                 , long  v32TPortNum
+                ) {
+    struct pstIFMS1000ParamsV32TotalNumTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32TotalNumTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32TotalNumTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->v32TPortNum = v32TPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32TPortNum),
+                                 sizeof(entry->v32TPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsV32TotalNumTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsV32TotalNumTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32TotalNumTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsV32TotalNumTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsV32NameTable_createEntry(netsnmp_tdata *table_data
+                 , long  v32PortNum
+                 , long  v32ParamNameNum
+                ) {
+    struct pstIFMS1000ParamsV32NameTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32NameTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32NameTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->v32PortNum = v32PortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32PortNum),
+                                 sizeof(entry->v32PortNum));
+    entry->v32ParamNameNum = v32ParamNameNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32ParamNameNum),
+                                 sizeof(entry->v32ParamNameNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsV32NameTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsV32NameTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32NameTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsV32NameTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsV32ValTable_createEntry(netsnmp_tdata *table_data
+                 , long  v32ValPortNum
+                 , long  v32ParamValNum
+                ) {
+    struct pstIFMS1000ParamsV32ValTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32ValTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32ValTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->v32ValPortNum = v32ValPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32ValPortNum),
+                                 sizeof(entry->v32ValPortNum));
+    entry->v32ParamValNum = v32ParamValNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32ParamValNum),
+                                 sizeof(entry->v32ParamValNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsV32ValTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsV32ValTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32ValTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsV32ValTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsS32TotalNumTable_createEntry(netsnmp_tdata *table_data
+                 , long  s32TPortNum
+                ) {
+    struct pstIFMS1000ParamsS32TotalNumTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32TotalNumTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32TotalNumTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->s32TPortNum = s32TPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32TPortNum),
+                                 sizeof(entry->s32TPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsS32TotalNumTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsS32TotalNumTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32TotalNumTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsS32TotalNumTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsS32NameTable_createEntry(netsnmp_tdata *table_data
+                 , long  s32PortNum
+                 , long  s32ParamNameNum
+                ) {
+    struct pstIFMS1000ParamsS32NameTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32NameTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32NameTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->s32PortNum = s32PortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32PortNum),
+                                 sizeof(entry->s32PortNum));
+    entry->s32ParamNameNum = s32ParamNameNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32ParamNameNum),
+                                 sizeof(entry->s32ParamNameNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsS32NameTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsS32NameTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32NameTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsS32NameTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsS32ValTable_createEntry(netsnmp_tdata *table_data
+                 , long  s32ValPortNum
+                 , long  s32ParamValNum
+                ) {
+    struct pstIFMS1000ParamsS32ValTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32ValTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32ValTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->s32ValPortNum = s32ValPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32ValPortNum),
+                                 sizeof(entry->s32ValPortNum));
+    entry->s32ParamValNum = s32ParamValNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32ParamValNum),
+                                 sizeof(entry->s32ParamValNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsS32ValTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsS32ValTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32ValTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsS32ValTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 /** Initialize the pstIFMS1000PortInfoTable table by defining its contents and how it's structured */
 void
- QPSTProduct::initialize_table_pstIFMS1000PortInfoTable(void)
+QPSTProduct::initialize_table_pstIFMS1000PortInfoTable(void)
 {
     const oid pstIFMS1000PortInfoTable_oid[] = {1,3,6,1,4,1,48391,3,5,1};
-    netsnmp_table_data_set *table_set;
+    const size_t pstIFMS1000PortInfoTable_oid_len   = OID_LENGTH(pstIFMS1000PortInfoTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
 
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000PortInfoTable");
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000PortInfoTable\n"));
 
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000PortInfoTable",     pstIFMS1000PortInfoTable_handler,
+              pstIFMS1000PortInfoTable_oid, pstIFMS1000PortInfoTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
 
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
-                "adding indexes to table pstIFMS1000PortInfoTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000PortInfoTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000PortInfoTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000PortInfoTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
                            ASN_INTEGER,  /* index: pstIFMS1000PortNum */
                            0);
 
-    DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
-                "adding column types to table pstIFMS1000PortInfoTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000PORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTRXPWR, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTTXPWR, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTWORKMODE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTACTIVE, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTFIBERAPPTYPE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTRUNNINGSTATUS, ASN_INTEGER, 0,
-                                            NULL, 0,
-                              0);
-    table_set->table->store_indexes = 1;
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000PortInfoTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000PortInfoTable", pstIFMS1000PortInfoTable_handler,
-                                                        pstIFMS1000PortInfoTable_oid,
-                                                        OID_LENGTH(pstIFMS1000PortInfoTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-
-    int i = 0;
-    netsnmp_table_row *row;
-    for(i=0; i< NUMBER_OF_CHANNES;i++){
-        pstIFMS1000PortInfoEntry info = m_pstIFMS1000.PortInfoTable.at(i);
-
-        row = netsnmp_create_table_data_row();
-
-
-        /***************************************************
-         * Adding indexes
-         */
-        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
-                    "adding indexes to table pstIFMS1000PortInfoTable\n"));
-        netsnmp_table_row_add_index(row,
-                               ASN_INTEGER,  /* index: pstIFMS1000PortNum */
-                               &info.pstIFMS1000PortNum,sizeof(info.pstIFMS1000PortNum));
-
-
-
-        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
-                "adding column types to table pstIFMS1000PortInfoTable\n"));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTNUM, ASN_INTEGER, \
-                               &info.pstIFMS1000PortNum, sizeof(info.pstIFMS1000PortNum));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTRXPWR, ASN_OCTET_STR, \
-                               info.pstIFMS1000PortRxPwr, strlen(info.pstIFMS1000PortRxPwr));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTTXPWR, ASN_OCTET_STR, \
-                               info.pstIFMS1000PortTxPwr, strlen(info.pstIFMS1000PortTxPwr));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTWORKMODE, ASN_INTEGER, \
-                               &info.pstIFMS1000PortWorkMode, sizeof(info.pstIFMS1000PortWorkMode));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTACTIVE, ASN_INTEGER, \
-                               &info.pstIFMS1000PortActive, sizeof(info.pstIFMS1000PortActive));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTFIBERAPPTYPE, ASN_INTEGER, \
-                               &info.pstIFMS1000PortFiberAppType, sizeof(info.pstIFMS1000PortFiberAppType));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000PORTRUNNINGSTATUS, ASN_INTEGER, \
-                               &info.pstIFMS1000PortRunningStatus, sizeof(info.pstIFMS1000PortRunningStatus));
-        netsnmp_table_dataset_add_row(table_set, row);
-    }
-        netsnmp_register_auto_data_table(table_set, NULL);
-}
-/** Initialize the pstIFMS1000MeasureTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
-{
-    const oid pstIFMS1000MeasureTable_oid[] = {1,3,6,1,4,1,48391,3,5,2};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000MeasureTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000MeasureTable",
-                "adding indexes to table pstIFMS1000MeasureTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000MTPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000MeasureTable",
-                "adding column types to table pstIFMS1000MeasureTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000MTPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASURESTARTPOSITION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASUREENDPOSITION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASUREREFINDEX, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASURERESOLUTION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASURESTATUS, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASUREACTION, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASURERESULTFILE, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                              0);
+    table_info->min_column = COLUMN_PSTIFMS1000PORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000PORTRUNNINGSTATUS;
     
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000MeasureTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000MeasureTable", pstIFMS1000MeasureTable_handler,
-                                                        pstIFMS1000MeasureTable_oid,
-                                                        OID_LENGTH(pstIFMS1000MeasureTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
+    netsnmp_tdata_register( reg, table_data, table_info );
 
-    int i = 0;
-    netsnmp_table_row *row;
-    for(i=0; i< NUMBER_OF_CHANNES;i++){
-        pstIFMS1000MeasureEntry info = m_pstIFMS1000.MeasureTable.at(i);
-
-        row = netsnmp_create_table_data_row();
-
-
-        /***************************************************
-         * Adding indexes
-         */
-        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
-                    "adding indexes to table pstIFMS1000PortInfoTable\n"));
-        netsnmp_table_row_add_index(row,
-                               ASN_INTEGER,  /* index: pstIFMS1000PortNum */
-                               &info.pstIFMS1000MTPortNum,sizeof(info.pstIFMS1000MTPortNum));
-
-
-
-        DEBUGMSGTL(("initialize_table_pstIFMS1000PortInfoTable",
-                "adding column types to table pstIFMS1000PortInfoTable\n"));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MTPORTNUM, ASN_INTEGER, \
-                               &info.pstIFMS1000MTPortNum, sizeof(info.pstIFMS1000MTPortNum));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURESTARTPOSITION, ASN_OCTET_STR, \
-                               info.pstIFMS1000MeasureStartPosition, strlen(info.pstIFMS1000MeasureStartPosition));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREENDPOSITION, ASN_OCTET_STR, \
-                               info.pstIFMS1000MeasureEndPosition, strlen(info.pstIFMS1000MeasureEndPosition));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREREFINDEX, ASN_OCTET_STR, \
-                               info.pstIFMS1000MeasureRefIndex, strlen(info.pstIFMS1000MeasureRefIndex));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESOLUTION, ASN_OCTET_STR, \
-                               info.pstIFMS1000MeasureResolution, strlen(info.pstIFMS1000MeasureResolution));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURESTATUS, ASN_INTEGER, \
-                               &info.pstIFMS1000MeasureStatus, sizeof(info.pstIFMS1000MeasureStatus));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREACTION, ASN_INTEGER, \
-                               &info.pstIFMS1000MeasureAction, sizeof(info.pstIFMS1000MeasureAction));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESULTFILE, ASN_OCTET_STR, \
-                               &info.pstIFMS1000MeasureResultFile[0], info.pstIFMS1000MeasureResultFile.size());
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE, ASN_OCTET_STR, \
-                               &info.pstIFMS1000MeasureResultRawDataFile[0], info.pstIFMS1000MeasureResultRawDataFile.size());
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS, ASN_INTEGER, \
-                               &info.pstIFMS1000MeasureProgressStatus, sizeof(info.pstIFMS1000MeasureProgressStatus));
-        netsnmp_set_row_column(row, COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE, ASN_OCTET_STR, \
-                               &info.pstIFMS1000MeasureResultRawPointFile[0], info.pstIFMS1000MeasureResultRawPointFile.size());
-
-
-        netsnmp_table_dataset_add_row(table_set, row);
-    }
-        netsnmp_register_auto_data_table(table_set, NULL);
-}
-/** Initialize the pstIFMS1000FingerTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000FingerTable(void)
-{
-    const oid pstIFMS1000FingerTable_oid[] = {1,3,6,1,4,1,48391,3,5,3};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000FingerTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000FingerTable",
-                "adding indexes to table pstIFMS1000FingerTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000FTPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000FingerTable",
-                "adding column types to table pstIFMS1000FingerTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000FTPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERSTARTPOSITION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERENDPOSITION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERREFINDEX, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERRESOLUTION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERCREATETIME, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERFILESTATUS, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERACTION, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERACTIONSTATUS, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERSAVEDFILENAME, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000FINGERCURRENTFILENAME, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000FingerTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000FingerTable", pstIFMS1000FingerTable_handler,
-                                                        pstIFMS1000FingerTable_oid,
-                                                        OID_LENGTH(pstIFMS1000FingerTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000DiffTotalTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000DiffTotalTable(void)
-{
-    const oid pstIFMS1000DiffTotalTable_oid[] = {1,3,6,1,4,1,48391,3,5,4,1};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000DiffTotalTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DiffTotalTable",
-                "adding indexes to table pstIFMS1000DiffTotalTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000DtPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DiffTotalTable",
-                "adding column types to table pstIFMS1000DiffTotalTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000DTPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DTTOTALNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000DiffTotalTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000DiffTotalTable", pstIFMS1000DiffTotalTable_handler,
-                                                        pstIFMS1000DiffTotalTable_oid,
-                                                        OID_LENGTH(pstIFMS1000DiffTotalTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000DiffInfoTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000DiffInfoTable(void)
-{
-    const oid pstIFMS1000DiffInfoTable_oid[] = {1,3,6,1,4,1,48391,3,5,4,2};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000DiffInfoTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DiffInfoTable",
-                "adding indexes to table pstIFMS1000DiffInfoTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000DiffInfoPortNum */
-                           ASN_INTEGER,  /* index: pstIFMS1000DiffInfoPortItemIndex */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DiffInfoTable",
-                "adding column types to table pstIFMS1000DiffInfoTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000DIFFINFOPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DIFFINFOPORTITEMINDEX, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DIFFINFODISTANCE, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DIFFINFONVAL, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DIFFINFODBVAL, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DIFFINFODIFFTYPE, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DIFFINFOPOINTID, ASN_UNSIGNED, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000DiffInfoTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000DiffInfoTable", pstIFMS1000DiffInfoTable_handler,
-                                                        pstIFMS1000DiffInfoTable_oid,
-                                                        OID_LENGTH(pstIFMS1000DiffInfoTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000PortLedTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000PortLedTable(void)
-{
-    const oid pstIFMS1000PortLedTable_oid[] = {1,3,6,1,4,1,48391,3,5,6,2};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000PortLedTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000PortLedTable",
-                "adding indexes to table pstIFMS1000PortLedTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000PortLedPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000PortLedTable",
-                "adding column types to table pstIFMS1000PortLedTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000PORTLEDPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000PORTLEDSTATUS, ASN_INTEGER, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000PortLedTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000PortLedTable", pstIFMS1000PortLedTable_handler,
-                                                        pstIFMS1000PortLedTable_oid,
-                                                        OID_LENGTH(pstIFMS1000PortLedTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000DiagnoseTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000DiagnoseTable(void)
-{
-    const oid pstIFMS1000DiagnoseTable_oid[] = {1,3,6,1,4,1,48391,3,5,7};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000DiagnoseTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DiagnoseTable",
-                "adding indexes to table pstIFMS1000DiagnoseTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000DgPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DiagnoseTable",
-                "adding column types to table pstIFMS1000DiagnoseTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000DGPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGLASERACBIAS, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGLASERDCBIAS, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGLASERACMODULATION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGLASERDCMODULATION, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGLASEREN, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPWM, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGSEED, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPRBS, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGAVERAGE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGREGADDR, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGREGVALUE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGMASKSTARTPOINT, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGMASKSTOPPOINT, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGMASKACTION, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGMEASUREDELTATHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGCUTPOINTTHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPERIOD, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGDAC, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGCOUNTERCLOCKMODE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGSCANRUNTYPE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGOPT, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGFIBEROFFSET, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGTESTWAVELEN, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPRT, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPPW, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPPRESCALE, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPAVG, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPGAIN, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPADCDATA, ASN_UNSIGNED, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPE2PROMACTION, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000DiagnoseTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000DiagnoseTable", pstIFMS1000DiagnoseTable_handler,
-                                                        pstIFMS1000DiagnoseTable_oid,
-                                                        OID_LENGTH(pstIFMS1000DiagnoseTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000DebugRegTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000DebugRegTable(void)
-{
-    const oid pstIFMS1000DebugRegTable_oid[] = {1,3,6,1,4,1,48391,3,5,8};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000DebugRegTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DebugRegTable",
-                "adding indexes to table pstIFMS1000DebugRegTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000DbPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DebugRegTable",
-                "adding column types to table pstIFMS1000DebugRegTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000DBPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DBREGADDR, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DBREGVALUE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000DebugRegTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000DebugRegTable", pstIFMS1000DebugRegTable_handler,
-                                                        pstIFMS1000DebugRegTable_oid,
-                                                        OID_LENGTH(pstIFMS1000DebugRegTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000DebugDACTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000DebugDACTable(void)
-{
-    const oid pstIFMS1000DebugDACTable_oid[] = {1,3,6,1,4,1,48391,3,5,9};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000DebugDACTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DebugDACTable",
-                "adding indexes to table pstIFMS1000DebugDACTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000DacTPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DebugDACTable",
-                "adding column types to table pstIFMS1000DebugDACTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000DACTPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DACTCHANNELNUM, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000TDACVALUE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000DebugDACTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000DebugDACTable", pstIFMS1000DebugDACTable_handler,
-                                                        pstIFMS1000DebugDACTable_oid,
-                                                        OID_LENGTH(pstIFMS1000DebugDACTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000DebugE2promTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000DebugE2promTable(void)
-{
-    const oid pstIFMS1000DebugE2promTable_oid[] = {1,3,6,1,4,1,48391,3,5,10};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000DebugE2promTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DebugE2promTable",
-                "adding indexes to table pstIFMS1000DebugE2promTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000DbE2TPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000DebugE2promTable",
-                "adding column types to table pstIFMS1000DebugE2promTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000DBE2TPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DBE2TADDR, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DBE2TVALUE, ASN_INTEGER, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000DebugE2promTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000DebugE2promTable", pstIFMS1000DebugE2promTable_handler,
-                                                        pstIFMS1000DebugE2promTable_oid,
-                                                        OID_LENGTH(pstIFMS1000DebugE2promTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ExtendAlarmTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ExtendAlarmTable(void)
-{
-    const oid pstIFMS1000ExtendAlarmTable_oid[] = {1,3,6,1,4,1,48391,3,5,12};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ExtendAlarmTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ExtendAlarmTable",
-                "adding indexes to table pstIFMS1000ExtendAlarmTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000EAPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ExtendAlarmTable",
-                "adding column types to table pstIFMS1000ExtendAlarmTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000EAPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000EXTENDALARM, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ExtendAlarmTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ExtendAlarmTable", pstIFMS1000ExtendAlarmTable_handler,
-                                                        pstIFMS1000ExtendAlarmTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ExtendAlarmTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ExpertExtendTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ExpertExtendTable(void)
-{
-    const oid pstIFMS1000ExpertExtendTable_oid[] = {1,3,6,1,4,1,48391,3,5,13};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ExpertExtendTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ExpertExtendTable",
-                "adding indexes to table pstIFMS1000ExpertExtendTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: pstIFMS1000EEPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ExpertExtendTable",
-                "adding column types to table pstIFMS1000ExpertExtendTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PSTIFMS1000EEPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPBIAS1, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPBIAS2, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPMODULATION1, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPMODULATION2, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPBACKSCATTER, ASN_INTEGER, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPMEASUREDELTATHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPCUTPOINTTHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPMFACTOR, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGFAULTCRITICALTHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGFAULTMAJORTHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGFAULTMINORTHLD, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPAFACTOR, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                                            COLUMN_PSTIFMS1000DGPBFACTOR, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ExpertExtendTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ExpertExtendTable", pstIFMS1000ExpertExtendTable_handler,
-                                                        pstIFMS1000ExpertExtendTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ExpertExtendTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000PonConfTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000PonConfTable(void)
-{
-    const oid pstIFMS1000PonConfTable_oid[] = {1,3,6,1,4,1,48391,3,5,14};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000PonConfTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000PonConfTable",
-                "adding indexes to table pstIFMS1000PonConfTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_UNSIGNED,  /* index: pctPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000PonConfTable",
-                "adding column types to table pstIFMS1000PonConfTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_PCTPORTNUM, ASN_UNSIGNED, 0,
-                                            NULL, 0,
-                                            COLUMN_PCTSP1LOCITEM, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000PonConfTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000PonConfTable", pstIFMS1000PonConfTable_handler,
-                                                        pstIFMS1000PonConfTable_oid,
-                                                        OID_LENGTH(pstIFMS1000PonConfTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ParamsV32TotalNumTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ParamsV32TotalNumTable(void)
-{
-    const oid pstIFMS1000ParamsV32TotalNumTable_oid[] = {1,3,6,1,4,1,48391,3,5,15,1};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ParamsV32TotalNumTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsV32TotalNumTable",
-                "adding indexes to table pstIFMS1000ParamsV32TotalNumTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: v32TPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsV32TotalNumTable",
-                "adding column types to table pstIFMS1000ParamsV32TotalNumTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_V32TPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_V32PORTTOTALNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ParamsV32TotalNumTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ParamsV32TotalNumTable", pstIFMS1000ParamsV32TotalNumTable_handler,
-                                                        pstIFMS1000ParamsV32TotalNumTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ParamsV32TotalNumTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ParamsV32NameTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ParamsV32NameTable(void)
-{
-    const oid pstIFMS1000ParamsV32NameTable_oid[] = {1,3,6,1,4,1,48391,3,5,15,2};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ParamsV32NameTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsV32NameTable",
-                "adding indexes to table pstIFMS1000ParamsV32NameTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: v32PortNum */
-                           ASN_INTEGER,  /* index: v32ParamNameNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsV32NameTable",
-                "adding column types to table pstIFMS1000ParamsV32NameTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_V32PORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_V32PARAMNAMENUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_V32PARAMNAME, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ParamsV32NameTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ParamsV32NameTable", pstIFMS1000ParamsV32NameTable_handler,
-                                                        pstIFMS1000ParamsV32NameTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ParamsV32NameTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ParamsV32ValTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ParamsV32ValTable(void)
-{
-    const oid pstIFMS1000ParamsV32ValTable_oid[] = {1,3,6,1,4,1,48391,3,5,15,3};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ParamsV32ValTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsV32ValTable",
-                "adding indexes to table pstIFMS1000ParamsV32ValTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: v32ValPortNum */
-                           ASN_INTEGER,  /* index: v32ParamValNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsV32ValTable",
-                "adding column types to table pstIFMS1000ParamsV32ValTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_V32VALPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_V32PARAMVALNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_V32PARAMVAL, ASN_UNSIGNED, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ParamsV32ValTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ParamsV32ValTable", pstIFMS1000ParamsV32ValTable_handler,
-                                                        pstIFMS1000ParamsV32ValTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ParamsV32ValTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ParamsS32TotalNumTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ParamsS32TotalNumTable(void)
-{
-    const oid pstIFMS1000ParamsS32TotalNumTable_oid[] = {1,3,6,1,4,1,48391,3,5,16,1};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ParamsS32TotalNumTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsS32TotalNumTable",
-                "adding indexes to table pstIFMS1000ParamsS32TotalNumTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: s32TPortNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsS32TotalNumTable",
-                "adding column types to table pstIFMS1000ParamsS32TotalNumTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_S32TPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_S32PORTTOTALNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ParamsS32TotalNumTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ParamsS32TotalNumTable", pstIFMS1000ParamsS32TotalNumTable_handler,
-                                                        pstIFMS1000ParamsS32TotalNumTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ParamsS32TotalNumTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ParamsS32NameTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ParamsS32NameTable(void)
-{
-    const oid pstIFMS1000ParamsS32NameTable_oid[] = {1,3,6,1,4,1,48391,3,5,16,2};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ParamsS32NameTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsS32NameTable",
-                "adding indexes to table pstIFMS1000ParamsS32NameTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: s32PortNum */
-                           ASN_INTEGER,  /* index: s32ParamNameNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsS32NameTable",
-                "adding column types to table pstIFMS1000ParamsS32NameTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_S32PORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_S32PARAMNAMENUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_S32PARAMNAMEVAL, ASN_OCTET_STR, 0,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ParamsS32NameTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ParamsS32NameTable", pstIFMS1000ParamsS32NameTable_handler,
-                                                        pstIFMS1000ParamsS32NameTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ParamsS32NameTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
-}
-/** Initialize the pstIFMS1000ParamsS32ValTable table by defining its contents and how it's structured */
-void
- QPSTProduct::initialize_table_pstIFMS1000ParamsS32ValTable(void)
-{
-    const oid pstIFMS1000ParamsS32ValTable_oid[] = {1,3,6,1,4,1,48391,3,5,16,3};
-    netsnmp_table_data_set *table_set;
-
-    /* create the table structure itself */
-    table_set = netsnmp_create_table_data_set("pstIFMS1000ParamsS32ValTable");
-
-    /* comment this out or delete if you don't support creation of new rows */
-    table_set->allow_creation = 1;
-
-    /***************************************************
-     * Adding indexes
-     */
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsS32ValTable",
-                "adding indexes to table pstIFMS1000ParamsS32ValTable\n"));
-    netsnmp_table_set_add_indexes(table_set,
-                           ASN_INTEGER,  /* index: s32ValPortNum */
-                           ASN_INTEGER,  /* index: s32ParamValNum */
-                           0);
-
-    DEBUGMSGTL(("initialize_table_pstIFMS1000ParamsS32ValTable",
-                "adding column types to table pstIFMS1000ParamsS32ValTable\n"));		 
-    netsnmp_table_set_multi_add_default_row(table_set,
-                                            COLUMN_S32VALPORTNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_S32PARAMVALNUM, ASN_INTEGER, 0,
-                                            NULL, 0,
-                                            COLUMN_S32PARAMVAL, ASN_OCTET_STR, 1,
-                                            NULL, 0,
-                              0);
-    
-    /* registering the table with the master agent */
-    /* note: if you don't need a subhandler to deal with any aspects
-       of the request, change pstIFMS1000ParamsS32ValTable_handler to "NULL" */
-    netsnmp_register_table_data_set(netsnmp_create_handler_registration("pstIFMS1000ParamsS32ValTable", pstIFMS1000ParamsS32ValTable_handler,
-                                                        pstIFMS1000ParamsS32ValTable_oid,
-                                                        OID_LENGTH(pstIFMS1000ParamsS32ValTable_oid),
-                                                        HANDLER_CAN_RWRITE),
-                            table_set, NULL);
+    /* Initialise the contents of the table here */
 }
 
-/** handles requests for the pstIFMS1000PortInfoTable table, if anything else needs to be done */
+    /* Typical data structure for a row entry */
+/** handles requests for the pstIFMS1000PortInfoTable table */
 int
- QPSTProduct::pstIFMS1000PortInfoTable_handler(
+QPSTProduct::pstIFMS1000PortInfoTable_handler(
     netsnmp_mib_handler               *handler,
     netsnmp_handler_registration      *reginfo,
     netsnmp_agent_request_info        *reqinfo,
     netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
 
-/** handles requests for the pstIFMS1000MeasureTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000MeasureTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-#if 0
-    netsnmp_request_info *request;
+    netsnmp_request_info       *request;
     netsnmp_table_request_info *table_info;
-    netsnmp_tdata  *table_data;
-    netsnmp_tdata_row *table_row;
-    pstIFMS1000MeasureEntry *table_entry;
-    int             ret;
-    netsnmp_session *sess = NULL;
-    char           *secName;
-//    /* column number definitions for table pstIFMS1000MeasureTable */
-//           #define COLUMN_PSTIFMS1000MTPORTNUM		1
-//           #define COLUMN_PSTIFMS1000MEASURESTARTPOSITION		2
-//           #define COLUMN_PSTIFMS1000MEASUREENDPOSITION		3
-//           #define COLUMN_PSTIFMS1000MEASUREREFINDEX		4
-//           #define COLUMN_PSTIFMS1000MEASURERESOLUTION		5
-//           #define COLUMN_PSTIFMS1000MEASURESTATUS		6
-//           #define COLUMN_PSTIFMS1000MEASUREACTION		7
-//           #define COLUMN_PSTIFMS1000MEASURERESULTFILE		8
-//           #define COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE		9
-//           #define COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS		10
-//           #define COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE		11
-    DEBUGMSGTL(( "pstIFMS1000MeasureTable", "pstIFMS1000MeasureTable_handler called.\n"));
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000PortInfoTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
     switch (reqinfo->mode) {
         /*
          * Read-support (also covers GetNext requests)
          */
     case MODE_GET:
-        for (request = requests; request; request = request->next) {
-            table_entry = (pstIFMS1000MeasureEntry *)
-                netsnmp_tdata_extract_entry(request);
-            table_info = netsnmp_extract_table_info(request);
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
 
+            table_entry = (struct pstIFMS1000PortInfoTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
             switch (table_info->colnum) {
-            case COLUMN_PSTIFMS1000MTPORTNUM:
-             {   snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-                                           0);
-                qDebug() << *(request->requestvb->name) << endl;
-                qDebug() << request->requestvb->index << endl;
-                qDebug() << request->requestvb->buf << endl;
-                qDebug() << request->requestvb->data << endl;
-             }
+            case COLUMN_PSTIFMS1000PORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortNum);
                 break;
-            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
-//                snmp_set_var_typed_value(request->requestvb, ASN_OCTET_STR,
-//                                           m_pstIFMS1000.pstIFMS1000MeasureStartPosition, );
+            case COLUMN_PSTIFMS1000PORTRXPWR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000PortRxPwr,
+                                          table_entry->pstIFMS1000PortRxPwr_len);
                 break;
-            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
-//                snmp_set_var_typed_value(request->requestvb, ASN_OBJECT_ID,
-//                                         (u_char *) table_entry->
-//                                         alarmVariable,
-//                                         table_entry->alarmVariable_len *
-//                                         sizeof(oid));
+            case COLUMN_PSTIFMS1000PORTTXPWR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000PortTxPwr,
+                                          table_entry->pstIFMS1000PortTxPwr_len);
                 break;
-            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
-//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-//                                           table_entry->alarmSampleType);
+            case COLUMN_PSTIFMS1000PORTWORKMODE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortWorkMode);
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
-//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-//                                           table_entry->alarmValue);
+            case COLUMN_PSTIFMS1000PORTACTIVE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortActive);
                 break;
-            case COLUMN_PSTIFMS1000MEASURESTATUS:
-//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-//                                           table_entry->alarmStartupAlarm);
+            case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortFiberAppType);
                 break;
-            case COLUMN_PSTIFMS1000MEASUREACTION:
-//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-//                                           table_entry->
-//                                           alarmRisingThreshold);
+            case COLUMN_PSTIFMS1000PORTRUNNINGSTATUS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortRunningStatus);
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTFILE:
-//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-//                                           table_entry->
-//                                           alarmFallingThreshold);
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE:
-//                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,
-//                                           table_entry->
-//                                           alarmRisingEventIndex);
-                break;
-            case COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS:
-            {    long progress = 39;
-                snmp_set_var_typed_integer(request->requestvb, ASN_INTEGER,progress);
-                break;
-            }
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
-//                snmp_set_var_typed_value(request->requestvb, ASN_OCTET_STR,
-//                                         (u_char *) table_entry->
-//                                         alarmOwner,
-//                                         table_entry->alarmOwner_len);
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
                 break;
             }
         }
         break;
 
-//        /*
-//         * Write-support
-//         */
-//    case MODE_SET_RESERVE1:
-//        for (request = requests; request; request = request->next) {
-//            table_entry = (struct pstIFMS1000MeasureEntry *)
-//                netsnmp_tdata_extract_entry(request);
-//            table_info = netsnmp_extract_table_info(request);
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
 
-//            switch (table_info->colnum) {
-//            case COLUMN_ALARMINTERVAL:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMVARIABLE:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_type_and_max_size'
-//                 */
-//                break;
-//            case COLUMN_ALARMSAMPLETYPE:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMSTARTUPALARM:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMRISINGTHRESHOLD:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMFALLINGTHRESHOLD:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMRISINGEVENTINDEX:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMFALLINGEVENTINDEX:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            case COLUMN_ALARMOWNER:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_type_and_max_size'
-//                 */
-//                break;
-//            case COLUMN_ALARMSTATUS:
-//                /*
-//                 * or possibly 'netsnmp_check_vb_int_range'
-//                 */
-//                ret = netsnmp_check_vb_int(request->requestvb);
-//                if (ret != SNMP_ERR_NOERROR) {
-//                    netsnmp_set_request_error(reqinfo, request, ret);
-//                    return SNMP_ERR_NOERROR;
-//                }
-//                break;
-//            default:
-//                netsnmp_set_request_error(reqinfo, request,
-//                                          SNMP_ERR_NOTWRITABLE);
-//                return SNMP_ERR_NOERROR;
-//            }
-//        }
-//        break;
+            table_entry = (struct pstIFMS1000PortInfoTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000PORTWORKMODE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
 
-//    case MODE_SET_RESERVE2:
-//        for (request = requests; request; request = request->next) {
-//            table_row = netsnmp_tdata_extract_row(request);
-//            table_data = netsnmp_tdata_extract_table(request);
-//            table_info = netsnmp_extract_table_info(request);
+    case MODE_SET_RESERVE2:
+        break;
 
-//            switch (table_info->colnum) {
-//            case COLUMN_ALARMINTERVAL:
-//            case COLUMN_ALARMVARIABLE:
-//            case COLUMN_ALARMSAMPLETYPE:
-//            case COLUMN_ALARMSTARTUPALARM:
-//            case COLUMN_ALARMRISINGTHRESHOLD:
-//            case COLUMN_ALARMFALLINGTHRESHOLD:
-//            case COLUMN_ALARMRISINGEVENTINDEX:
-//            case COLUMN_ALARMFALLINGEVENTINDEX:
-//            case COLUMN_ALARMOWNER:
-//            case COLUMN_ALARMSTATUS:
-//                if (!table_row) {
-//                    table_row =
-//                        alarmTable_createEntry(table_data,
-//                                               *table_info->indexes->val.
-//                                               integer);
-//                    if (table_row) {
-//                        netsnmp_insert_tdata_row(request, table_row);
-//                    } else {
-//                        netsnmp_set_request_error(reqinfo, request,
-//                                                  SNMP_ERR_RESOURCEUNAVAILABLE);
-//                        return SNMP_ERR_NOERROR;
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//        break;
+    case MODE_SET_FREE:
+        break;
 
-//    case MODE_SET_FREE:
-//        for (request = requests; request; request = request->next) {
-//            table_entry = (struct pstIFMS1000MeasureEntry *)
-//                netsnmp_tdata_extract_entry(request);
-//            table_row = netsnmp_tdata_extract_row(request);
-//            table_data = netsnmp_tdata_extract_table(request);
-//            table_info = netsnmp_extract_table_info(request);
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
 
-//            switch (table_info->colnum) {
-//            case COLUMN_ALARMINTERVAL:
-//            case COLUMN_ALARMVARIABLE:
-//            case COLUMN_ALARMSAMPLETYPE:
-//            case COLUMN_ALARMSTARTUPALARM:
-//            case COLUMN_ALARMRISINGTHRESHOLD:
-//            case COLUMN_ALARMFALLINGTHRESHOLD:
-//            case COLUMN_ALARMRISINGEVENTINDEX:
-//            case COLUMN_ALARMFALLINGEVENTINDEX:
-//            case COLUMN_ALARMOWNER:
-//            case COLUMN_ALARMSTATUS:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                }
-//                break;
-//            }
-//        }
-//        break;
+            table_entry = (struct pstIFMS1000PortInfoTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000PORTWORKMODE:
+                table_entry->old_pstIFMS1000PortWorkMode = table_entry->pstIFMS1000PortWorkMode;
+                table_entry->pstIFMS1000PortWorkMode     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
+                table_entry->old_pstIFMS1000PortFiberAppType = table_entry->pstIFMS1000PortFiberAppType;
+                table_entry->pstIFMS1000PortFiberAppType     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
 
-//    case MODE_SET_ACTION:
-//        for (request = requests; request; request = request->next) {
-//            table_entry = (struct pstIFMS1000MeasureEntry *)
-//                netsnmp_tdata_extract_entry(request);
-//            table_info = netsnmp_extract_table_info(request);
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
 
-//            switch (table_info->colnum) {
-//            case COLUMN_ALARMINTERVAL:
-//                table_entry->old_alarmInterval =
-//                    table_entry->alarmInterval;
-//                table_entry->alarmInterval =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMVARIABLE:
-//                table_entry->alarmVariable_len =
-//                    request->requestvb->val_len / sizeof(oid);
-//                memset(table_entry->alarmVariable, 0,
-//                       sizeof(table_entry->alarmVariable));
-//                memcpy(table_entry->alarmVariable,
-//                       request->requestvb->val.objid,
-//                       request->requestvb->val_len);
-//                break;
-//            case COLUMN_ALARMSAMPLETYPE:
-//                table_entry->old_alarmSampleType =
-//                    table_entry->alarmSampleType;
-//                table_entry->alarmSampleType =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMSTARTUPALARM:
-//                table_entry->old_alarmStartupAlarm =
-//                    table_entry->alarmStartupAlarm;
-//                table_entry->alarmStartupAlarm =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMRISINGTHRESHOLD:
-//                table_entry->old_alarmRisingThreshold =
-//                    table_entry->alarmRisingThreshold;
-//                table_entry->alarmRisingThreshold =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMFALLINGTHRESHOLD:
-//                table_entry->old_alarmFallingThreshold =
-//                    table_entry->alarmFallingThreshold;
-//                table_entry->alarmFallingThreshold =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMRISINGEVENTINDEX:
-//                table_entry->old_alarmRisingEventIndex =
-//                    table_entry->alarmRisingEventIndex;
-//                table_entry->alarmRisingEventIndex =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMFALLINGEVENTINDEX:
-//                table_entry->old_alarmFallingEventIndex =
-//                    table_entry->alarmFallingEventIndex;
-//                table_entry->alarmFallingEventIndex =
-//                    *request->requestvb->val.integer;
-//                break;
-//            case COLUMN_ALARMOWNER:
-//                memcpy(table_entry->old_alarmOwner,
-//                       table_entry->alarmOwner,
-//                       sizeof(table_entry->alarmOwner));
-//                table_entry->old_alarmOwner_len =
-//                    table_entry->alarmOwner_len;
-//                memset(table_entry->alarmOwner, 0,
-//                       sizeof(table_entry->alarmOwner));
-//                memcpy(table_entry->alarmOwner,
-//                       request->requestvb->val.string,
-//                       request->requestvb->val_len);
-//                table_entry->alarmOwner_len = request->requestvb->val_len;
-//                break;
-//            case COLUMN_ALARMSTATUS:
-//                table_entry->old_alarmStatus = table_entry->alarmStatus;
-//                table_entry->alarmStatus =
-//                    *request->requestvb->val.integer;
-//                break;
-//            }
-//        }
-//        break;
+            table_entry = (struct pstIFMS1000PortInfoTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000PORTWORKMODE:
+                table_entry->pstIFMS1000PortWorkMode     = table_entry->old_pstIFMS1000PortWorkMode;
+                table_entry->old_pstIFMS1000PortWorkMode = 0;
+                break;
+            case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
+                table_entry->pstIFMS1000PortFiberAppType     = table_entry->old_pstIFMS1000PortFiberAppType;
+                table_entry->old_pstIFMS1000PortFiberAppType = 0;
+                break;
+            }
+        }
+        break;
 
-//    case MODE_SET_UNDO:
-//        for (request = requests; request; request = request->next) {
-//            table_entry = (struct pstIFMS1000MeasureEntry *)
-//                netsnmp_tdata_extract_entry(request);
-//            table_row = netsnmp_tdata_extract_row(request);
-//            table_data = netsnmp_tdata_extract_table(request);
-//            table_info = netsnmp_extract_table_info(request);
-
-//            switch (table_info->colnum) {
-//            case COLUMN_ALARMINTERVAL:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmInterval =
-//                        table_entry->old_alarmInterval;
-//                    table_entry->old_alarmInterval = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMVARIABLE:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    memcpy(table_entry->alarmVariable,
-//                           table_entry->old_alarmVariable,
-//                           sizeof(table_entry->alarmVariable));
-//                    memset(table_entry->old_alarmVariable, 0,
-//                           sizeof(table_entry->alarmVariable));
-//                    table_entry->alarmVariable_len =
-//                        table_entry->old_alarmVariable_len;
-//                }
-//                break;
-//            case COLUMN_ALARMSAMPLETYPE:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmSampleType =
-//                        table_entry->old_alarmSampleType;
-//                    table_entry->old_alarmSampleType = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMSTARTUPALARM:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmStartupAlarm =
-//                        table_entry->old_alarmStartupAlarm;
-//                    table_entry->old_alarmStartupAlarm = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMRISINGTHRESHOLD:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmRisingThreshold =
-//                        table_entry->old_alarmRisingThreshold;
-//                    table_entry->old_alarmRisingThreshold = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMFALLINGTHRESHOLD:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmFallingThreshold =
-//                        table_entry->old_alarmFallingThreshold;
-//                    table_entry->old_alarmFallingThreshold = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMRISINGEVENTINDEX:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmRisingEventIndex =
-//                        table_entry->old_alarmRisingEventIndex;
-//                    table_entry->old_alarmRisingEventIndex = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMFALLINGEVENTINDEX:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmFallingEventIndex =
-//                        table_entry->old_alarmFallingEventIndex;
-//                    table_entry->old_alarmFallingEventIndex = 0;
-//                }
-//                break;
-//            case COLUMN_ALARMOWNER:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    memcpy(table_entry->alarmOwner,
-//                           table_entry->old_alarmOwner,
-//                           sizeof(table_entry->alarmOwner));
-//                    memset(table_entry->old_alarmOwner, 0,
-//                           sizeof(table_entry->alarmOwner));
-//                    table_entry->alarmOwner_len =
-//                        table_entry->old_alarmOwner_len;
-//                }
-//                break;
-//            case COLUMN_ALARMSTATUS:
-//                if (table_entry && !table_entry->valid) {
-//                    alarmTable_removeEntry(table_data, table_row);
-//                } else {
-//                    table_entry->alarmStatus =
-//                        table_entry->old_alarmStatus;
-//                    table_entry->old_alarmStatus = 0;
-//                }
-//                break;
-//            }
-//        }
-//        break;
-
-//    case MODE_SET_COMMIT:
-//        for (request = requests; request; request = request->next) {
-//            table_entry = (struct pstIFMS1000MeasureEntry *)
-//                netsnmp_tdata_extract_entry(request);
-//            table_info = netsnmp_extract_table_info(request);
-
-//            switch (table_info->colnum) {
-//            case COLUMN_ALARMINTERVAL:
-//            case COLUMN_ALARMVARIABLE:
-//            case COLUMN_ALARMSAMPLETYPE:
-//            case COLUMN_ALARMSTARTUPALARM:
-//            case COLUMN_ALARMRISINGTHRESHOLD:
-//            case COLUMN_ALARMFALLINGTHRESHOLD:
-//            case COLUMN_ALARMRISINGEVENTINDEX:
-//            case COLUMN_ALARMFALLINGEVENTINDEX:
-//            case COLUMN_ALARMOWNER:
-//                if (table_entry && !table_entry->valid) {
-//                    table_entry->valid = 1;
-//                }
-//                break;
-//            case COLUMN_ALARMSTATUS:
-//                switch (*request->requestvb->val.integer) {
-//                case RMON1_ENTRY_VALID:
-//                    alarmTable_enable( table_entry );
-//                    break;
-//                case RMON1_ENTRY_UNDER_CREATION:
-//                    alarmTable_disable( table_entry );
-//#if 0
-//                    table_entry->session = (netsnmp_session *)
-//                        netsnmp_iquery_pdu_session(reqinfo->asp->pdu);
-//#else
-//                    secName = netsnmp_ds_get_string(NETSNMP_DS_APPLICATION_ID,
-//                                                    NETSNMP_DS_AGENT_INTERNAL_SECNAME);
-//                    if (secName) {
-//                        sess   = netsnmp_iquery_user_session(secName);
-//                        netsnmp_query_set_default_session(sess);
-//                        DEBUGMSGTL(("rmon:alarmTable", "user name %s\n", secName));
-//                    } else {
-//                        snmp_log(LOG_ERR, "user name %s not found\n", secName);
-//                        config_perror("Unknown user name\n");
-//                    }
-
-//                    if (NULL == sess) {
-//                        sess = netsnmp_query_get_default_session();
-//                        if (NULL == sess) {
-//                            config_perror
-//                                ("You must specify a default user name using the agentSecName token\n");
-//                            return SNMP_ERR_NOERROR;
-//                        }
-//                    }
-//#endif
-//                    break;
-//                case RMON1_ENTRY_INVALID:
-//                    table_row = netsnmp_tdata_extract_row(request);
-//                    table_data = netsnmp_tdata_extract_table(request);
-//                    alarmTable_removeEntry(table_data, table_row);
-//                }
-//                break;
-//            }
-//        }
-//        break;
+    case MODE_SET_COMMIT:
+        break;
     }
-#endif
     return SNMP_ERR_NOERROR;
 }
 
-/** handles requests for the pstIFMS1000FingerTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000FingerTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000DiffTotalTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000DiffTotalTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000DiffInfoTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000DiffInfoTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000PortLedTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000PortLedTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000DiagnoseTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000DiagnoseTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000DebugRegTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000DebugRegTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000DebugDACTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000DebugDACTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000DebugE2promTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000DebugE2promTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ExtendAlarmTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ExtendAlarmTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ExpertExtendTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ExpertExtendTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000PonConfTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000PonConfTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ParamsV32TotalNumTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ParamsV32TotalNumTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ParamsV32NameTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ParamsV32NameTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ParamsV32ValTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ParamsV32ValTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ParamsS32TotalNumTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ParamsS32TotalNumTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ParamsS32NameTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ParamsS32NameTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-/** handles requests for the pstIFMS1000ParamsS32ValTable table, if anything else needs to be done */
-int
- QPSTProduct::pstIFMS1000ParamsS32ValTable_handler(
-    netsnmp_mib_handler               *handler,
-    netsnmp_handler_registration      *reginfo,
-    netsnmp_agent_request_info        *reqinfo,
-    netsnmp_request_info              *requests) {
-    /* perform anything here that you need to do.  The requests have
-       already been processed by the master table_dataset handler, but
-       this gives you chance to act on the request in some other way
-       if need be. */
-    return SNMP_ERR_NOERROR;
-}
-
-// Trap
-int
-QPSTProduct::send_pstIFMS1000MeasureEvent_trap( void )
+/** Initialize the pstIFMS1000MeasureTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
 {
-     QMutexLocker locker(&PSTProduct_mutex);
-     char peername[256];
-     char community[256];
-     strcpy(peername,"192.168.0.12:1622");
-     strcpy(community,"public");
-//     snmpd_free_trapsinks();
-     create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
-     static long modstatus = 0;
-//     netsnmp_session     _session;
-//    netsnmp_session     *_ss;
-//    char           *trap = NULL;
+    const oid pstIFMS1000MeasureTable_oid[] = {1,3,6,1,4,1,48391,3,5,2};
+    const size_t pstIFMS1000MeasureTable_oid_len   = OID_LENGTH(pstIFMS1000MeasureTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
 
-//    char peername[256];
-//    char community[256];
-//    strcpy(peername,"192.168.0.12:1622");
-//    strcpy(community,"public");
-//    init_snmp(QAgentApp::getAppName().toLatin1());
-//     snmp_sess_init(&_session);
-//    _session.paramName = peername;
-//    _session.community = (u_char*)community;
-//    _session.community_len = strlen(community);
-//    _session.version = SNMP_VERSION_2c;
-//    _ss = snmp_add(&_session, netsnmp_transport_open_client("snmptrap", _session.peername),NULL,NULL);
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000MeasureTable\n"));
 
-//    if(_ss == NULL){
-//        snmp_sess_perror("snmptrap", &_session);
-//    }
-    //    const oid objid_sysuptime[]={1,3,6,1,2,1,1,3,0};
-    //    const oid objid_snmptrap[]={1,3,6,1,6,3,1,1,4,1,0};
-    //    const oid objid_enterprise[] = {1,3,6,1,4,1,48391};
-    //    const oid pstIFMS1000MeasureEvent_oid[] = { 1,3,6,1,4,1,48391,3,5,5,1,0};
-    ////    const oid pstIFMS1000MeasureStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,2,1,6,0 /* insert index here */ };
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000MeasureTable",     pstIFMS1000MeasureTable_handler,
+              pstIFMS1000MeasureTable_oid, pstIFMS1000MeasureTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000MeasureTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000MeasureTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000MeasureTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000MTPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000MTPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+    /* Typical data structure for a row entry */
 
 
-    //    long    sysuptime;
-    //    char    csysuptime[20];
+/** handles requests for the pstIFMS1000MeasureTable table */
+int
+QPSTProduct::pstIFMS1000MeasureTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
 
-    netsnmp_variable_list  *var_list = NULL;
-    const oid snmptrap_oid[]={1,3,6,1,6,3,1,1,4,1,0};
-    const oid pstIFMS1000MeasureEvent_oid[] = { 1,3,6,1,4,1,48391,3,5,5,1 };
-    const oid pstIFMS1000MeasureStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,2,1,6, /* insert index here */ };
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000MeasureTable_entry          *table_entry;
+    int                         ret;
 
-    /*
-     * Set the snmpTrapOid.0 value
-     */
-    snmp_varlist_add_variable(&var_list,
-        snmptrap_oid, OID_LENGTH(snmptrap_oid),
-        ASN_OBJECT_ID,
-        pstIFMS1000MeasureEvent_oid, sizeof(pstIFMS1000MeasureEvent_oid));
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
 
-    /*
-     * Add any objects from the trap definition
-     */
-    snmp_varlist_add_variable(&var_list,
-        pstIFMS1000MeasureEvent_oid, OID_LENGTH(pstIFMS1000MeasureEvent_oid),
-        ASN_INTEGER,
-        /* Set an appropriate value for pstIFMS1000MeasureStatus */
-        &modstatus, sizeof(modstatus));
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
 
-    /*
-     * Add any extra (optional) objects here
-     */
+            table_entry = (struct pstIFMS1000MeasureTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000MTPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000MTPortNum);
+                break;
+            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureStartPosition,
+                                          table_entry->pstIFMS1000MeasureStartPosition_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureEndPosition,
+                                          table_entry->pstIFMS1000MeasureEndPosition_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureRefIndex,
+                                          table_entry->pstIFMS1000MeasureRefIndex_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureResolution,
+                                          table_entry->pstIFMS1000MeasureResolution_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURESTATUS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000MeasureStatus);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREACTION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000MeasureAction);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTFILE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureResultFile,
+                                          table_entry->pstIFMS1000MeasureResultFile_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureResultRawDataFile,
+                                          table_entry->pstIFMS1000MeasureResultRawDataFile_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000MeasureProgressStatus);
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureResultRawPointFile,
+                                          table_entry->pstIFMS1000MeasureResultRawPointFile_len);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
 
-    /*
-     * Send the trap to the list of configured destinations
-     *  and clean up
-     */
-    send_v2trap( var_list );
-    snmp_free_varbind( var_list );
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000MeasureTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureResolution));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREACTION:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000MeasureTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+                memcpy( table_entry->old_pstIFMS1000MeasureStartPosition,
+                        table_entry->pstIFMS1000MeasureStartPosition,
+                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+                table_entry->old_pstIFMS1000MeasureStartPosition_len =
+                        table_entry->pstIFMS1000MeasureStartPosition_len;
+                memset( table_entry->pstIFMS1000MeasureStartPosition, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+                memcpy( table_entry->pstIFMS1000MeasureStartPosition,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureStartPosition_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+                memcpy( table_entry->old_pstIFMS1000MeasureEndPosition,
+                        table_entry->pstIFMS1000MeasureEndPosition,
+                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+                table_entry->old_pstIFMS1000MeasureEndPosition_len =
+                        table_entry->pstIFMS1000MeasureEndPosition_len;
+                memset( table_entry->pstIFMS1000MeasureEndPosition, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+                memcpy( table_entry->pstIFMS1000MeasureEndPosition,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureEndPosition_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+                memcpy( table_entry->old_pstIFMS1000MeasureRefIndex,
+                        table_entry->pstIFMS1000MeasureRefIndex,
+                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+                table_entry->old_pstIFMS1000MeasureRefIndex_len =
+                        table_entry->pstIFMS1000MeasureRefIndex_len;
+                memset( table_entry->pstIFMS1000MeasureRefIndex, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+                memcpy( table_entry->pstIFMS1000MeasureRefIndex,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureRefIndex_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+                memcpy( table_entry->old_pstIFMS1000MeasureResolution,
+                        table_entry->pstIFMS1000MeasureResolution,
+                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+                table_entry->old_pstIFMS1000MeasureResolution_len =
+                        table_entry->pstIFMS1000MeasureResolution_len;
+                memset( table_entry->pstIFMS1000MeasureResolution, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+                memcpy( table_entry->pstIFMS1000MeasureResolution,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureResolution_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREACTION:
+                table_entry->old_pstIFMS1000MeasureAction = table_entry->pstIFMS1000MeasureAction;
+                table_entry->pstIFMS1000MeasureAction     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+                memcpy( table_entry->old_pstIFMS1000MeasureResultRawPointFile,
+                        table_entry->pstIFMS1000MeasureResultRawPointFile,
+                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
+                table_entry->old_pstIFMS1000MeasureResultRawPointFile_len =
+                        table_entry->pstIFMS1000MeasureResultRawPointFile_len;
+                memset( table_entry->pstIFMS1000MeasureResultRawPointFile, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
+                memcpy( table_entry->pstIFMS1000MeasureResultRawPointFile,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureResultRawPointFile_len =
+                        request->requestvb->val_len;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000MeasureTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+                memcpy( table_entry->pstIFMS1000MeasureStartPosition,
+                        table_entry->old_pstIFMS1000MeasureStartPosition,
+                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+                memset( table_entry->old_pstIFMS1000MeasureStartPosition, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+                table_entry->pstIFMS1000MeasureStartPosition_len =
+                        table_entry->old_pstIFMS1000MeasureStartPosition_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+                memcpy( table_entry->pstIFMS1000MeasureEndPosition,
+                        table_entry->old_pstIFMS1000MeasureEndPosition,
+                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+                memset( table_entry->old_pstIFMS1000MeasureEndPosition, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+                table_entry->pstIFMS1000MeasureEndPosition_len =
+                        table_entry->old_pstIFMS1000MeasureEndPosition_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+                memcpy( table_entry->pstIFMS1000MeasureRefIndex,
+                        table_entry->old_pstIFMS1000MeasureRefIndex,
+                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+                memset( table_entry->old_pstIFMS1000MeasureRefIndex, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+                table_entry->pstIFMS1000MeasureRefIndex_len =
+                        table_entry->old_pstIFMS1000MeasureRefIndex_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+                memcpy( table_entry->pstIFMS1000MeasureResolution,
+                        table_entry->old_pstIFMS1000MeasureResolution,
+                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+                memset( table_entry->old_pstIFMS1000MeasureResolution, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+                table_entry->pstIFMS1000MeasureResolution_len =
+                        table_entry->old_pstIFMS1000MeasureResolution_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREACTION:
+                table_entry->pstIFMS1000MeasureAction     = table_entry->old_pstIFMS1000MeasureAction;
+                table_entry->old_pstIFMS1000MeasureAction = 0;
+                break;
+            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+                memcpy( table_entry->pstIFMS1000MeasureResultRawPointFile,
+                        table_entry->old_pstIFMS1000MeasureResultRawPointFile,
+                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
+                memset( table_entry->old_pstIFMS1000MeasureResultRawPointFile, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
+                table_entry->pstIFMS1000MeasureResultRawPointFile_len =
+                        table_entry->old_pstIFMS1000MeasureResultRawPointFile_len;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000FingerTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000FingerTable(void)
+{
+    const oid pstIFMS1000FingerTable_oid[] = {1,3,6,1,4,1,48391,3,5,3};
+    const size_t pstIFMS1000FingerTable_oid_len   = OID_LENGTH(pstIFMS1000FingerTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000FingerTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000FingerTable",     pstIFMS1000FingerTable_handler,
+              pstIFMS1000FingerTable_oid, pstIFMS1000FingerTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000FingerTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000FingerTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000FingerTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000FTPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000FTPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000FINGERCURRENTFILENAME;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+    /* Typical data structure for a row entry */
+
+
+
+/** handles requests for the pstIFMS1000FingerTable table */
+int
+QPSTProduct::pstIFMS1000FingerTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000FingerTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000FingerTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000FTPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000FTPortNum);
+                break;
+            case COLUMN_PSTIFMS1000FINGERSTARTPOSITION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerStartPosition,
+                                          table_entry->pstIFMS1000FingerStartPosition_len);
+                break;
+            case COLUMN_PSTIFMS1000FINGERENDPOSITION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerEndPosition,
+                                          table_entry->pstIFMS1000FingerEndPosition_len);
+                break;
+            case COLUMN_PSTIFMS1000FINGERREFINDEX:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerRefIndex,
+                                          table_entry->pstIFMS1000FingerRefIndex_len);
+                break;
+            case COLUMN_PSTIFMS1000FINGERRESOLUTION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerResolution,
+                                          table_entry->pstIFMS1000FingerResolution_len);
+                break;
+            case COLUMN_PSTIFMS1000FINGERCREATETIME:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerCreateTime,
+                                          table_entry->pstIFMS1000FingerCreateTime_len);
+                break;
+            case COLUMN_PSTIFMS1000FINGERFILESTATUS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000FingerFileStatus);
+                break;
+            case COLUMN_PSTIFMS1000FINGERACTION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000FingerAction);
+                break;
+            case COLUMN_PSTIFMS1000FINGERACTIONSTATUS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000FingerActionStatus);
+                break;
+            case COLUMN_PSTIFMS1000FINGERSAVEDFILENAME:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerSavedFileName,
+                                          table_entry->pstIFMS1000FingerSavedFileName_len);
+                break;
+            case COLUMN_PSTIFMS1000FINGERCURRENTFILENAME:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000FingerCurrentFileName,
+                                          table_entry->pstIFMS1000FingerCurrentFileName_len);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000FingerTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000FINGERSTARTPOSITION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000FingerStartPosition));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000FINGERENDPOSITION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000FingerEndPosition));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000FINGERREFINDEX:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000FingerRefIndex));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000FINGERRESOLUTION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000FingerResolution));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000FINGERACTION:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000FingerTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000FINGERSTARTPOSITION:
+                memcpy( table_entry->old_pstIFMS1000FingerStartPosition,
+                        table_entry->pstIFMS1000FingerStartPosition,
+                        sizeof(table_entry->pstIFMS1000FingerStartPosition));
+                table_entry->old_pstIFMS1000FingerStartPosition_len =
+                        table_entry->pstIFMS1000FingerStartPosition_len;
+                memset( table_entry->pstIFMS1000FingerStartPosition, 0,
+                        sizeof(table_entry->pstIFMS1000FingerStartPosition));
+                memcpy( table_entry->pstIFMS1000FingerStartPosition,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000FingerStartPosition_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERENDPOSITION:
+                memcpy( table_entry->old_pstIFMS1000FingerEndPosition,
+                        table_entry->pstIFMS1000FingerEndPosition,
+                        sizeof(table_entry->pstIFMS1000FingerEndPosition));
+                table_entry->old_pstIFMS1000FingerEndPosition_len =
+                        table_entry->pstIFMS1000FingerEndPosition_len;
+                memset( table_entry->pstIFMS1000FingerEndPosition, 0,
+                        sizeof(table_entry->pstIFMS1000FingerEndPosition));
+                memcpy( table_entry->pstIFMS1000FingerEndPosition,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000FingerEndPosition_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERREFINDEX:
+                memcpy( table_entry->old_pstIFMS1000FingerRefIndex,
+                        table_entry->pstIFMS1000FingerRefIndex,
+                        sizeof(table_entry->pstIFMS1000FingerRefIndex));
+                table_entry->old_pstIFMS1000FingerRefIndex_len =
+                        table_entry->pstIFMS1000FingerRefIndex_len;
+                memset( table_entry->pstIFMS1000FingerRefIndex, 0,
+                        sizeof(table_entry->pstIFMS1000FingerRefIndex));
+                memcpy( table_entry->pstIFMS1000FingerRefIndex,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000FingerRefIndex_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERRESOLUTION:
+                memcpy( table_entry->old_pstIFMS1000FingerResolution,
+                        table_entry->pstIFMS1000FingerResolution,
+                        sizeof(table_entry->pstIFMS1000FingerResolution));
+                table_entry->old_pstIFMS1000FingerResolution_len =
+                        table_entry->pstIFMS1000FingerResolution_len;
+                memset( table_entry->pstIFMS1000FingerResolution, 0,
+                        sizeof(table_entry->pstIFMS1000FingerResolution));
+                memcpy( table_entry->pstIFMS1000FingerResolution,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000FingerResolution_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERACTION:
+                table_entry->old_pstIFMS1000FingerAction = table_entry->pstIFMS1000FingerAction;
+                table_entry->pstIFMS1000FingerAction     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000FingerTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000FINGERSTARTPOSITION:
+                memcpy( table_entry->pstIFMS1000FingerStartPosition,
+                        table_entry->old_pstIFMS1000FingerStartPosition,
+                        sizeof(table_entry->pstIFMS1000FingerStartPosition));
+                memset( table_entry->old_pstIFMS1000FingerStartPosition, 0,
+                        sizeof(table_entry->pstIFMS1000FingerStartPosition));
+                table_entry->pstIFMS1000FingerStartPosition_len =
+                        table_entry->old_pstIFMS1000FingerStartPosition_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERENDPOSITION:
+                memcpy( table_entry->pstIFMS1000FingerEndPosition,
+                        table_entry->old_pstIFMS1000FingerEndPosition,
+                        sizeof(table_entry->pstIFMS1000FingerEndPosition));
+                memset( table_entry->old_pstIFMS1000FingerEndPosition, 0,
+                        sizeof(table_entry->pstIFMS1000FingerEndPosition));
+                table_entry->pstIFMS1000FingerEndPosition_len =
+                        table_entry->old_pstIFMS1000FingerEndPosition_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERREFINDEX:
+                memcpy( table_entry->pstIFMS1000FingerRefIndex,
+                        table_entry->old_pstIFMS1000FingerRefIndex,
+                        sizeof(table_entry->pstIFMS1000FingerRefIndex));
+                memset( table_entry->old_pstIFMS1000FingerRefIndex, 0,
+                        sizeof(table_entry->pstIFMS1000FingerRefIndex));
+                table_entry->pstIFMS1000FingerRefIndex_len =
+                        table_entry->old_pstIFMS1000FingerRefIndex_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERRESOLUTION:
+                memcpy( table_entry->pstIFMS1000FingerResolution,
+                        table_entry->old_pstIFMS1000FingerResolution,
+                        sizeof(table_entry->pstIFMS1000FingerResolution));
+                memset( table_entry->old_pstIFMS1000FingerResolution, 0,
+                        sizeof(table_entry->pstIFMS1000FingerResolution));
+                table_entry->pstIFMS1000FingerResolution_len =
+                        table_entry->old_pstIFMS1000FingerResolution_len;
+                break;
+            case COLUMN_PSTIFMS1000FINGERACTION:
+                table_entry->pstIFMS1000FingerAction     = table_entry->old_pstIFMS1000FingerAction;
+                table_entry->old_pstIFMS1000FingerAction = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000DiffTotalTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000DiffTotalTable(void)
+{
+    const oid pstIFMS1000DiffTotalTable_oid[] = {1,3,6,1,4,1,48391,3,5,4,1};
+    const size_t pstIFMS1000DiffTotalTable_oid_len   = OID_LENGTH(pstIFMS1000DiffTotalTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000DiffTotalTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000DiffTotalTable",     pstIFMS1000DiffTotalTable_handler,
+              pstIFMS1000DiffTotalTable_oid, pstIFMS1000DiffTotalTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000DiffTotalTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000DiffTotalTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000DiffTotalTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000DtPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000DTPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000DTTOTALNUM;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+    /* Typical data structure for a row entry */
+
+
+
+/** handles requests for the pstIFMS1000DiffTotalTable table */
+int
+QPSTProduct::pstIFMS1000DiffTotalTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000DiffTotalTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DiffTotalTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DTPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DtPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DTTOTALNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DtTotalNum);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000DiffInfoTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000DiffInfoTable(void)
+{
+    const oid pstIFMS1000DiffInfoTable_oid[] = {1,3,6,1,4,1,48391,3,5,4,2};
+    const size_t pstIFMS1000DiffInfoTable_oid_len   = OID_LENGTH(pstIFMS1000DiffInfoTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000DiffInfoTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000DiffInfoTable",     pstIFMS1000DiffInfoTable_handler,
+              pstIFMS1000DiffInfoTable_oid, pstIFMS1000DiffInfoTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000DiffInfoTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000DiffInfoTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000DiffInfoTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000DiffInfoPortNum */
+                           ASN_INTEGER,  /* index: pstIFMS1000DiffInfoPortItemIndex */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000DIFFINFOPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000DIFFINFOPOINTID;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+    /* Typical data structure for a row entry */
+
+
+
+/** handles requests for the pstIFMS1000DiffInfoTable table */
+int
+QPSTProduct::pstIFMS1000DiffInfoTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000DiffInfoTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DiffInfoTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DIFFINFOPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DiffInfoPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DIFFINFOPORTITEMINDEX:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DiffInfoPortItemIndex);
+                break;
+            case COLUMN_PSTIFMS1000DIFFINFODISTANCE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DiffInfoDistance,
+                                          table_entry->pstIFMS1000DiffInfoDistance_len);
+                break;
+            case COLUMN_PSTIFMS1000DIFFINFONVAL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DiffInfoNVal,
+                                          table_entry->pstIFMS1000DiffInfoNVal_len);
+                break;
+            case COLUMN_PSTIFMS1000DIFFINFODBVAL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DiffInfodBVal,
+                                          table_entry->pstIFMS1000DiffInfodBVal_len);
+                break;
+            case COLUMN_PSTIFMS1000DIFFINFODIFFTYPE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DiffInfoDiffType);
+                break;
+            case COLUMN_PSTIFMS1000DIFFINFOPOINTID:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DiffInfoPointId);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000PortLedTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000PortLedTable(void)
+{
+    const oid pstIFMS1000PortLedTable_oid[] = {1,3,6,1,4,1,48391,3,5,6,2};
+    const size_t pstIFMS1000PortLedTable_oid_len   = OID_LENGTH(pstIFMS1000PortLedTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000PortLedTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000PortLedTable",     pstIFMS1000PortLedTable_handler,
+              pstIFMS1000PortLedTable_oid, pstIFMS1000PortLedTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000PortLedTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000PortLedTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000PortLedTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000PortLedPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000PORTLEDPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000PORTLEDSTATUS;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+    /* Typical data structure for a row entry */
+
+
+
+/** handles requests for the pstIFMS1000PortLedTable table */
+int
+QPSTProduct::pstIFMS1000PortLedTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000PortLedTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000PortLedTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000PORTLEDPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortLedPortNum);
+                break;
+            case COLUMN_PSTIFMS1000PORTLEDSTATUS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000PortLedStatus);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000DiagnoseTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000DiagnoseTable(void)
+{
+    const oid pstIFMS1000DiagnoseTable_oid[] = {1,3,6,1,4,1,48391,3,5,7};
+    const size_t pstIFMS1000DiagnoseTable_oid_len   = OID_LENGTH(pstIFMS1000DiagnoseTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000DiagnoseTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000DiagnoseTable",     pstIFMS1000DiagnoseTable_handler,
+              pstIFMS1000DiagnoseTable_oid, pstIFMS1000DiagnoseTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000DiagnoseTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000DiagnoseTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000DiagnoseTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000DgPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000DGPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000DGPE2PROMACTION;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+    /* Typical data structure for a row entry */
+
+
+
+/** handles requests for the pstIFMS1000DiagnoseTable table */
+int
+QPSTProduct::pstIFMS1000DiagnoseTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000DiagnoseTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DiagnoseTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DGLASERACBIAS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgLaserACBias,
+                                          table_entry->pstIFMS1000DgLaserACBias_len);
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCBIAS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgLaserDCBias,
+                                          table_entry->pstIFMS1000DgLaserDCBias_len);
+                break;
+            case COLUMN_PSTIFMS1000DGLASERACMODULATION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgLaserACModulation,
+                                          table_entry->pstIFMS1000DgLaserACModulation_len);
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCMODULATION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgLaserDCModulation,
+                                          table_entry->pstIFMS1000DgLaserDCModulation_len);
+                break;
+            case COLUMN_PSTIFMS1000DGLASEREN:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgLaserEn);
+                break;
+            case COLUMN_PSTIFMS1000DGPWM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgPwm);
+                break;
+            case COLUMN_PSTIFMS1000DGSEED:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgSeed);
+                break;
+            case COLUMN_PSTIFMS1000DGPRBS:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgPrbs);
+                break;
+            case COLUMN_PSTIFMS1000DGAVERAGE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgAverage);
+                break;
+            case COLUMN_PSTIFMS1000DGREGADDR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgRegAddr);
+                break;
+            case COLUMN_PSTIFMS1000DGREGVALUE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgRegValue);
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTARTPOINT:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgMaskStartPoint,
+                                          table_entry->pstIFMS1000DgMaskStartPoint_len);
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTOPPOINT:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgMaskStopPoint,
+                                          table_entry->pstIFMS1000DgMaskStopPoint_len);
+                break;
+            case COLUMN_PSTIFMS1000DGMASKACTION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgMaskAction);
+                break;
+            case COLUMN_PSTIFMS1000DGMEASUREDELTATHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgMeasureDeltaThld,
+                                          table_entry->pstIFMS1000DgMeasureDeltaThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGCUTPOINTTHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgCutPointThld,
+                                          table_entry->pstIFMS1000DgCutPointThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPERIOD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgPeriod);
+                break;
+            case COLUMN_PSTIFMS1000DGDAC:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgDAC);
+                break;
+            case COLUMN_PSTIFMS1000DGCOUNTERCLOCKMODE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgCounterClockMode);
+                break;
+            case COLUMN_PSTIFMS1000DGSCANRUNTYPE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgScanRunType);
+                break;
+            case COLUMN_PSTIFMS1000DGOPT:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgOpt);
+                break;
+            case COLUMN_PSTIFMS1000DGFIBEROFFSET:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgFiberOffset,
+                                          table_entry->pstIFMS1000DgFiberOffset_len);
+                break;
+            case COLUMN_PSTIFMS1000DGTESTWAVELEN:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgTestWaveLen);
+                break;
+            case COLUMN_PSTIFMS1000DGPRT:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPRT);
+                break;
+            case COLUMN_PSTIFMS1000DGPPW:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPPW);
+                break;
+            case COLUMN_PSTIFMS1000DGPPRESCALE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPPrescale);
+                break;
+            case COLUMN_PSTIFMS1000DGPAVG:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPAvg);
+                break;
+            case COLUMN_PSTIFMS1000DGPGAIN:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPGain);
+                break;
+            case COLUMN_PSTIFMS1000DGPADCDATA:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPAdcData);
+                break;
+            case COLUMN_PSTIFMS1000DGPE2PROMACTION:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000DgPE2promAction);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DiagnoseTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGLASERACBIAS:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgLaserACBias));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCBIAS:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgLaserDCBias));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGLASERACMODULATION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgLaserACModulation));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCMODULATION:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgLaserDCModulation));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGLASEREN:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPWM:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGSEED:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPRBS:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGAVERAGE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGREGADDR:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGREGVALUE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTARTPOINT:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgMaskStartPoint));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTOPPOINT:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgMaskStopPoint));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGMASKACTION:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGMEASUREDELTATHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgMeasureDeltaThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGCUTPOINTTHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgCutPointThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPERIOD:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGDAC:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGCOUNTERCLOCKMODE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGSCANRUNTYPE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGOPT:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGFIBEROFFSET:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgFiberOffset));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGTESTWAVELEN:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPRT:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPPW:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPPRESCALE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPAVG:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPGAIN:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPE2PROMACTION:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DiagnoseTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGLASERACBIAS:
+                memcpy( table_entry->old_pstIFMS1000DgLaserACBias,
+                        table_entry->pstIFMS1000DgLaserACBias,
+                        sizeof(table_entry->pstIFMS1000DgLaserACBias));
+                table_entry->old_pstIFMS1000DgLaserACBias_len =
+                        table_entry->pstIFMS1000DgLaserACBias_len;
+                memset( table_entry->pstIFMS1000DgLaserACBias, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserACBias));
+                memcpy( table_entry->pstIFMS1000DgLaserACBias,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgLaserACBias_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCBIAS:
+                memcpy( table_entry->old_pstIFMS1000DgLaserDCBias,
+                        table_entry->pstIFMS1000DgLaserDCBias,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCBias));
+                table_entry->old_pstIFMS1000DgLaserDCBias_len =
+                        table_entry->pstIFMS1000DgLaserDCBias_len;
+                memset( table_entry->pstIFMS1000DgLaserDCBias, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCBias));
+                memcpy( table_entry->pstIFMS1000DgLaserDCBias,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgLaserDCBias_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASERACMODULATION:
+                memcpy( table_entry->old_pstIFMS1000DgLaserACModulation,
+                        table_entry->pstIFMS1000DgLaserACModulation,
+                        sizeof(table_entry->pstIFMS1000DgLaserACModulation));
+                table_entry->old_pstIFMS1000DgLaserACModulation_len =
+                        table_entry->pstIFMS1000DgLaserACModulation_len;
+                memset( table_entry->pstIFMS1000DgLaserACModulation, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserACModulation));
+                memcpy( table_entry->pstIFMS1000DgLaserACModulation,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgLaserACModulation_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCMODULATION:
+                memcpy( table_entry->old_pstIFMS1000DgLaserDCModulation,
+                        table_entry->pstIFMS1000DgLaserDCModulation,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCModulation));
+                table_entry->old_pstIFMS1000DgLaserDCModulation_len =
+                        table_entry->pstIFMS1000DgLaserDCModulation_len;
+                memset( table_entry->pstIFMS1000DgLaserDCModulation, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCModulation));
+                memcpy( table_entry->pstIFMS1000DgLaserDCModulation,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgLaserDCModulation_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASEREN:
+                table_entry->old_pstIFMS1000DgLaserEn = table_entry->pstIFMS1000DgLaserEn;
+                table_entry->pstIFMS1000DgLaserEn     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPWM:
+                table_entry->old_pstIFMS1000DgPwm = table_entry->pstIFMS1000DgPwm;
+                table_entry->pstIFMS1000DgPwm     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGSEED:
+                table_entry->old_pstIFMS1000DgSeed = table_entry->pstIFMS1000DgSeed;
+                table_entry->pstIFMS1000DgSeed     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPRBS:
+                table_entry->old_pstIFMS1000DgPrbs = table_entry->pstIFMS1000DgPrbs;
+                table_entry->pstIFMS1000DgPrbs     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGAVERAGE:
+                table_entry->old_pstIFMS1000DgAverage = table_entry->pstIFMS1000DgAverage;
+                table_entry->pstIFMS1000DgAverage     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGREGADDR:
+                table_entry->old_pstIFMS1000DgRegAddr = table_entry->pstIFMS1000DgRegAddr;
+                table_entry->pstIFMS1000DgRegAddr     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGREGVALUE:
+                table_entry->old_pstIFMS1000DgRegValue = table_entry->pstIFMS1000DgRegValue;
+                table_entry->pstIFMS1000DgRegValue     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTARTPOINT:
+                memcpy( table_entry->old_pstIFMS1000DgMaskStartPoint,
+                        table_entry->pstIFMS1000DgMaskStartPoint,
+                        sizeof(table_entry->pstIFMS1000DgMaskStartPoint));
+                table_entry->old_pstIFMS1000DgMaskStartPoint_len =
+                        table_entry->pstIFMS1000DgMaskStartPoint_len;
+                memset( table_entry->pstIFMS1000DgMaskStartPoint, 0,
+                        sizeof(table_entry->pstIFMS1000DgMaskStartPoint));
+                memcpy( table_entry->pstIFMS1000DgMaskStartPoint,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgMaskStartPoint_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTOPPOINT:
+                memcpy( table_entry->old_pstIFMS1000DgMaskStopPoint,
+                        table_entry->pstIFMS1000DgMaskStopPoint,
+                        sizeof(table_entry->pstIFMS1000DgMaskStopPoint));
+                table_entry->old_pstIFMS1000DgMaskStopPoint_len =
+                        table_entry->pstIFMS1000DgMaskStopPoint_len;
+                memset( table_entry->pstIFMS1000DgMaskStopPoint, 0,
+                        sizeof(table_entry->pstIFMS1000DgMaskStopPoint));
+                memcpy( table_entry->pstIFMS1000DgMaskStopPoint,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgMaskStopPoint_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGMASKACTION:
+                table_entry->old_pstIFMS1000DgMaskAction = table_entry->pstIFMS1000DgMaskAction;
+                table_entry->pstIFMS1000DgMaskAction     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGMEASUREDELTATHLD:
+                memcpy( table_entry->old_pstIFMS1000DgMeasureDeltaThld,
+                        table_entry->pstIFMS1000DgMeasureDeltaThld,
+                        sizeof(table_entry->pstIFMS1000DgMeasureDeltaThld));
+                table_entry->old_pstIFMS1000DgMeasureDeltaThld_len =
+                        table_entry->pstIFMS1000DgMeasureDeltaThld_len;
+                memset( table_entry->pstIFMS1000DgMeasureDeltaThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgMeasureDeltaThld));
+                memcpy( table_entry->pstIFMS1000DgMeasureDeltaThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgMeasureDeltaThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGCUTPOINTTHLD:
+                memcpy( table_entry->old_pstIFMS1000DgCutPointThld,
+                        table_entry->pstIFMS1000DgCutPointThld,
+                        sizeof(table_entry->pstIFMS1000DgCutPointThld));
+                table_entry->old_pstIFMS1000DgCutPointThld_len =
+                        table_entry->pstIFMS1000DgCutPointThld_len;
+                memset( table_entry->pstIFMS1000DgCutPointThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgCutPointThld));
+                memcpy( table_entry->pstIFMS1000DgCutPointThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgCutPointThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPERIOD:
+                table_entry->old_pstIFMS1000DgPeriod = table_entry->pstIFMS1000DgPeriod;
+                table_entry->pstIFMS1000DgPeriod     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGDAC:
+                table_entry->old_pstIFMS1000DgDAC = table_entry->pstIFMS1000DgDAC;
+                table_entry->pstIFMS1000DgDAC     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGCOUNTERCLOCKMODE:
+                table_entry->old_pstIFMS1000DgCounterClockMode = table_entry->pstIFMS1000DgCounterClockMode;
+                table_entry->pstIFMS1000DgCounterClockMode     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGSCANRUNTYPE:
+                table_entry->old_pstIFMS1000DgScanRunType = table_entry->pstIFMS1000DgScanRunType;
+                table_entry->pstIFMS1000DgScanRunType     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGOPT:
+                table_entry->old_pstIFMS1000DgOpt = table_entry->pstIFMS1000DgOpt;
+                table_entry->pstIFMS1000DgOpt     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGFIBEROFFSET:
+                memcpy( table_entry->old_pstIFMS1000DgFiberOffset,
+                        table_entry->pstIFMS1000DgFiberOffset,
+                        sizeof(table_entry->pstIFMS1000DgFiberOffset));
+                table_entry->old_pstIFMS1000DgFiberOffset_len =
+                        table_entry->pstIFMS1000DgFiberOffset_len;
+                memset( table_entry->pstIFMS1000DgFiberOffset, 0,
+                        sizeof(table_entry->pstIFMS1000DgFiberOffset));
+                memcpy( table_entry->pstIFMS1000DgFiberOffset,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgFiberOffset_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGTESTWAVELEN:
+                table_entry->old_pstIFMS1000DgTestWaveLen = table_entry->pstIFMS1000DgTestWaveLen;
+                table_entry->pstIFMS1000DgTestWaveLen     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPRT:
+                table_entry->old_pstIFMS1000DgPRT = table_entry->pstIFMS1000DgPRT;
+                table_entry->pstIFMS1000DgPRT     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPPW:
+                table_entry->old_pstIFMS1000DgPPW = table_entry->pstIFMS1000DgPPW;
+                table_entry->pstIFMS1000DgPPW     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPPRESCALE:
+                table_entry->old_pstIFMS1000DgPPrescale = table_entry->pstIFMS1000DgPPrescale;
+                table_entry->pstIFMS1000DgPPrescale     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPAVG:
+                table_entry->old_pstIFMS1000DgPAvg = table_entry->pstIFMS1000DgPAvg;
+                table_entry->pstIFMS1000DgPAvg     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPGAIN:
+                table_entry->old_pstIFMS1000DgPGain = table_entry->pstIFMS1000DgPGain;
+                table_entry->pstIFMS1000DgPGain     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPE2PROMACTION:
+                table_entry->old_pstIFMS1000DgPE2promAction = table_entry->pstIFMS1000DgPE2promAction;
+                table_entry->pstIFMS1000DgPE2promAction     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DiagnoseTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGLASERACBIAS:
+                memcpy( table_entry->pstIFMS1000DgLaserACBias,
+                        table_entry->old_pstIFMS1000DgLaserACBias,
+                        sizeof(table_entry->pstIFMS1000DgLaserACBias));
+                memset( table_entry->old_pstIFMS1000DgLaserACBias, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserACBias));
+                table_entry->pstIFMS1000DgLaserACBias_len =
+                        table_entry->old_pstIFMS1000DgLaserACBias_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCBIAS:
+                memcpy( table_entry->pstIFMS1000DgLaserDCBias,
+                        table_entry->old_pstIFMS1000DgLaserDCBias,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCBias));
+                memset( table_entry->old_pstIFMS1000DgLaserDCBias, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCBias));
+                table_entry->pstIFMS1000DgLaserDCBias_len =
+                        table_entry->old_pstIFMS1000DgLaserDCBias_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASERACMODULATION:
+                memcpy( table_entry->pstIFMS1000DgLaserACModulation,
+                        table_entry->old_pstIFMS1000DgLaserACModulation,
+                        sizeof(table_entry->pstIFMS1000DgLaserACModulation));
+                memset( table_entry->old_pstIFMS1000DgLaserACModulation, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserACModulation));
+                table_entry->pstIFMS1000DgLaserACModulation_len =
+                        table_entry->old_pstIFMS1000DgLaserACModulation_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASERDCMODULATION:
+                memcpy( table_entry->pstIFMS1000DgLaserDCModulation,
+                        table_entry->old_pstIFMS1000DgLaserDCModulation,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCModulation));
+                memset( table_entry->old_pstIFMS1000DgLaserDCModulation, 0,
+                        sizeof(table_entry->pstIFMS1000DgLaserDCModulation));
+                table_entry->pstIFMS1000DgLaserDCModulation_len =
+                        table_entry->old_pstIFMS1000DgLaserDCModulation_len;
+                break;
+            case COLUMN_PSTIFMS1000DGLASEREN:
+                table_entry->pstIFMS1000DgLaserEn     = table_entry->old_pstIFMS1000DgLaserEn;
+                table_entry->old_pstIFMS1000DgLaserEn = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPWM:
+                table_entry->pstIFMS1000DgPwm     = table_entry->old_pstIFMS1000DgPwm;
+                table_entry->old_pstIFMS1000DgPwm = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGSEED:
+                table_entry->pstIFMS1000DgSeed     = table_entry->old_pstIFMS1000DgSeed;
+                table_entry->old_pstIFMS1000DgSeed = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPRBS:
+                table_entry->pstIFMS1000DgPrbs     = table_entry->old_pstIFMS1000DgPrbs;
+                table_entry->old_pstIFMS1000DgPrbs = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGAVERAGE:
+                table_entry->pstIFMS1000DgAverage     = table_entry->old_pstIFMS1000DgAverage;
+                table_entry->old_pstIFMS1000DgAverage = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGREGADDR:
+                table_entry->pstIFMS1000DgRegAddr     = table_entry->old_pstIFMS1000DgRegAddr;
+                table_entry->old_pstIFMS1000DgRegAddr = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGREGVALUE:
+                table_entry->pstIFMS1000DgRegValue     = table_entry->old_pstIFMS1000DgRegValue;
+                table_entry->old_pstIFMS1000DgRegValue = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTARTPOINT:
+                memcpy( table_entry->pstIFMS1000DgMaskStartPoint,
+                        table_entry->old_pstIFMS1000DgMaskStartPoint,
+                        sizeof(table_entry->pstIFMS1000DgMaskStartPoint));
+                memset( table_entry->old_pstIFMS1000DgMaskStartPoint, 0,
+                        sizeof(table_entry->pstIFMS1000DgMaskStartPoint));
+                table_entry->pstIFMS1000DgMaskStartPoint_len =
+                        table_entry->old_pstIFMS1000DgMaskStartPoint_len;
+                break;
+            case COLUMN_PSTIFMS1000DGMASKSTOPPOINT:
+                memcpy( table_entry->pstIFMS1000DgMaskStopPoint,
+                        table_entry->old_pstIFMS1000DgMaskStopPoint,
+                        sizeof(table_entry->pstIFMS1000DgMaskStopPoint));
+                memset( table_entry->old_pstIFMS1000DgMaskStopPoint, 0,
+                        sizeof(table_entry->pstIFMS1000DgMaskStopPoint));
+                table_entry->pstIFMS1000DgMaskStopPoint_len =
+                        table_entry->old_pstIFMS1000DgMaskStopPoint_len;
+                break;
+            case COLUMN_PSTIFMS1000DGMASKACTION:
+                table_entry->pstIFMS1000DgMaskAction     = table_entry->old_pstIFMS1000DgMaskAction;
+                table_entry->old_pstIFMS1000DgMaskAction = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGMEASUREDELTATHLD:
+                memcpy( table_entry->pstIFMS1000DgMeasureDeltaThld,
+                        table_entry->old_pstIFMS1000DgMeasureDeltaThld,
+                        sizeof(table_entry->pstIFMS1000DgMeasureDeltaThld));
+                memset( table_entry->old_pstIFMS1000DgMeasureDeltaThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgMeasureDeltaThld));
+                table_entry->pstIFMS1000DgMeasureDeltaThld_len =
+                        table_entry->old_pstIFMS1000DgMeasureDeltaThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGCUTPOINTTHLD:
+                memcpy( table_entry->pstIFMS1000DgCutPointThld,
+                        table_entry->old_pstIFMS1000DgCutPointThld,
+                        sizeof(table_entry->pstIFMS1000DgCutPointThld));
+                memset( table_entry->old_pstIFMS1000DgCutPointThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgCutPointThld));
+                table_entry->pstIFMS1000DgCutPointThld_len =
+                        table_entry->old_pstIFMS1000DgCutPointThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPERIOD:
+                table_entry->pstIFMS1000DgPeriod     = table_entry->old_pstIFMS1000DgPeriod;
+                table_entry->old_pstIFMS1000DgPeriod = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGDAC:
+                table_entry->pstIFMS1000DgDAC     = table_entry->old_pstIFMS1000DgDAC;
+                table_entry->old_pstIFMS1000DgDAC = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGCOUNTERCLOCKMODE:
+                table_entry->pstIFMS1000DgCounterClockMode     = table_entry->old_pstIFMS1000DgCounterClockMode;
+                table_entry->old_pstIFMS1000DgCounterClockMode = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGSCANRUNTYPE:
+                table_entry->pstIFMS1000DgScanRunType     = table_entry->old_pstIFMS1000DgScanRunType;
+                table_entry->old_pstIFMS1000DgScanRunType = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGOPT:
+                table_entry->pstIFMS1000DgOpt     = table_entry->old_pstIFMS1000DgOpt;
+                table_entry->old_pstIFMS1000DgOpt = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGFIBEROFFSET:
+                memcpy( table_entry->pstIFMS1000DgFiberOffset,
+                        table_entry->old_pstIFMS1000DgFiberOffset,
+                        sizeof(table_entry->pstIFMS1000DgFiberOffset));
+                memset( table_entry->old_pstIFMS1000DgFiberOffset, 0,
+                        sizeof(table_entry->pstIFMS1000DgFiberOffset));
+                table_entry->pstIFMS1000DgFiberOffset_len =
+                        table_entry->old_pstIFMS1000DgFiberOffset_len;
+                break;
+            case COLUMN_PSTIFMS1000DGTESTWAVELEN:
+                table_entry->pstIFMS1000DgTestWaveLen     = table_entry->old_pstIFMS1000DgTestWaveLen;
+                table_entry->old_pstIFMS1000DgTestWaveLen = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPRT:
+                table_entry->pstIFMS1000DgPRT     = table_entry->old_pstIFMS1000DgPRT;
+                table_entry->old_pstIFMS1000DgPRT = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPPW:
+                table_entry->pstIFMS1000DgPPW     = table_entry->old_pstIFMS1000DgPPW;
+                table_entry->old_pstIFMS1000DgPPW = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPPRESCALE:
+                table_entry->pstIFMS1000DgPPrescale     = table_entry->old_pstIFMS1000DgPPrescale;
+                table_entry->old_pstIFMS1000DgPPrescale = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPAVG:
+                table_entry->pstIFMS1000DgPAvg     = table_entry->old_pstIFMS1000DgPAvg;
+                table_entry->old_pstIFMS1000DgPAvg = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPGAIN:
+                table_entry->pstIFMS1000DgPGain     = table_entry->old_pstIFMS1000DgPGain;
+                table_entry->old_pstIFMS1000DgPGain = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPE2PROMACTION:
+                table_entry->pstIFMS1000DgPE2promAction     = table_entry->old_pstIFMS1000DgPE2promAction;
+                table_entry->old_pstIFMS1000DgPE2promAction = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000DebugRegTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000DebugRegTable(void)
+{
+    const oid pstIFMS1000DebugRegTable_oid[] = {1,3,6,1,4,1,48391,3,5,8};
+    const size_t pstIFMS1000DebugRegTable_oid_len   = OID_LENGTH(pstIFMS1000DebugRegTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000DebugRegTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000DebugRegTable",     pstIFMS1000DebugRegTable_handler,
+              pstIFMS1000DebugRegTable_oid, pstIFMS1000DebugRegTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000DebugRegTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000DebugRegTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000DebugRegTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000DbPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000DBPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000DBREGVALUE;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000DebugRegTable table */
+int
+QPSTProduct::pstIFMS1000DebugRegTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000DebugRegTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugRegTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DbPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DBREGADDR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DbRegAddr);
+                break;
+            case COLUMN_PSTIFMS1000DBREGVALUE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DbRegValue);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugRegTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBREGADDR:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DBREGVALUE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugRegTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBREGADDR:
+                table_entry->old_pstIFMS1000DbRegAddr = table_entry->pstIFMS1000DbRegAddr;
+                table_entry->pstIFMS1000DbRegAddr     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DBREGVALUE:
+                table_entry->old_pstIFMS1000DbRegValue = table_entry->pstIFMS1000DbRegValue;
+                table_entry->pstIFMS1000DbRegValue     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugRegTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBREGADDR:
+                table_entry->pstIFMS1000DbRegAddr     = table_entry->old_pstIFMS1000DbRegAddr;
+                table_entry->old_pstIFMS1000DbRegAddr = 0;
+                break;
+            case COLUMN_PSTIFMS1000DBREGVALUE:
+                table_entry->pstIFMS1000DbRegValue     = table_entry->old_pstIFMS1000DbRegValue;
+                table_entry->old_pstIFMS1000DbRegValue = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000DebugDACTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000DebugDACTable(void)
+{
+    const oid pstIFMS1000DebugDACTable_oid[] = {1,3,6,1,4,1,48391,3,5,9};
+    const size_t pstIFMS1000DebugDACTable_oid_len   = OID_LENGTH(pstIFMS1000DebugDACTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000DebugDACTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000DebugDACTable",     pstIFMS1000DebugDACTable_handler,
+              pstIFMS1000DebugDACTable_oid, pstIFMS1000DebugDACTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000DebugDACTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000DebugDACTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000DebugDACTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000DacTPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000DACTPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000TDACVALUE;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+
+/** handles requests for the pstIFMS1000DebugDACTable table */
+int
+QPSTProduct::pstIFMS1000DebugDACTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000DebugDACTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugDACTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DACTPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DacTPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DACTCHANNELNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DacTChannelNum);
+                break;
+            case COLUMN_PSTIFMS1000TDACVALUE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000TDacValue);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugDACTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DACTCHANNELNUM:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000TDACVALUE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugDACTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DACTCHANNELNUM:
+                table_entry->old_pstIFMS1000DacTChannelNum = table_entry->pstIFMS1000DacTChannelNum;
+                table_entry->pstIFMS1000DacTChannelNum     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000TDACVALUE:
+                table_entry->old_pstIFMS1000TDacValue = table_entry->pstIFMS1000TDacValue;
+                table_entry->pstIFMS1000TDacValue     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugDACTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DACTCHANNELNUM:
+                table_entry->pstIFMS1000DacTChannelNum     = table_entry->old_pstIFMS1000DacTChannelNum;
+                table_entry->old_pstIFMS1000DacTChannelNum = 0;
+                break;
+            case COLUMN_PSTIFMS1000TDACVALUE:
+                table_entry->pstIFMS1000TDacValue     = table_entry->old_pstIFMS1000TDacValue;
+                table_entry->old_pstIFMS1000TDacValue = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000DebugE2promTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000DebugE2promTable(void)
+{
+    const oid pstIFMS1000DebugE2promTable_oid[] = {1,3,6,1,4,1,48391,3,5,10};
+    const size_t pstIFMS1000DebugE2promTable_oid_len   = OID_LENGTH(pstIFMS1000DebugE2promTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000DebugE2promTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000DebugE2promTable",     pstIFMS1000DebugE2promTable_handler,
+              pstIFMS1000DebugE2promTable_oid, pstIFMS1000DebugE2promTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000DebugE2promTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000DebugE2promTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000DebugE2promTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000DbE2TPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000DBE2TPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000DBE2TVALUE;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000DebugE2promTable table */
+int
+QPSTProduct::pstIFMS1000DebugE2promTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000DebugE2promTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugE2promTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBE2TPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DbE2TPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DBE2TADDR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DbE2TAddr);
+                break;
+            case COLUMN_PSTIFMS1000DBE2TVALUE:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DbE2TValue);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugE2promTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBE2TADDR:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DBE2TVALUE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugE2promTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBE2TADDR:
+                table_entry->old_pstIFMS1000DbE2TAddr = table_entry->pstIFMS1000DbE2TAddr;
+                table_entry->pstIFMS1000DbE2TAddr     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DBE2TVALUE:
+                table_entry->old_pstIFMS1000DbE2TValue = table_entry->pstIFMS1000DbE2TValue;
+                table_entry->pstIFMS1000DbE2TValue     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000DebugE2promTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DBE2TADDR:
+                table_entry->pstIFMS1000DbE2TAddr     = table_entry->old_pstIFMS1000DbE2TAddr;
+                table_entry->old_pstIFMS1000DbE2TAddr = 0;
+                break;
+            case COLUMN_PSTIFMS1000DBE2TVALUE:
+                table_entry->pstIFMS1000DbE2TValue     = table_entry->old_pstIFMS1000DbE2TValue;
+                table_entry->old_pstIFMS1000DbE2TValue = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ExtendAlarmTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ExtendAlarmTable(void)
+{
+    const oid pstIFMS1000ExtendAlarmTable_oid[] = {1,3,6,1,4,1,48391,3,5,12};
+    const size_t pstIFMS1000ExtendAlarmTable_oid_len   = OID_LENGTH(pstIFMS1000ExtendAlarmTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ExtendAlarmTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ExtendAlarmTable",     pstIFMS1000ExtendAlarmTable_handler,
+              pstIFMS1000ExtendAlarmTable_oid, pstIFMS1000ExtendAlarmTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ExtendAlarmTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ExtendAlarmTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ExtendAlarmTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000EAPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000EAPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000EXTENDALARM;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000ExtendAlarmTable table */
+int
+QPSTProduct::pstIFMS1000ExtendAlarmTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ExtendAlarmTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExtendAlarmTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000EAPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000EAPortNum);
+                break;
+            case COLUMN_PSTIFMS1000EXTENDALARM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pstIFMS1000ExtendAlarm);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExtendAlarmTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000EXTENDALARM:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExtendAlarmTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000EXTENDALARM:
+                table_entry->old_pstIFMS1000ExtendAlarm = table_entry->pstIFMS1000ExtendAlarm;
+                table_entry->pstIFMS1000ExtendAlarm     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExtendAlarmTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000EXTENDALARM:
+                table_entry->pstIFMS1000ExtendAlarm     = table_entry->old_pstIFMS1000ExtendAlarm;
+                table_entry->old_pstIFMS1000ExtendAlarm = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ExpertExtendTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ExpertExtendTable(void)
+{
+    const oid pstIFMS1000ExpertExtendTable_oid[] = {1,3,6,1,4,1,48391,3,5,13};
+    const size_t pstIFMS1000ExpertExtendTable_oid_len   = OID_LENGTH(pstIFMS1000ExpertExtendTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ExpertExtendTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ExpertExtendTable",     pstIFMS1000ExpertExtendTable_handler,
+              pstIFMS1000ExpertExtendTable_oid, pstIFMS1000ExpertExtendTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ExpertExtendTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ExpertExtendTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ExpertExtendTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000EEPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000EEPORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000DGPBFACTOR;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000ExpertExtendTable table */
+int
+QPSTProduct::pstIFMS1000ExpertExtendTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ExpertExtendTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExpertExtendTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000EEPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000EEPortNum);
+                break;
+            case COLUMN_PSTIFMS1000DGPBIAS1:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPBias1,
+                                          table_entry->pstIFMS1000DgPBias1_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPBIAS2:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPBias2,
+                                          table_entry->pstIFMS1000DgPBias2_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION1:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPModulation1,
+                                          table_entry->pstIFMS1000DgPModulation1_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION2:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPModulation2,
+                                          table_entry->pstIFMS1000DgPModulation2_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPBACKSCATTER:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000DgPBackScatter);
+                break;
+            case COLUMN_PSTIFMS1000DGPMEASUREDELTATHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPMeasureDeltaThld,
+                                          table_entry->pstIFMS1000DgPMeasureDeltaThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPCUTPOINTTHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPCutPointThld,
+                                          table_entry->pstIFMS1000DgPCutPointThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPMFACTOR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPMFactor,
+                                          table_entry->pstIFMS1000DgPMFactor_len);
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTCRITICALTHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgFaultCriticalThld,
+                                          table_entry->pstIFMS1000DgFaultCriticalThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMAJORTHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgFaultMajorThld,
+                                          table_entry->pstIFMS1000DgFaultMajorThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMINORTHLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgFaultMinorThld,
+                                          table_entry->pstIFMS1000DgFaultMinorThld_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPAFACTOR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPAFactor,
+                                          table_entry->pstIFMS1000DgPAFactor_len);
+                break;
+            case COLUMN_PSTIFMS1000DGPBFACTOR:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000DgPBFactor,
+                                          table_entry->pstIFMS1000DgPBFactor_len);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExpertExtendTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGPBIAS1:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPBias1));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPBIAS2:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPBias2));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION1:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPModulation1));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION2:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPModulation2));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPBACKSCATTER:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPMEASUREDELTATHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPMeasureDeltaThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPCUTPOINTTHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPCutPointThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPMFACTOR:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPMFactor));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTCRITICALTHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgFaultCriticalThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMAJORTHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgFaultMajorThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMINORTHLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgFaultMinorThld));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPAFACTOR:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPAFactor));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000DGPBFACTOR:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000DgPBFactor));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExpertExtendTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGPBIAS1:
+                memcpy( table_entry->old_pstIFMS1000DgPBias1,
+                        table_entry->pstIFMS1000DgPBias1,
+                        sizeof(table_entry->pstIFMS1000DgPBias1));
+                table_entry->old_pstIFMS1000DgPBias1_len =
+                        table_entry->pstIFMS1000DgPBias1_len;
+                memset( table_entry->pstIFMS1000DgPBias1, 0,
+                        sizeof(table_entry->pstIFMS1000DgPBias1));
+                memcpy( table_entry->pstIFMS1000DgPBias1,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPBias1_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPBIAS2:
+                memcpy( table_entry->old_pstIFMS1000DgPBias2,
+                        table_entry->pstIFMS1000DgPBias2,
+                        sizeof(table_entry->pstIFMS1000DgPBias2));
+                table_entry->old_pstIFMS1000DgPBias2_len =
+                        table_entry->pstIFMS1000DgPBias2_len;
+                memset( table_entry->pstIFMS1000DgPBias2, 0,
+                        sizeof(table_entry->pstIFMS1000DgPBias2));
+                memcpy( table_entry->pstIFMS1000DgPBias2,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPBias2_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION1:
+                memcpy( table_entry->old_pstIFMS1000DgPModulation1,
+                        table_entry->pstIFMS1000DgPModulation1,
+                        sizeof(table_entry->pstIFMS1000DgPModulation1));
+                table_entry->old_pstIFMS1000DgPModulation1_len =
+                        table_entry->pstIFMS1000DgPModulation1_len;
+                memset( table_entry->pstIFMS1000DgPModulation1, 0,
+                        sizeof(table_entry->pstIFMS1000DgPModulation1));
+                memcpy( table_entry->pstIFMS1000DgPModulation1,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPModulation1_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION2:
+                memcpy( table_entry->old_pstIFMS1000DgPModulation2,
+                        table_entry->pstIFMS1000DgPModulation2,
+                        sizeof(table_entry->pstIFMS1000DgPModulation2));
+                table_entry->old_pstIFMS1000DgPModulation2_len =
+                        table_entry->pstIFMS1000DgPModulation2_len;
+                memset( table_entry->pstIFMS1000DgPModulation2, 0,
+                        sizeof(table_entry->pstIFMS1000DgPModulation2));
+                memcpy( table_entry->pstIFMS1000DgPModulation2,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPModulation2_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPBACKSCATTER:
+                table_entry->old_pstIFMS1000DgPBackScatter = table_entry->pstIFMS1000DgPBackScatter;
+                table_entry->pstIFMS1000DgPBackScatter     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000DGPMEASUREDELTATHLD:
+                memcpy( table_entry->old_pstIFMS1000DgPMeasureDeltaThld,
+                        table_entry->pstIFMS1000DgPMeasureDeltaThld,
+                        sizeof(table_entry->pstIFMS1000DgPMeasureDeltaThld));
+                table_entry->old_pstIFMS1000DgPMeasureDeltaThld_len =
+                        table_entry->pstIFMS1000DgPMeasureDeltaThld_len;
+                memset( table_entry->pstIFMS1000DgPMeasureDeltaThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgPMeasureDeltaThld));
+                memcpy( table_entry->pstIFMS1000DgPMeasureDeltaThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPMeasureDeltaThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPCUTPOINTTHLD:
+                memcpy( table_entry->old_pstIFMS1000DgPCutPointThld,
+                        table_entry->pstIFMS1000DgPCutPointThld,
+                        sizeof(table_entry->pstIFMS1000DgPCutPointThld));
+                table_entry->old_pstIFMS1000DgPCutPointThld_len =
+                        table_entry->pstIFMS1000DgPCutPointThld_len;
+                memset( table_entry->pstIFMS1000DgPCutPointThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgPCutPointThld));
+                memcpy( table_entry->pstIFMS1000DgPCutPointThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPCutPointThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPMFACTOR:
+                memcpy( table_entry->old_pstIFMS1000DgPMFactor,
+                        table_entry->pstIFMS1000DgPMFactor,
+                        sizeof(table_entry->pstIFMS1000DgPMFactor));
+                table_entry->old_pstIFMS1000DgPMFactor_len =
+                        table_entry->pstIFMS1000DgPMFactor_len;
+                memset( table_entry->pstIFMS1000DgPMFactor, 0,
+                        sizeof(table_entry->pstIFMS1000DgPMFactor));
+                memcpy( table_entry->pstIFMS1000DgPMFactor,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPMFactor_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTCRITICALTHLD:
+                memcpy( table_entry->old_pstIFMS1000DgFaultCriticalThld,
+                        table_entry->pstIFMS1000DgFaultCriticalThld,
+                        sizeof(table_entry->pstIFMS1000DgFaultCriticalThld));
+                table_entry->old_pstIFMS1000DgFaultCriticalThld_len =
+                        table_entry->pstIFMS1000DgFaultCriticalThld_len;
+                memset( table_entry->pstIFMS1000DgFaultCriticalThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgFaultCriticalThld));
+                memcpy( table_entry->pstIFMS1000DgFaultCriticalThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgFaultCriticalThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMAJORTHLD:
+                memcpy( table_entry->old_pstIFMS1000DgFaultMajorThld,
+                        table_entry->pstIFMS1000DgFaultMajorThld,
+                        sizeof(table_entry->pstIFMS1000DgFaultMajorThld));
+                table_entry->old_pstIFMS1000DgFaultMajorThld_len =
+                        table_entry->pstIFMS1000DgFaultMajorThld_len;
+                memset( table_entry->pstIFMS1000DgFaultMajorThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgFaultMajorThld));
+                memcpy( table_entry->pstIFMS1000DgFaultMajorThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgFaultMajorThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMINORTHLD:
+                memcpy( table_entry->old_pstIFMS1000DgFaultMinorThld,
+                        table_entry->pstIFMS1000DgFaultMinorThld,
+                        sizeof(table_entry->pstIFMS1000DgFaultMinorThld));
+                table_entry->old_pstIFMS1000DgFaultMinorThld_len =
+                        table_entry->pstIFMS1000DgFaultMinorThld_len;
+                memset( table_entry->pstIFMS1000DgFaultMinorThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgFaultMinorThld));
+                memcpy( table_entry->pstIFMS1000DgFaultMinorThld,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgFaultMinorThld_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPAFACTOR:
+                memcpy( table_entry->old_pstIFMS1000DgPAFactor,
+                        table_entry->pstIFMS1000DgPAFactor,
+                        sizeof(table_entry->pstIFMS1000DgPAFactor));
+                table_entry->old_pstIFMS1000DgPAFactor_len =
+                        table_entry->pstIFMS1000DgPAFactor_len;
+                memset( table_entry->pstIFMS1000DgPAFactor, 0,
+                        sizeof(table_entry->pstIFMS1000DgPAFactor));
+                memcpy( table_entry->pstIFMS1000DgPAFactor,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPAFactor_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPBFACTOR:
+                memcpy( table_entry->old_pstIFMS1000DgPBFactor,
+                        table_entry->pstIFMS1000DgPBFactor,
+                        sizeof(table_entry->pstIFMS1000DgPBFactor));
+                table_entry->old_pstIFMS1000DgPBFactor_len =
+                        table_entry->pstIFMS1000DgPBFactor_len;
+                memset( table_entry->pstIFMS1000DgPBFactor, 0,
+                        sizeof(table_entry->pstIFMS1000DgPBFactor));
+                memcpy( table_entry->pstIFMS1000DgPBFactor,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000DgPBFactor_len =
+                        request->requestvb->val_len;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ExpertExtendTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PSTIFMS1000DGPBIAS1:
+                memcpy( table_entry->pstIFMS1000DgPBias1,
+                        table_entry->old_pstIFMS1000DgPBias1,
+                        sizeof(table_entry->pstIFMS1000DgPBias1));
+                memset( table_entry->old_pstIFMS1000DgPBias1, 0,
+                        sizeof(table_entry->pstIFMS1000DgPBias1));
+                table_entry->pstIFMS1000DgPBias1_len =
+                        table_entry->old_pstIFMS1000DgPBias1_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPBIAS2:
+                memcpy( table_entry->pstIFMS1000DgPBias2,
+                        table_entry->old_pstIFMS1000DgPBias2,
+                        sizeof(table_entry->pstIFMS1000DgPBias2));
+                memset( table_entry->old_pstIFMS1000DgPBias2, 0,
+                        sizeof(table_entry->pstIFMS1000DgPBias2));
+                table_entry->pstIFMS1000DgPBias2_len =
+                        table_entry->old_pstIFMS1000DgPBias2_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION1:
+                memcpy( table_entry->pstIFMS1000DgPModulation1,
+                        table_entry->old_pstIFMS1000DgPModulation1,
+                        sizeof(table_entry->pstIFMS1000DgPModulation1));
+                memset( table_entry->old_pstIFMS1000DgPModulation1, 0,
+                        sizeof(table_entry->pstIFMS1000DgPModulation1));
+                table_entry->pstIFMS1000DgPModulation1_len =
+                        table_entry->old_pstIFMS1000DgPModulation1_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPMODULATION2:
+                memcpy( table_entry->pstIFMS1000DgPModulation2,
+                        table_entry->old_pstIFMS1000DgPModulation2,
+                        sizeof(table_entry->pstIFMS1000DgPModulation2));
+                memset( table_entry->old_pstIFMS1000DgPModulation2, 0,
+                        sizeof(table_entry->pstIFMS1000DgPModulation2));
+                table_entry->pstIFMS1000DgPModulation2_len =
+                        table_entry->old_pstIFMS1000DgPModulation2_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPBACKSCATTER:
+                table_entry->pstIFMS1000DgPBackScatter     = table_entry->old_pstIFMS1000DgPBackScatter;
+                table_entry->old_pstIFMS1000DgPBackScatter = 0;
+                break;
+            case COLUMN_PSTIFMS1000DGPMEASUREDELTATHLD:
+                memcpy( table_entry->pstIFMS1000DgPMeasureDeltaThld,
+                        table_entry->old_pstIFMS1000DgPMeasureDeltaThld,
+                        sizeof(table_entry->pstIFMS1000DgPMeasureDeltaThld));
+                memset( table_entry->old_pstIFMS1000DgPMeasureDeltaThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgPMeasureDeltaThld));
+                table_entry->pstIFMS1000DgPMeasureDeltaThld_len =
+                        table_entry->old_pstIFMS1000DgPMeasureDeltaThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPCUTPOINTTHLD:
+                memcpy( table_entry->pstIFMS1000DgPCutPointThld,
+                        table_entry->old_pstIFMS1000DgPCutPointThld,
+                        sizeof(table_entry->pstIFMS1000DgPCutPointThld));
+                memset( table_entry->old_pstIFMS1000DgPCutPointThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgPCutPointThld));
+                table_entry->pstIFMS1000DgPCutPointThld_len =
+                        table_entry->old_pstIFMS1000DgPCutPointThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPMFACTOR:
+                memcpy( table_entry->pstIFMS1000DgPMFactor,
+                        table_entry->old_pstIFMS1000DgPMFactor,
+                        sizeof(table_entry->pstIFMS1000DgPMFactor));
+                memset( table_entry->old_pstIFMS1000DgPMFactor, 0,
+                        sizeof(table_entry->pstIFMS1000DgPMFactor));
+                table_entry->pstIFMS1000DgPMFactor_len =
+                        table_entry->old_pstIFMS1000DgPMFactor_len;
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTCRITICALTHLD:
+                memcpy( table_entry->pstIFMS1000DgFaultCriticalThld,
+                        table_entry->old_pstIFMS1000DgFaultCriticalThld,
+                        sizeof(table_entry->pstIFMS1000DgFaultCriticalThld));
+                memset( table_entry->old_pstIFMS1000DgFaultCriticalThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgFaultCriticalThld));
+                table_entry->pstIFMS1000DgFaultCriticalThld_len =
+                        table_entry->old_pstIFMS1000DgFaultCriticalThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMAJORTHLD:
+                memcpy( table_entry->pstIFMS1000DgFaultMajorThld,
+                        table_entry->old_pstIFMS1000DgFaultMajorThld,
+                        sizeof(table_entry->pstIFMS1000DgFaultMajorThld));
+                memset( table_entry->old_pstIFMS1000DgFaultMajorThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgFaultMajorThld));
+                table_entry->pstIFMS1000DgFaultMajorThld_len =
+                        table_entry->old_pstIFMS1000DgFaultMajorThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGFAULTMINORTHLD:
+                memcpy( table_entry->pstIFMS1000DgFaultMinorThld,
+                        table_entry->old_pstIFMS1000DgFaultMinorThld,
+                        sizeof(table_entry->pstIFMS1000DgFaultMinorThld));
+                memset( table_entry->old_pstIFMS1000DgFaultMinorThld, 0,
+                        sizeof(table_entry->pstIFMS1000DgFaultMinorThld));
+                table_entry->pstIFMS1000DgFaultMinorThld_len =
+                        table_entry->old_pstIFMS1000DgFaultMinorThld_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPAFACTOR:
+                memcpy( table_entry->pstIFMS1000DgPAFactor,
+                        table_entry->old_pstIFMS1000DgPAFactor,
+                        sizeof(table_entry->pstIFMS1000DgPAFactor));
+                memset( table_entry->old_pstIFMS1000DgPAFactor, 0,
+                        sizeof(table_entry->pstIFMS1000DgPAFactor));
+                table_entry->pstIFMS1000DgPAFactor_len =
+                        table_entry->old_pstIFMS1000DgPAFactor_len;
+                break;
+            case COLUMN_PSTIFMS1000DGPBFACTOR:
+                memcpy( table_entry->pstIFMS1000DgPBFactor,
+                        table_entry->old_pstIFMS1000DgPBFactor,
+                        sizeof(table_entry->pstIFMS1000DgPBFactor));
+                memset( table_entry->old_pstIFMS1000DgPBFactor, 0,
+                        sizeof(table_entry->pstIFMS1000DgPBFactor));
+                table_entry->pstIFMS1000DgPBFactor_len =
+                        table_entry->old_pstIFMS1000DgPBFactor_len;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000PonConfTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000PonConfTable(void)
+{
+    const oid pstIFMS1000PonConfTable_oid[] = {1,3,6,1,4,1,48391,3,5,14};
+    const size_t pstIFMS1000PonConfTable_oid_len   = OID_LENGTH(pstIFMS1000PonConfTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000PonConfTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000PonConfTable",     pstIFMS1000PonConfTable_handler,
+              pstIFMS1000PonConfTable_oid, pstIFMS1000PonConfTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000PonConfTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000PonConfTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000PonConfTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_UNSIGNED,  /* index: pctPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PCTPORTNUM;
+    table_info->max_column = COLUMN_PCTSP1LOCITEM;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000PonConfTable table */
+int
+QPSTProduct::pstIFMS1000PonConfTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000PonConfTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000PonConfTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PCTPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pctPortNum);
+                break;
+            case COLUMN_PCTSP1LOCITEM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->pctSp1LocItem);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000PonConfTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PCTSP1LOCITEM:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000PonConfTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PCTSP1LOCITEM:
+                table_entry->old_pctSp1LocItem = table_entry->pctSp1LocItem;
+                table_entry->pctSp1LocItem     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000PonConfTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_PCTSP1LOCITEM:
+                table_entry->pctSp1LocItem     = table_entry->old_pctSp1LocItem;
+                table_entry->old_pctSp1LocItem = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ParamsV32TotalNumTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ParamsV32TotalNumTable(void)
+{
+    const oid pstIFMS1000ParamsV32TotalNumTable_oid[] = {1,3,6,1,4,1,48391,3,5,15,1};
+    const size_t pstIFMS1000ParamsV32TotalNumTable_oid_len   = OID_LENGTH(pstIFMS1000ParamsV32TotalNumTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ParamsV32TotalNumTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ParamsV32TotalNumTable",     pstIFMS1000ParamsV32TotalNumTable_handler,
+              pstIFMS1000ParamsV32TotalNumTable_oid, pstIFMS1000ParamsV32TotalNumTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ParamsV32TotalNumTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ParamsV32TotalNumTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ParamsV32TotalNumTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: v32TPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_V32TPORTNUM;
+    table_info->max_column = COLUMN_V32PORTTOTALNUM;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+
+/** handles requests for the pstIFMS1000ParamsV32TotalNumTable table */
+int
+QPSTProduct::pstIFMS1000ParamsV32TotalNumTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ParamsV32TotalNumTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsV32TotalNumTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_V32TPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->v32TPortNum);
+                break;
+            case COLUMN_V32PORTTOTALNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->v32PortTotalNum);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ParamsV32NameTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ParamsV32NameTable(void)
+{
+    const oid pstIFMS1000ParamsV32NameTable_oid[] = {1,3,6,1,4,1,48391,3,5,15,2};
+    const size_t pstIFMS1000ParamsV32NameTable_oid_len   = OID_LENGTH(pstIFMS1000ParamsV32NameTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ParamsV32NameTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ParamsV32NameTable",     pstIFMS1000ParamsV32NameTable_handler,
+              pstIFMS1000ParamsV32NameTable_oid, pstIFMS1000ParamsV32NameTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ParamsV32NameTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ParamsV32NameTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ParamsV32NameTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: v32PortNum */
+                           ASN_INTEGER,  /* index: v32ParamNameNum */
+                           0);
+
+    table_info->min_column = COLUMN_V32PORTNUM;
+    table_info->max_column = COLUMN_V32PARAMNAME;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000ParamsV32NameTable table */
+int
+QPSTProduct::pstIFMS1000ParamsV32NameTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ParamsV32NameTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsV32NameTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_V32PORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->v32PortNum);
+                break;
+            case COLUMN_V32PARAMNAMENUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->v32ParamNameNum);
+                break;
+            case COLUMN_V32PARAMNAME:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->v32ParamName,
+                                          table_entry->v32ParamName_len);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ParamsV32ValTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ParamsV32ValTable(void)
+{
+    const oid pstIFMS1000ParamsV32ValTable_oid[] = {1,3,6,1,4,1,48391,3,5,15,3};
+    const size_t pstIFMS1000ParamsV32ValTable_oid_len   = OID_LENGTH(pstIFMS1000ParamsV32ValTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ParamsV32ValTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ParamsV32ValTable",     pstIFMS1000ParamsV32ValTable_handler,
+              pstIFMS1000ParamsV32ValTable_oid, pstIFMS1000ParamsV32ValTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ParamsV32ValTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ParamsV32ValTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ParamsV32ValTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: v32ValPortNum */
+                           ASN_INTEGER,  /* index: v32ParamValNum */
+                           0);
+
+    table_info->min_column = COLUMN_V32VALPORTNUM;
+    table_info->max_column = COLUMN_V32PARAMVAL;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+
+/** handles requests for the pstIFMS1000ParamsV32ValTable table */
+int
+QPSTProduct::pstIFMS1000ParamsV32ValTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ParamsV32ValTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsV32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_V32VALPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->v32ValPortNum);
+                break;
+            case COLUMN_V32PARAMVALNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->v32ParamValNum);
+                break;
+            case COLUMN_V32PARAMVAL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_UNSIGNED,
+                                            table_entry->v32ParamVal);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsV32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_V32PARAMVAL:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsV32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_V32PARAMVAL:
+                table_entry->old_v32ParamVal = table_entry->v32ParamVal;
+                table_entry->v32ParamVal     = *request->requestvb->val.integer;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsV32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_V32PARAMVAL:
+                table_entry->v32ParamVal     = table_entry->old_v32ParamVal;
+                table_entry->old_v32ParamVal = 0;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ParamsS32TotalNumTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ParamsS32TotalNumTable(void)
+{
+    const oid pstIFMS1000ParamsS32TotalNumTable_oid[] = {1,3,6,1,4,1,48391,3,5,16,1};
+    const size_t pstIFMS1000ParamsS32TotalNumTable_oid_len   = OID_LENGTH(pstIFMS1000ParamsS32TotalNumTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ParamsS32TotalNumTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ParamsS32TotalNumTable",     pstIFMS1000ParamsS32TotalNumTable_handler,
+              pstIFMS1000ParamsS32TotalNumTable_oid, pstIFMS1000ParamsS32TotalNumTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ParamsS32TotalNumTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ParamsS32TotalNumTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ParamsS32TotalNumTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: s32TPortNum */
+                           0);
+
+    table_info->min_column = COLUMN_S32TPORTNUM;
+    table_info->max_column = COLUMN_S32PORTTOTALNUM;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+
+/** handles requests for the pstIFMS1000ParamsS32TotalNumTable table */
+int
+QPSTProduct::pstIFMS1000ParamsS32TotalNumTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ParamsS32TotalNumTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsS32TotalNumTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_S32TPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->s32TPortNum);
+                break;
+            case COLUMN_S32PORTTOTALNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->s32PortTotalNum);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ParamsS32NameTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ParamsS32NameTable(void)
+{
+    const oid pstIFMS1000ParamsS32NameTable_oid[] = {1,3,6,1,4,1,48391,3,5,16,2};
+    const size_t pstIFMS1000ParamsS32NameTable_oid_len   = OID_LENGTH(pstIFMS1000ParamsS32NameTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ParamsS32NameTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ParamsS32NameTable",     pstIFMS1000ParamsS32NameTable_handler,
+              pstIFMS1000ParamsS32NameTable_oid, pstIFMS1000ParamsS32NameTable_oid_len,
+              HANDLER_CAN_RONLY
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ParamsS32NameTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ParamsS32NameTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ParamsS32NameTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: s32PortNum */
+                           ASN_INTEGER,  /* index: s32ParamNameNum */
+                           0);
+
+    table_info->min_column = COLUMN_S32PORTNUM;
+    table_info->max_column = COLUMN_S32PARAMNAMEVAL;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+
+
+/** handles requests for the pstIFMS1000ParamsS32NameTable table */
+int
+QPSTProduct::pstIFMS1000ParamsS32NameTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ParamsS32NameTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsS32NameTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_S32PORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->s32PortNum);
+                break;
+            case COLUMN_S32PARAMNAMENUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->s32ParamNameNum);
+                break;
+            case COLUMN_S32PARAMNAMEVAL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->s32ParamNameVal,
+                                          table_entry->s32ParamNameVal_len);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+    }
+    return SNMP_ERR_NOERROR;
+}
+
+/** Initialize the pstIFMS1000ParamsS32ValTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000ParamsS32ValTable(void)
+{
+    const oid pstIFMS1000ParamsS32ValTable_oid[] = {1,3,6,1,4,1,48391,3,5,16,3};
+    const size_t pstIFMS1000ParamsS32ValTable_oid_len   = OID_LENGTH(pstIFMS1000ParamsS32ValTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000ParamsS32ValTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000ParamsS32ValTable",     pstIFMS1000ParamsS32ValTable_handler,
+              pstIFMS1000ParamsS32ValTable_oid, pstIFMS1000ParamsS32ValTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000ParamsS32ValTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000ParamsS32ValTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000ParamsS32ValTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: s32ValPortNum */
+                           ASN_INTEGER,  /* index: s32ParamValNum */
+                           0);
+
+    table_info->min_column = COLUMN_S32VALPORTNUM;
+    table_info->max_column = COLUMN_S32PARAMVAL;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+/** handles requests for the pstIFMS1000ParamsS32ValTable table */
+int
+QPSTProduct::pstIFMS1000ParamsS32ValTable_handler(
+    netsnmp_mib_handler               *handler,
+    netsnmp_handler_registration      *reginfo,
+    netsnmp_agent_request_info        *reqinfo,
+    netsnmp_request_info              *requests) {
+
+    netsnmp_request_info       *request;
+    netsnmp_table_request_info *table_info;
+    netsnmp_tdata              *table_data;
+    netsnmp_tdata_row          *table_row;
+    struct pstIFMS1000ParamsS32ValTable_entry          *table_entry;
+    int                         ret;
+
+    DEBUGMSGTL(("pstIFMS1000:handler", "Processing request (%d)\n", reqinfo->mode));
+
+    switch (reqinfo->mode) {
+        /*
+         * Read-support (also covers GetNext requests)
+         */
+    case MODE_GET:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsS32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_S32VALPORTNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->s32ValPortNum);
+                break;
+            case COLUMN_S32PARAMVALNUM:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->s32ParamValNum);
+                break;
+            case COLUMN_S32PARAMVAL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->s32ParamVal,
+                                          table_entry->s32ParamVal_len);
+                break;
+            default:
+                netsnmp_set_request_error(reqinfo, request,
+                                          SNMP_NOSUCHOBJECT);
+                break;
+            }
+        }
+        break;
+
+        /*
+         * Write-support
+         */
+    case MODE_SET_RESERVE1:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsS32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_S32PARAMVAL:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->s32ParamVal));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            default:
+                netsnmp_set_request_error( reqinfo, request,
+                                           SNMP_ERR_NOTWRITABLE );
+                return SNMP_ERR_NOERROR;
+            }
+        }
+        break;
+
+    case MODE_SET_RESERVE2:
+        break;
+
+    case MODE_SET_FREE:
+        break;
+
+    case MODE_SET_ACTION:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsS32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_S32PARAMVAL:
+                memcpy( table_entry->old_s32ParamVal,
+                        table_entry->s32ParamVal,
+                        sizeof(table_entry->s32ParamVal));
+                table_entry->old_s32ParamVal_len =
+                        table_entry->s32ParamVal_len;
+                memset( table_entry->s32ParamVal, 0,
+                        sizeof(table_entry->s32ParamVal));
+                memcpy( table_entry->s32ParamVal,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->s32ParamVal_len =
+                        request->requestvb->val_len;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_UNDO:
+        for (request=requests; request; request=request->next) {
+            if (request->processed)
+                continue;
+
+            table_entry = (struct pstIFMS1000ParamsS32ValTable_entry *)
+                              netsnmp_tdata_extract_entry(request);
+            table_row   =     netsnmp_tdata_extract_row(  request);
+            table_data  =     netsnmp_tdata_extract_table(request);
+            table_info  =     netsnmp_extract_table_info( request);
+    
+            switch (table_info->colnum) {
+            case COLUMN_S32PARAMVAL:
+                memcpy( table_entry->s32ParamVal,
+                        table_entry->old_s32ParamVal,
+                        sizeof(table_entry->s32ParamVal));
+                memset( table_entry->old_s32ParamVal, 0,
+                        sizeof(table_entry->s32ParamVal));
+                table_entry->s32ParamVal_len =
+                        table_entry->old_s32ParamVal_len;
+                break;
+            }
+        }
+        break;
+
+    case MODE_SET_COMMIT:
+        break;
+    }
     return SNMP_ERR_NOERROR;
 }

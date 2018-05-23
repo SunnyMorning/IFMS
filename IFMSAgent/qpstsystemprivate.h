@@ -3,7 +3,9 @@
 
 #include <QObject>
 #include <QSettings>
-
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +15,7 @@
 #define NUMBER_OF_FANS				4
 #define NUMBER_OF_POWERS			8
 #define NUMBER_OF_TRAPTARGETS		2
+#define NNN							32
 
 using namespace std;
 
@@ -37,12 +40,24 @@ typedef struct  _pstSystemVerInfo
         char* devMacAddress;
 }pstSystemVerInfo;
 
-typedef struct _pstSystemTrapTargetEntry{
-    char*	pstSystemTrapTargetName;
-    char*	pstSystemTrapTargetIpAddr;
-    char*	pstSystemTrapTargetCommunity;
-    long  pstSystemTrapTargetTrapVersion;
-    long  pstSystemTrapTargetRowStatus;
+typedef struct pstSystemTrapTargetTable_entry{
+		/* Index values */
+		char pstSystemTrapTargetName[NNN];
+		size_t pstSystemTrapTargetName_len;
+	
+		/* Column values */
+		in_addr_t pstSystemTrapTargetIpAddr;
+		in_addr_t old_pstSystemTrapTargetIpAddr;
+		char pstSystemTrapTargetCommunity[NNN];
+		size_t pstSystemTrapTargetCommunity_len;
+		char old_pstSystemTrapTargetCommunity[NNN];
+		size_t old_pstSystemTrapTargetCommunity_len;
+		long pstSystemTrapTargetTrapVersion;
+		long old_pstSystemTrapTargetTrapVersion;
+		long pstSystemTrapTargetRowStatus;
+		long old_pstSystemTrapTargetRowStatus;
+	
+		int   valid;
 }pstSystemTrapTargetEntry;
 
 
@@ -53,17 +68,31 @@ typedef struct _pstSystemTrapInfo
     vector<pstSystemTrapTargetEntry>   pstSystemTrapTargetTable;
 }pstSystemTrapInfo;
 
-typedef struct _pstSystemFanEntry{
-    long  pstSystemFanIndex;
-    long  pstSystemFanStatus;
-    long  pstSystemFanSpeed;
+typedef struct pstSystemFanTable_entry{
+    /* Index values */
+//    long pstSystemFanIndex;
+
+    /* Column values */
+    long pstSystemFanIndex;
+    long pstSystemFanStatus;
+    long pstSystemFanSpeed;
+
+    int   valid;
 }pstSystemFanEntry;
 
-typedef struct _pstSystemPowerEntry{
-    long  pstSystemPowerIndex;
-    long  pstSystemPowerStatus;
-    char* pstSystemPowerVoltage;
-    char* pstSystemPowerCurrent;
+typedef struct pstSystemPowerTable_entry {
+		 /* Index values */
+//		 long pstSystemPowerIndex;
+	 
+		 /* Column values */
+		 long pstSystemPowerIndex;
+		 long pstSystemPowerStatus;
+		 char pstSystemPowerVoltage[NNN];
+		 size_t pstSystemPowerVoltage_len;
+		 char pstSystemPowerCurrent[NNN];
+		 size_t pstSystemPowerCurrent_len;
+	 
+		 int   valid;
 }pstSystemPowerEntry;
 
 typedef struct  _pstSystemStatus
@@ -121,6 +150,23 @@ public:
 signals:
 
 public slots:
+    QString get_devName();
+    void    set_devName(QString name);
+    QString get_devIpAddr();
+    void    set_devIpAddr(QString ip);
+    QString get_devGateway();
+    void    set_devGateway(QString gw);
+    QString get_devNetMask();
+    void    set_devNetMask(QString msk);
+    long    get_saveCurrentConfiguration();
+    void    set_saveCurrentConfiguration(long cfg);
+    long    get_reset2Factory();
+    void    set_reset2Factory(long rf);
+    long    get_reboot();
+    void    set_reboot(long rb);
+
+private:
+    QSettings    _ss;
 };
 
 #endif // QPSTSYSTEMPRIVATE_H

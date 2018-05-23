@@ -84,3 +84,35 @@ QString QFingerData::getIFMSFingerFileName(qint16 channel)
 
     return filename;
 }
+
+
+QString QFingerData::getIFMSSorFileName(qint16 channel)
+{
+    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
+    if(channel == 1){
+            filename = QAgentApp::getCacheDir()+QString(CH1_SOR_FILE);
+    }
+    if(channel == 2){
+            filename = QAgentApp::getCacheDir()+QString(CH2_SOR_FILE);
+    }
+    if(channel == 3){
+            filename = QAgentApp::getCacheDir()+QString(CH3_SOR_FILE);
+    }
+    if(channel == 4){
+            filename = QAgentApp::getCacheDir()+QString(CH4_SOR_FILE);
+    }
+    if(channel == 5){
+            filename = QAgentApp::getCacheDir()+QString(CH5_SOR_FILE);
+    }
+    if(channel == 6){
+            filename = QAgentApp::getCacheDir()+QString(CH6_SOR_FILE);
+    }
+    if(channel == 7){
+            filename = QAgentApp::getCacheDir()+QString(CH7_SOR_FILE);
+    }
+    if(channel == 8){
+            filename = QAgentApp::getCacheDir()+QString(CH8_SOR_FILE);
+    }
+
+    return filename;
+}

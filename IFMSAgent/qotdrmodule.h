@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSerialPort>
+#include <QTcpSocket>
 #include <QString>
 #include <QMutex>
 #include <QFileSystemWatcher>
@@ -11,9 +12,25 @@
 #include <QRunnable>
 #include <QThreadPool>
 #include <QDateTime>
+#include <QTimer>
 #include <QDebug>
 
 #include    "qfingerdata.h"
+
+#define  WAIT_WRITE_TIMEOUT     1000
+#define  WAIT_READ_TIMEOUT      4000
+
+#define  UART_OF_MODULE1        "/dev/ttyO2"
+#define  UART_OF_MODULE2        "/dev/ttyO3"
+
+#define  ADDRESS_OF_MODULE1     "172.16.1.102"
+#define  ADDRESS_OF_MODULE2     "172.16.1.101"
+
+#define  PORT_OF_MODULE1        6000
+#define  PORT_OF_MODULE2        6000
+
+#define  TCP_CONNECT_TIMEOUT	10000
+#define  KEEP_ALIVE_TIMEOUT     30000
 
 class QOTDRModule : public QThread
 {
@@ -59,6 +76,16 @@ public:
         ERR43   = 43                        // Received command“UPDATE” while the download file has not been accepted
     };
 
+    enum TCPConnectionState
+    {
+        STATE_TCP_INIT = 0,                 // 初始状态
+        STATE_TCP_CONNECTING,           // 正在进行TCP连接
+        STATE_TCP_CONNECTED,            // TCP连接成功
+        STATE_TCP_DISCONNECTING,        // 正在断开TCP连接
+        STATE_TCP_DISCONNECTED,         // TCP连接断开
+        STATE_TCP_CONNECT_ERROR,        // TCP连接错误
+    };
+
     explicit QOTDRModule(QObject *parent = nullptr, qint8 index = 0);
 
     ~QOTDRModule();
@@ -69,6 +96,7 @@ public:
     qint8   getModuleIndex();
     void    initFingerBinFile(QString filename);
     void    initModuleFingerData();
+    void    initTcpConnection();
     void    setConnections();
 
     OTDRModuleState getOTDRModuleState();
@@ -158,6 +186,7 @@ public:
             }while(getKeepRunning() == 1);
 
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
+			setProgress(0);
 
         }
 
@@ -177,10 +206,18 @@ public slots:
     void onSetProgress(quint16 module, quint16 progress);
     void onOTDRChanged(quint16 module, quint16 channel);
 
+    void onSocketError(QAbstractSocket::SocketError  socketError);
+    void onSocketConnected();
+    void onSocketDisconnected();
+    void onTcpSocketAutoConnect();
+
 private:
     qint8               _moduleIndex;
     QSerialPort         *_pSerialPort;
+    QTcpSocket          *_pTcpSocket;
+    QIODevice           *_pIODevice;
     OTDRModuleState     _state;
+    TCPConnectionState  _tcpState;
     QDateTime           _lastScanTime;
     QDateTime           _lastGetSorTime;
     QFileSystemWatcher  _watcher;
@@ -189,6 +226,8 @@ private:
     quint16             _progress;
     QMap<QString, QFingerData*>  _OldFingers;
     QMap<QString, QFingerData*>  _NewFingers;
+
+    QTimer              *_timerTCPKeepAlive;
 };
 
 #endif // QOTDRMODULE_H

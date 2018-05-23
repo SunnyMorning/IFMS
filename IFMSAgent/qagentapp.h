@@ -22,6 +22,7 @@ class QAgentApp : public QCoreApplication
 public:
     explicit QAgentApp(int &argc, char **argv);
     virtual ~QAgentApp();
+    static QAgentApp* getInstance(void);
 
     void showStatusMessage(const QString &msg, int ModuleIndex, int time);
     void showStatusMessage(const QStringList &msgList, int ModuleIndex, int time);

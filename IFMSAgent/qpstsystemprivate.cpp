@@ -1,8 +1,10 @@
 #include "qpstsystemprivate.h"
 
+#include "qagentapp.h"
+
 QPSTSystemPrivate::QPSTSystemPrivate(QObject *parent) : QObject(parent)
 {
-
+    _ss.setPath(QSettings::IniFormat,QSettings::UserScope,QAgentApp::getConfigDir()+ "system.ini");
 }
 
 void QPSTSystemPrivate::init_pstData()
@@ -32,10 +34,12 @@ void QPSTSystemPrivate::init_pstData()
     TrapInfo.pstSystemTrapCount = NUMBER_OF_TRAPTARGETS;
     TrapInfo.pstSystemTrapFuncEn = 1;
     for(i=0;i<NUMBER_OF_TRAPTARGETS;i++){
-
-        trapTarget.pstSystemTrapTargetName = "192.168.1.44:1622";
-        trapTarget.pstSystemTrapTargetIpAddr = "192.168.1.44";
-        trapTarget.pstSystemTrapTargetCommunity = "public";
+        char *str = "192.168.1.44:1622";
+        memcpy(trapTarget.pstSystemTrapTargetName, str, strlen(str));
+//             str = "192.168.1.44";
+//        memcpy(trapTarget.pstSystemTrapTargetIpAddr, str, strlen(str));
+             str = "public";
+        memcpy(trapTarget.pstSystemTrapTargetCommunity, str, strlen(str));
         trapTarget.pstSystemTrapTargetTrapVersion = 2;
         trapTarget.pstSystemTrapTargetRowStatus = 4;
         TrapInfo.pstSystemTrapTargetTable.push_back(trapTarget);
@@ -53,8 +57,8 @@ void QPSTSystemPrivate::init_pstData()
     Status.pstSystemPowerTotalNum = NUMBER_OF_POWERS;
     for(i=0;i<NUMBER_OF_POWERS;i++){
         power.pstSystemPowerIndex = i+1;
-        power.pstSystemPowerCurrent = "1";
-        power.pstSystemPowerVoltage = "12";
+//        power.pstSystemPowerCurrent = "1";
+//        power.pstSystemPowerVoltage = "12";
         power.pstSystemPowerStatus = 0;
         Status.pstSystemPowerTable.push_back(power);
     }
@@ -72,4 +76,80 @@ void QPSTSystemPrivate::init_pstData()
     OnlineUpgrade.pstSystemUpgStatus = 0;
     OnlineUpgrade.pstSystemUpgResultInfo = "ready";
     ProductInfo.pstSystemProductType = 1000;
+}
+
+QString QPSTSystemPrivate::get_devName()
+{
+    QString devName;
+    _ss.beginGroup("pstSystemBasicManagement");
+    devName = _ss.value("devName","IFMS1000").toString();
+    _ss.endGroup();
+    return devName;
+}
+
+void    QPSTSystemPrivate::set_devName(QString name)
+{
+    _ss.beginGroup("pstSystemBasicManagement");
+    _ss.setValue("devName", name);
+    _ss.endGroup();
+}
+
+QString QPSTSystemPrivate::get_devIpAddr()
+{
+
+}
+
+void    QPSTSystemPrivate::set_devIpAddr(QString ip)
+{
+
+}
+
+QString QPSTSystemPrivate::get_devGateway()
+{
+
+}
+
+void    QPSTSystemPrivate::set_devGateway(QString gw)
+{
+
+}
+
+QString QPSTSystemPrivate::get_devNetMask()
+{
+
+}
+
+void    QPSTSystemPrivate::set_devNetMask(QString msk)
+{
+
+}
+
+long    QPSTSystemPrivate::get_saveCurrentConfiguration()
+{
+
+}
+
+void    QPSTSystemPrivate::set_saveCurrentConfiguration(long cfg)
+{
+
+}
+
+long    QPSTSystemPrivate::get_reset2Factory()
+{
+
+}
+
+void    QPSTSystemPrivate::set_reset2Factory(long rf)
+{
+
+}
+
+long    QPSTSystemPrivate::get_reboot()
+{
+
+}
+
+void    QPSTSystemPrivate::set_reboot(long rb)
+{
+
 }

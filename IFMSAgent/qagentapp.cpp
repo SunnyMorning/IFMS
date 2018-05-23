@@ -32,7 +32,7 @@ static quint16  _currentModule = 0;
 QString QAgentApp::getAppName()     { return QString(IFMS_AGENT_NAME); }
 
 QString QAgentApp::getConfigDir()   { return QDir::homePath() + "/.config/" + getAppName() + "/"; }
-QString QAgentApp::getCacheDir()    { return QDir::homePath() + "/.cache/"  + getAppName() + "/"; }
+QString QAgentApp::getCacheDir()    { return QString("/var/www/"); }
 QString QAgentApp::getDataDir()     { return QString(DATA_DIR); }
 
 QString QAgentApp::getConfigFile()  { return getConfigDir() + "settings.ini"; }
@@ -46,6 +46,11 @@ QAgentApp::QAgentApp(int &argc, char **argv)
 QAgentApp::~QAgentApp()
 {
 
+}
+
+QAgentApp* QAgentApp::getInstance(void)
+{
+    return (QAgentApp*) qApp;
 }
 
 bool QAgentApp::startSession(int &argc, char **argv)
@@ -76,7 +81,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(command_thread, SIGNAL(sigSwitchModule(quint16)), this, SLOT(onSwitchModule(quint16)));
 
     connect(command_thread, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)));
-    connect(command_thread, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SIGNAL(sigSendCommandToModule(quint16, QString&)));
+    connect(command_thread, SIGNAL(sigSendCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
     connect(command_thread, SIGNAL(sigModuleStartMonitor(quint16)), this, SIGNAL(sigModuleStartMonitor(quint16)));
     connect(command_thread, SIGNAL(sigModuleStopMonitor(quint16)), this, SIGNAL(sigModuleStopMonitor(quint16)));
 
@@ -93,10 +98,23 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(_module2, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
     connect(_module2, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
 
+    connect(_module1, SIGNAL(sigSendCommand(quint16, QString&)), _module1, SLOT(onSendCommand(quint16, QString&)));
+    connect(_module1, SIGNAL(sigSetProgress(quint16, quint16)), _module1, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
+    connect(_module1, SIGNAL(sigOTDRChanged(quint16, quint16)), _module1, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
+
+    connect(_module2, SIGNAL(sigSendCommand(quint16, QString&)), _module2, SLOT(onSendCommand(quint16, QString&)));
+    connect(_module2, SIGNAL(sigSetProgress(quint16, quint16)), _module2, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
+    connect(_module2, SIGNAL(sigOTDRChanged(quint16, quint16)), _module2, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
+
+
 // FOR DEBUG ONLY
-    emit sigModuleStartMonitor(0);
-    emit sigModuleStartMonitor(1);
+//    emit sigModuleStartMonitor(0);
+//    emit sigModuleStartMonitor(1);
     emit command_thread->sigSwitchModule(0);
+//    QString qcmdline = QString("SCAN");
+//    QString qcmdline = QString("GETSOR? 0");
+//    emit command_thread->sigSendCommandToModule(0,qcmdline);
+
 
     return true;
 }
@@ -299,7 +317,15 @@ void QAgentApp::onSigModuleRecvResponse(quint16 module, QString& cmdline, QByteA
 
 void QAgentApp::onSigSendCommandToModule(quint16 module, QString& cmdline)
 {
-    message(_currentModule,QString(">%1").arg(cmdline));
+    message(_currentModule,QString("onSigSendCommandToModule> %1 %2").arg(module).arg(cmdline));
+    if(module == 0){
+        emit  _module1->sigSendCommand(module,cmdline);
+//        _module1->onSendCommand(module,cmdline);  cause socketnotifier can not ...
+    }
+    else
+    {
+        emit _module2->sigSendCommand(module,cmdline);
+    }
 }
 
 void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
