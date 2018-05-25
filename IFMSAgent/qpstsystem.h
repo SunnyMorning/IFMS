@@ -82,20 +82,20 @@ static Netsnmp_Node_Handler pstSystemPowerTable_handler;
 signals:
 
 public slots:
-QString get_devName();
-void    set_devName(QString name);
-QString get_devIpAddr();
-void    set_devIpAddr(QString ip);
-QString get_devGateway();
-void    set_devGateway(QString gw);
-QString get_devNetMask();
-void    set_devNetMask(QString msk);
-long    get_saveCurrentConfiguration();
-void    set_saveCurrentConfiguration(long cfg);
-long    get_reset2Factory();
-void    set_reset2Factory(long rf);
-long    get_reboot();
-void    set_reboot(long rb);
+//QString get_devName();
+//void    set_devName(QString name);
+//QString get_devIpAddr();
+//void    set_devIpAddr(QString ip);
+//QString get_devGateway();
+//void    set_devGateway(QString gw);
+//QString get_devNetMask();
+//void    set_devNetMask(QString msk);
+//long    get_saveCurrentConfiguration();
+//void    set_saveCurrentConfiguration(long cfg);
+//long    get_reset2Factory();
+//void    set_reset2Factory(long rf);
+//long    get_reboot();
+//void    set_reboot(long rb);
 
 private:
 

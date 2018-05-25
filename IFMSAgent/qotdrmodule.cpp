@@ -235,8 +235,7 @@ bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate b
 void QOTDRModule::sendCommandWithResponse(quint16 module, QString cmdline, QByteArray *data)
 {
 //    QMutexLocker locker(&gOTDRModule_mutex);
-//    QAgentApp::message(_moduleIndex, cmdline, QString(QChar(_moduleIndex)));
-
+    qDebug() << "["<< QThread::currentThreadId() << "] sendCommandWithResponse"<<endl;
     QByteArray  cmdData = cmdline.toLatin1();
     cmdData.append(0x0D);
     cmdData.append(0x0A);
@@ -309,7 +308,7 @@ void QOTDRModule::sendGetSorCommand()
 //    }
 if((getOTDRModuleState() == STATE_IDLING)||(getOTDRModuleState() == STATE_GETINGSOR)){
     if(_moduleIndex == 0){
-        if((_MeasuredChannels.OTDRModule.I.ch1 == 0)&&(getOTDRModuleState() == STATE_GETINGSOR)){
+        if(_MeasuredChannels.OTDRModule.I.ch1 == 0){
             QString cmdline = QString("getsor? %1").arg(0);
             emit this->sigSendCommand(_moduleIndex,cmdline);
             _lastGetSorTime = QDateTime::currentDateTimeUtc();
@@ -436,11 +435,10 @@ void QOTDRModule::onRecvResponse(quint16 module, QString &cmdline, QByteArray &d
 
     if(length < 32){
         QString         responseString = QString(data);
-        if((responseString.contains("STATE"))&&(data.size() >=7)&&(data.at(6) == '0')){
+        if(responseString.contains("state 0",Qt::CaseInsensitive)){
             setOTDRModuleState(STATE_IDLING);
         }
-        if((responseString.contains("STATE"))&&(data.size() >=7)&&(data.at(6) == '1'))
-        {
+        if(responseString.contains("state 1",Qt::CaseInsensitive)){
             setOTDRModuleState(STATE_MEASURING);
         }
     }

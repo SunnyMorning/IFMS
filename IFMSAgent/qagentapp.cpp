@@ -335,6 +335,10 @@ void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
 {
     if(moduleIndex == 0){
         if(_module1){
+            if(_module1->getProgress() != 0){
+                qDebug() << "It is measuring ...." << endl;
+                return;
+            }
             _module1->setKeepRunning(1);
             _module1->onSigOTDRSetMode(0);
             _module1->start();
@@ -343,6 +347,10 @@ void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
     }
     if(moduleIndex == 1){
         if(_module2){
+            if(_module2->getProgress() != 0){
+                qDebug() << "It is measuring ...." << endl;
+                return;
+            }
             _module2->setKeepRunning(1);
             _module1->onSigOTDRSetMode(0);
             _module2->start();
@@ -372,8 +380,14 @@ void QAgentApp::onSigModuleStopMonitor(quint16 moduleIndex)
 
 void QAgentApp::onSigModuleSingleMonitor(quint16 module)
 {
+    qDebug() << "qAgentApp:" <<  QThread::currentThreadId() << endl;
+
     if(module == 0){
         if(_module1){
+            if(_module1->getProgress() != 0){
+                qDebug() << "It is measuring ...." << endl;
+                return;
+            }
             _module1->onSigOTDRSetMode(1);
             _module1->setKeepRunning(0);
             _module1->start();
@@ -381,6 +395,10 @@ void QAgentApp::onSigModuleSingleMonitor(quint16 module)
     }
     if(module == 1){
         if(_module2){
+            if(_module2->getProgress() != 0){
+                qDebug() << "It is measuring ...." << endl;
+                return;
+            }
             _module2->setKeepRunning(0);
             _module2->onSigOTDRSetMode(1);
             _module2->start();

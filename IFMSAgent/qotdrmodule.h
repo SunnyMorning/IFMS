@@ -141,9 +141,10 @@ public:
     }
 
     void setProgress(qint16 progress);
+    qint16  getProgress(){return _progress;}
 
     void run(){
-            qDebug() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
+            qDebug() << QThread::currentThreadId() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
 
             if(_moduleMode == OTDR_WORK_MODE_STOP){
                 return;
@@ -151,12 +152,15 @@ public:
             sendScanCommand();
 
             do{
-                qDebug() << "\n Monitoring on module: " << _moduleIndex << " " << _progress << endl;
+                qDebug() << "\n["<<QThread::currentThreadId() <<"] Monitoring on module[" << _moduleIndex << "] P:" << _progress << "S:"<< getOTDRModuleState() << endl;
+                if(getOTDRModuleState() == STATE_GOTSOR4){
+                    setOTDRModuleState(STATE_MEASURED);
+                }
                 QThread::msleep(5000);
                 if(isIdling()||isGetSOR()){
                     setProgress(80);
                     sendGetSorCommand();
-                    QThread::msleep(1000);
+                    QThread::msleep(3000);
                 }
                 else if(isMeasured())
                 {
@@ -174,7 +178,7 @@ public:
                     }
                     setProgress(_progress);
                     sendStateCommand();
-                    if(_lastScanTime.addSecs(60) < QDateTime::currentDateTimeUtc())
+                    if(_lastScanTime.addSecs(300) < QDateTime::currentDateTimeUtc())
                     {
                           setOTDRModuleState(STATE_GETINGSOR);
                     }
@@ -193,10 +197,10 @@ public:
                 }
 
             }while(((_moduleMode == OTDR_WORK_MODE_SINGLE)&&(isMeasured()== false)) || (_moduleMode == OTDR_WORK_MODE_AUTO)||(getKeepRunning() == 1));
-
+            setOTDRModuleState(STATE_MEASURED);
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
 			setProgress(0);
-
+            exit(0);
         }
 
 signals:

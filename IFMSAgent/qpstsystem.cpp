@@ -18,74 +18,74 @@ void QPSTSystem::init_pstSystemData(){
     m_pstSystem.init_pstData();
 }
 
-QString QPSTSystem::get_devName()
-{
-    return m_pstSystem.get_devName();
-}
+//QString QPSTSystem::get_devName()
+//{
+//    return m_pstSystem.get_devName();
+//}
 
-void    QPSTSystem::set_devName(QString name)
-{
-    m_pstSystem.set_devName(name);
-}
+//void    QPSTSystem::set_devName(QString name)
+//{
+//    m_pstSystem.set_devName(name);
+//}
 
-QString QPSTSystem::get_devIpAddr()
-{
+//QString QPSTSystem::get_devIpAddr()
+//{
 
-}
+//}
 
-void    QPSTSystem::set_devIpAddr(QString ip)
-{
+//void    QPSTSystem::set_devIpAddr(QString ip)
+//{
 
-}
+//}
 
-QString QPSTSystem::get_devGateway()
-{
+//QString QPSTSystem::get_devGateway()
+//{
 
-}
+//}
 
-void    QPSTSystem::set_devGateway(QString gw)
-{
+//void    QPSTSystem::set_devGateway(QString gw)
+//{
 
-}
+//}
 
-QString QPSTSystem::get_devNetMask()
-{
+//QString QPSTSystem::get_devNetMask()
+//{
 
-}
+//}
 
-void    QPSTSystem::set_devNetMask(QString msk)
-{
+//void    QPSTSystem::set_devNetMask(QString msk)
+//{
 
-}
+//}
 
-long    QPSTSystem::get_saveCurrentConfiguration()
-{
+//long    QPSTSystem::get_saveCurrentConfiguration()
+//{
 
-}
+//}
 
-void    QPSTSystem::set_saveCurrentConfiguration(long cfg)
-{
+//void    QPSTSystem::set_saveCurrentConfiguration(long cfg)
+//{
 
-}
+//}
 
-long    QPSTSystem::get_reset2Factory()
-{
+//long    QPSTSystem::get_reset2Factory()
+//{
 
-}
-void    QPSTSystem::set_reset2Factory(long rf)
-{
+//}
+//void    QPSTSystem::set_reset2Factory(long rf)
+//{
 
-}
+//}
 
-long    QPSTSystem::get_reboot()
-{
+//long    QPSTSystem::get_reboot()
+//{
 
-}
+//}
 
-void    QPSTSystem::set_reboot(long rb)
-{
+//void    QPSTSystem::set_reboot(long rb)
+//{
 
-}
+//}
 
 void QPSTSystem::init_pstSystem()
 {
@@ -277,7 +277,7 @@ int
        we don't need to loop over a list of requests; we'll only get one. */
     QPST *p = QPST::getInstance();
 
-    char *devName = p->m_system->get_devName().toLatin1().data();
+    char *devName = p->m_system->m_pstSystem.get_devName().toLatin1().data();
     
     switch(reqinfo->mode) {
 
@@ -321,7 +321,7 @@ int
             size_t len = requests->requestvb->val_len;
             QString name = QString::fromLatin1(devName,len);
 
-            p->m_system->set_devName(name);
+            p->m_system->m_pstSystem.set_devName(name);
 
             netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_NOERROR/* some error */);
             }
