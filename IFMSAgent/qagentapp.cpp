@@ -84,11 +84,13 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(command_thread, SIGNAL(sigSendCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
     connect(command_thread, SIGNAL(sigModuleStartMonitor(quint16)), this, SIGNAL(sigModuleStartMonitor(quint16)));
     connect(command_thread, SIGNAL(sigModuleStopMonitor(quint16)), this, SIGNAL(sigModuleStopMonitor(quint16)));
+    connect(command_thread, SIGNAL(sigModuleSingleMonitor(quint16)), this, SIGNAL(sigModuleSingleMonitor(quint16)));
 
     connect(this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SLOT(onSigModuleRecvResponse(quint16, QString&, QByteArray&)));
     connect(this, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SLOT(onSigSendCommandToModule(quint16, QString&)));
     connect(this, SIGNAL(sigModuleStartMonitor(quint16)), this, SLOT(onSigModuleStartMonitor(quint16)));
     connect(this, SIGNAL(sigModuleStopMonitor(quint16)), this, SLOT(onSigModuleStopMonitor(quint16)));
+    connect(this, SIGNAL(sigModuleSingleMonitor(quint16)), this, SLOT(onSigModuleSingleMonitor(quint16)));
 
 
     connect(_module1, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
@@ -114,6 +116,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 //    QString qcmdline = QString("SCAN");
 //    QString qcmdline = QString("GETSOR? 0");
 //    emit command_thread->sigSendCommandToModule(0,qcmdline);
+    emit sigModuleSingleMonitor(0);
 
 
     return true;
@@ -333,6 +336,7 @@ void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
     if(moduleIndex == 0){
         if(_module1){
             _module1->setKeepRunning(1);
+            _module1->onSigOTDRSetMode(0);
             _module1->start();
 
         }
@@ -340,6 +344,7 @@ void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
     if(moduleIndex == 1){
         if(_module2){
             _module2->setKeepRunning(1);
+            _module1->onSigOTDRSetMode(0);
             _module2->start();
         }
     }
@@ -349,6 +354,7 @@ void QAgentApp::onSigModuleStopMonitor(quint16 moduleIndex)
 {
     if(moduleIndex == 0){
         if(_module1){
+            _module1->onSigOTDRSetMode(2);
             _module1->setKeepRunning(0);
             _module1->exit(0);
             _module1->wait();
@@ -356,9 +362,28 @@ void QAgentApp::onSigModuleStopMonitor(quint16 moduleIndex)
     }
     if(moduleIndex == 1){
         if(_module2){
-            _module2->setKeepRunning(2);
+            _module2->onSigOTDRSetMode(2);
+            _module2->setKeepRunning(0);
             _module2->exit(0);
             _module2->wait();
+        }
+    }
+}
+
+void QAgentApp::onSigModuleSingleMonitor(quint16 module)
+{
+    if(module == 0){
+        if(_module1){
+            _module1->onSigOTDRSetMode(1);
+            _module1->setKeepRunning(0);
+            _module1->start();
+        }
+    }
+    if(module == 1){
+        if(_module2){
+            _module2->setKeepRunning(0);
+            _module2->onSigOTDRSetMode(1);
+            _module2->start();
         }
     }
 }

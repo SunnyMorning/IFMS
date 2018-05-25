@@ -50,6 +50,11 @@ void QCommander::run()
                 {
                     emit sigModuleStopMonitor(moduleIndex);
                 }
+                else if(qcmdline.contains(QString("single"),Qt::CaseInsensitive))
+                {
+//                    emit sigModuleSingleMonitor(moduleIndex);
+                    QAgentApp::getInstance()->onSigModuleSingleMonitor(moduleIndex);
+                }
 #ifdef DEBUG_ON
                 else if(qcmdlist.contains(QString("getsor?"), Qt::CaseInsensitive)){
 

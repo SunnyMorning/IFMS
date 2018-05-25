@@ -28,23 +28,60 @@ void QPSTSystemPrivate::init_pstData()
     VerInfo.devMacAddress = "AA:BB:CC:DD:EE:FF";
 
     pstSystemTrapTargetEntry trapTarget;
-    pstSystemFanEntry fan;
-    pstSystemPowerEntry power;
     memset(&TrapInfo, 0, sizeof(TrapInfo));
     TrapInfo.pstSystemTrapCount = NUMBER_OF_TRAPTARGETS;
     TrapInfo.pstSystemTrapFuncEn = 1;
-    for(i=0;i<NUMBER_OF_TRAPTARGETS;i++){
-        char *str = "192.168.1.44:1622";
-        memcpy(trapTarget.pstSystemTrapTargetName, str, strlen(str));
-//             str = "192.168.1.44";
-//        memcpy(trapTarget.pstSystemTrapTargetIpAddr, str, strlen(str));
-             str = "public";
-        memcpy(trapTarget.pstSystemTrapTargetCommunity, str, strlen(str));
-        trapTarget.pstSystemTrapTargetTrapVersion = 2;
-        trapTarget.pstSystemTrapTargetRowStatus = 4;
-        TrapInfo.pstSystemTrapTargetTable.push_back(trapTarget);
-    }
 
+	QStringList		trapTargets;
+	QStringList		trapIpAddrs;
+	trapTargets << "192.168.1.44:1622" << "192.168.30.2:1622";
+	trapIpAddrs << "192.168.1.44" << "192.168.30.2";
+
+	_ss.beginGroup("pstSystemTrapInfo");
+	_ss.setValue("pstSystemTrapCount", 2);
+	_ss.setValue("pstSystemTrapFuncEn", 1);
+	
+	_ss.beginWriteArray("pstSystemTrapTargetTable");
+    for(i=0;i<NUMBER_OF_TRAPTARGETS;i++){
+//        char *str = "192.168.1.44:1622";
+//        memcpy(trapTarget.pstSystemTrapTargetName, str, strlen(str));
+//
+//		struct sockaddr_in sa;
+//	 	inet_pton(AF_INET, "192.168.1.44", &(sa.sin_addr));
+//	 	in_addr_t	 it = sa.sin_addr.s_addr;
+//
+//		trapTarget.pstSystemTrapTargetIpAddr = it;
+//        str = "public";
+//        memcpy(trapTarget.pstSystemTrapTargetCommunity, str, strlen(str));
+//        trapTarget.pstSystemTrapTargetTrapVersion = 2;
+//        trapTarget.pstSystemTrapTargetRowStatus = 4;
+//        TrapInfo.pstSystemTrapTargetTable.push_back(trapTarget);
+
+//		int size = settings.beginReadArray("logins");
+//		 for (int i = 0; i < size; ++i) {
+//			 settings.setArrayIndex(i);
+//			 Login login;
+//			 login.userName = settings.value("userName").toString();
+//			 login.password = settings.value("password").toString();
+//			 logins.append(login);
+//		 }
+//		 settings.endArray();
+
+
+		_ss.setArrayIndex(i);
+		_ss.setValue("pstSystemTrapTargetName", trapTargets.at(i));
+		_ss.setValue("pstSystemTrapTargetIpAddr", trapIpAddrs.at(i));
+		_ss.setValue("pstSystemTrapTargetCommunity", QString("public"));
+		_ss.setValue("pstSystemTrapVersion", 2);
+		_ss.setValue("pstSystemTrapTargetRowStatus", 0);
+
+    }
+	_ss.endArray();
+	_ss.endGroup();
+    _ss.sync();
+
+    pstSystemFanEntry fan;
+    pstSystemPowerEntry power;
     memset(&Status, 0, sizeof(Status));
     Status.pstSystemFanTotalNum = NUMBER_OF_FANS;
     for(i=0;i<NUMBER_OF_FANS;i++){
@@ -152,4 +189,64 @@ long    QPSTSystemPrivate::get_reboot()
 void    QPSTSystemPrivate::set_reboot(long rb)
 {
 
+}
+
+QString	QPSTSystemPrivate::get_pstSystemTrapTargetName(int index)
+{
+	QString  targetName;
+	int size = _ss.beginReadArray("pstSystemTrapTargetTable");
+	_ss.setArrayIndex(index);
+    targetName = _ss.value("pstSystemTrapTargetName", "0").toString();
+	return targetName;
+}
+
+long	QPSTSystemPrivate::get_pstSystemTrapTargetName_len(int index)
+{
+
+}
+
+QString QPSTSystemPrivate::get_pstSystemTrapTargetCommunity(int index)
+{
+    QString  TargetCommunity;
+    int size = _ss.beginReadArray("pstSystemTrapTargetTable");
+    _ss.setArrayIndex(index);
+    TargetCommunity = _ss.value("pstSystemTrapTargetCommunity", "public").toString();
+    return TargetCommunity;
+}
+
+void 	QPSTSystemPrivate::set_pstSystemTrapTargetCommunity(int index, QString community)
+{
+	
+}
+
+long	QPSTSystemPrivate::get_pstSystemTrapTargetCommunity_len(int index)
+{
+
+}
+
+long 	QPSTSystemPrivate::get_pstSystemTrapTargetIpAddr(int index)
+{
+}
+
+void	QPSTSystemPrivate::set_pstSystemTrapTargetIpAddr(int index, QString ip)
+{
+
+}
+
+long 	QPSTSystemPrivate::get_pstSystemTrapTargetTrapVersion(int index)
+{
+
+}
+
+void	QPSTSystemPrivate::set_pstSystemTrapTargetTrapVersion(int index, long version)
+{
+
+}
+
+long 	QPSTSystemPrivate::get_pstSystemTrapTargetRowStatus(int index)
+{
+}
+
+void 	QPSTSystemPrivate::set_pstSystemTrapTargetRowStatus(int index, long status)
+{
 }

@@ -62,6 +62,7 @@ signals:
     void sigModuleRecvResponse(quint16 module ,QString& cmdline, QByteArray& data);
     void sigModuleStartMonitor(quint16 module);
     void sigModuleStopMonitor(quint16 module);
+    void sigModuleSingleMonitor(quint16 module);
 public slots:
 
 private:

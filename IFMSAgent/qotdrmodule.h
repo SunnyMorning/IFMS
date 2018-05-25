@@ -32,6 +32,10 @@
 #define  TCP_CONNECT_TIMEOUT	10000
 #define  KEEP_ALIVE_TIMEOUT     30000
 
+#define  OTDR_WORK_MODE_AUTO    0
+#define  OTDR_WORK_MODE_SINGLE  1
+#define  OTDR_WORK_MODE_STOP    2
+
 class QOTDRModule : public QThread
 {
     Q_OBJECT
@@ -121,7 +125,7 @@ public:
     }
 
     bool isMeasured(){
-        return (getOTDRModuleState() == STATE_MEASURED);
+        return ((getOTDRModuleState() == STATE_MEASURED) ||(getOTDRModuleState() == STATE_GOTSOR4));
     }
 
     bool isMeasuring(){
@@ -138,14 +142,17 @@ public:
 
     void setProgress(qint16 progress);
 
-        void run(){
+    void run(){
             qDebug() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
 
+            if(_moduleMode == OTDR_WORK_MODE_STOP){
+                return;
+            }
             sendScanCommand();
 
             do{
                 qDebug() << "\n Monitoring on module: " << _moduleIndex << " " << _progress << endl;
-                QThread::msleep(1500);
+                QThread::msleep(5000);
                 if(isIdling()||isGetSOR()){
                     setProgress(80);
                     sendGetSorCommand();
@@ -154,7 +161,9 @@ public:
                 else if(isMeasured())
                 {
                     setProgress(100);
-                    sendScanCommand();
+                    if(_moduleMode == OTDR_WORK_MODE_AUTO){
+                        sendScanCommand();
+                    }
                     setProgress(0);
                 }
                 else if(isMeasuring())
@@ -165,14 +174,14 @@ public:
                     }
                     setProgress(_progress);
                     sendStateCommand();
-                    if(_lastScanTime.addSecs(30) < QDateTime::currentDateTimeUtc())
+                    if(_lastScanTime.addSecs(60) < QDateTime::currentDateTimeUtc())
                     {
                           setOTDRModuleState(STATE_GETINGSOR);
                     }
                 }
                 else if(isGettingSOR())
                 {
-                    if(_lastGetSorTime.addSecs(30) < QDateTime::currentDateTimeUtc())
+                    if(_lastGetSorTime.addSecs(60) < QDateTime::currentDateTimeUtc())
                     {
                           setOTDRModuleState(STATE_MEASURED);
                     }
@@ -183,7 +192,7 @@ public:
                     setProgress(_progress);
                 }
 
-            }while(getKeepRunning() == 1);
+            }while(((_moduleMode == OTDR_WORK_MODE_SINGLE)&&(isMeasured()== false)) || (_moduleMode == OTDR_WORK_MODE_AUTO)||(getKeepRunning() == 1));
 
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
 			setProgress(0);
@@ -197,6 +206,7 @@ signals:
     void sigSetProgress(quint16 module, quint16 progress);
     void sigOTDRChanged(quint16 module, quint16 channel);
     void sigOTDRTrap(quint16 module, QByteArray &data);
+    void sigOTDRSetMode(quint16 mode);
 
 public slots:
     void onCatchException(quint16 module, const QString& info);
@@ -205,6 +215,7 @@ public slots:
     void onSendCommand(quint16 module, QString &cmdline);
     void onSetProgress(quint16 module, quint16 progress);
     void onOTDRChanged(quint16 module, quint16 channel);
+    void onSigOTDRSetMode(quint16 mode);
 
     void onSocketError(QAbstractSocket::SocketError  socketError);
     void onSocketConnected();
@@ -228,6 +239,9 @@ private:
     QMap<QString, QFingerData*>  _NewFingers;
 
     QTimer              *_timerTCPKeepAlive;
+
+    quint32             _measureCount;
+    quint16             _moduleMode;
 };
 
 #endif // QOTDRMODULE_H

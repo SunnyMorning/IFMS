@@ -2041,6 +2041,67 @@ void
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+	QPST *p = QPST::getInstance();
+
+	int i;
+	
+#if 0
+	char *kwgs[] = {
+		"karls working group1",
+		"second wg",
+		"make it three",
+		NULL
+	};
+
+	char *knames1[] = {
+		"Albert Apple",
+		"Andy Awe",
+		"Alan Aardvark",
+		NULL
+	};
+	char *knames2[] = {
+		"Bill Braggy",
+		"Bobby Bush",
+		"Bruce Bullwhip",
+		NULL
+	};
+
+	char *wg;
+	i = 0;
+	netsnmp_tdata_row *row;
+	struct netSnmpIETFWGTable_entry *entry;
+	for (wg = kwgs[i]; (wg = kwgs[i]); i++) {
+		DEBUGMSGTL(("karl", "adding new row %d for wg: %s\n", i, wg));
+		row = netSnmpIETFWGTable_createEntry(table_data, wg, strlen(wg));
+		entry = row->data;
+		strcpy(entry->nsIETFWGChair1, knames1[i]);
+		entry->nsIETFWGChair1_len = strlen(knames1[i]);
+		strcpy(entry->nsIETFWGChair2, knames2[i]);
+		entry->nsIETFWGChair2_len = strlen(knames2[i]);
+	}
+#endif
+	i = 0;
+	netsnmp_tdata_row 	*row;
+	QString  targetName;
+	QString	 targetCommunity;
+	struct pstSystemTrapTargetTable_entry		*entry;
+	for(i = 0; i < NUMBER_OF_TRAPTARGETS; i++){
+		targetName  = p->m_system->m_pstSystem.get_pstSystemTrapTargetName(i);
+		targetCommunity = p->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
+		u_char	*pstSystemTrapTargetName = (u_char*)targetName.toLatin1().data();
+		size_t	pstSystemTrapTargetName_len = targetName.length() ;
+		row = pstSystemTrapTargetTable_createEntry(table_data, pstSystemTrapTargetName, pstSystemTrapTargetName_len);
+        entry = (struct pstSystemTrapTargetTable_entry *)row->data;
+		entry->pstSystemTrapTargetIpAddr = p->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+		strcpy(entry->pstSystemTrapTargetCommunity, targetCommunity.toLatin1().data());
+		entry->pstSystemTrapTargetCommunity_len = targetCommunity.length();
+		entry->pstSystemTrapTargetTrapVersion = p->m_system->m_pstSystem.get_pstSystemTrapTargetTrapVersion(i);
+		entry->pstSystemTrapTargetRowStatus = p->m_system->m_pstSystem.get_pstSystemTrapTargetRowStatus(i);
+		}
+
+//	return table_data;
+
+
 }
 
 /** handles requests for the pstSystemTrapTargetTable table */

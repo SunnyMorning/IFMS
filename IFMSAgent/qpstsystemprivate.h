@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QString>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -164,6 +165,33 @@ public slots:
     void    set_reset2Factory(long rf);
     long    get_reboot();
     void    set_reboot(long rb);
+
+    QString	get_pstSystemTrapTargetName(int index);
+
+    long	get_pstSystemTrapTargetName_len(int index);
+
+    QString get_pstSystemTrapTargetCommunity(int index);
+
+    void 	set_pstSystemTrapTargetCommunity(int index, QString community);
+
+
+    long	get_pstSystemTrapTargetCommunity_len(int index);
+
+
+    long 	get_pstSystemTrapTargetIpAddr(int index);
+
+    void	set_pstSystemTrapTargetIpAddr(int index, QString ip);
+
+
+    long 	get_pstSystemTrapTargetTrapVersion(int index);
+
+    void	set_pstSystemTrapTargetTrapVersion(int index, long version);
+
+
+    long 	get_pstSystemTrapTargetRowStatus(int index);
+
+    void 	set_pstSystemTrapTargetRowStatus(int index, long status);
+
 
 private:
     QSettings    _ss;

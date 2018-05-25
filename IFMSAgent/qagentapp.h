@@ -63,6 +63,7 @@ signals:
     void sigModuleRecvResponse(quint16 module ,QString& cmdline, QByteArray& data);
     void sigModuleStartMonitor(quint16 module);
     void sigModuleStopMonitor(quint16 module);
+    void sigModuleSingleMonitor(quint16 module);
 public slots:
     void onSigExit(qint32 num);
     void onSwitchModule(quint16 module);
@@ -72,6 +73,7 @@ public slots:
     void onSigModuleRecvResponse(quint16 module, QString& cmdline, QByteArray& data);
     void onSigModuleStartMonitor(quint16 module);
     void onSigModuleStopMonitor(quint16 module);
+    void onSigModuleSingleMonitor(quint16 module);
 
 private:
     QAgentApp                   *m_app;
