@@ -28,7 +28,11 @@ QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QThread(parent)
     _moduleIndex = index;
     _keeprunning = 1;
     _progress = 0;
-    _measureCount = 0;
+	for(quint16 i =0; i<= 8; i++){
+    	_MeasuredCounts.insert(i,0);
+		_MeasuredSORFiles.insert(i, 0);
+		_MeasuringProgresss.insert(i, 0);
+		}
     _moduleMode = OTDR_WORK_MODE_STOP;
 	_pIODevice = NULL;
 
@@ -267,6 +271,7 @@ void QOTDRModule::run()
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
             setProgress(0);
             _MeasuredChannels.OTDRModule.channels = 0;
+            emit sigOTDRSetMode(OTDR_WORK_MODE_STOP);
             if(_pTcpSocket!=NULL){
                 _pTcpSocket->close();
                 delete _pTcpSocket;
@@ -442,9 +447,22 @@ void QOTDRModule::sendScanCommand()
     }
 }
 
-void QOTDRModule::setProgress(qint16 progress)
+void QOTDRModule::setProgress(quint16 channel, quint16 progress)
 {
-    if(isIdling()){
+    QMutexLocker    locker(&gOTDRModule_mutex);
+    _MeasuringProgresss[channel] = progress;
+	if(isMeasured()){
+        emit this->sigSetProgress(channel,100);
+    }
+    else
+    {
+        emit this->sigSetProgress(channel,progress);
+    }
+}
+
+void QOTDRModule::setProgress(quint16 progress)
+{
+    if(isMeasured()){
         emit this->sigSetProgress(_moduleIndex,100);
     }
     else
@@ -452,6 +470,48 @@ void QOTDRModule::setProgress(qint16 progress)
         emit this->sigSetProgress(_moduleIndex,progress);
     }
 }
+
+quint16 QOTDRModule::getProgress(quint16 channel)
+{
+	return _MeasuringProgresss.value(channel,0);
+}
+
+quint16 QOTDRModule::getProgress()
+{
+	return _progress;
+}
+
+void QOTDRModule::increaseMeasuredCount(quint16 channel, quint32 count)
+{
+    QMutexLocker    locker(&gOTDRModule_mutex);
+	QPST *pst = QPST::getInstance();
+//	long	MaxCount = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(channel);
+	quint32  temp = getMeasuredCount(channel);
+	temp += count;
+	_MeasuredCounts[channel]=temp;
+	if(isMeasured()){
+        emit this->sigSetMeasuredCount(channel,temp);
+    }
+}
+quint32	QOTDRModule::getMeasuredCount(quint16 channel)
+{
+	return  _MeasuredCounts.value(channel, 0);
+}
+
+void QOTDRModule::increaseMeasuredSORFiles(quint16 channel, quint32 count)
+{
+		QMutexLocker	locker(&gOTDRModule_mutex);
+	//	QPST *pst = QPST::getInstance();
+	//	long	MaxCount = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(channel);
+		quint32  temp = getMeasuredSORFiles(channel);
+		temp += count;
+		_MeasuredSORFiles[channel]=temp;
+}
+quint32 QOTDRModule::getMeasuredSORFiles(quint16 channel)
+{
+	return  _MeasuredSORFiles.value(channel, 0);
+}
+
 
 QByteArray QOTDRModule::generateOTDRTrapData(quint16 module, qint16 channel)
 {
@@ -476,7 +536,7 @@ void QOTDRModule::onSendCommand(quint16 module, QString &cmdline)
 {
     QByteArray  data;
 
-    if(getOTDRModuleState() < STATE_GETINGSOR){
+    if(_moduleMode == OTDR_WORK_MODE_STOP){
         sendCommandWithResponse(module ,cmdline, &data);
     }
     else
@@ -484,13 +544,12 @@ void QOTDRModule::onSendCommand(quint16 module, QString &cmdline)
         qDebug() << "It's busy now, please try later..." << endl;
     }
 }
-
-
-void QOTDRModule::onSetProgress(quint16 module, quint16 progress)
-{
-    QMutexLocker    locker(&gOTDRModule_mutex);
-    _progress = progress;
-}
+//
+//
+//void QOTDRModule::onSetProgress(quint16 module, quint16 progress)
+//{
+//
+//}
 
 void QOTDRModule::onCatchException(quint16 module, const QString& info)
 {

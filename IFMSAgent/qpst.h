@@ -93,7 +93,7 @@ signals:
     void sigOTDRTrap(quint16 module, QByteArray &data);
     void sigSetProgress(quint16 module, quint16 progress);
 
-	void sigSenCommandToModule(quint16 module, QString &cmdline);
+    void sigSendCommandToModule(quint16 module, QString &cmdline);
 
 
 public slots:

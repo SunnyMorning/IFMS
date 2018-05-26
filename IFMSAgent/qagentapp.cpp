@@ -87,7 +87,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(command_thread, SIGNAL(sigModuleStopMonitor(quint16)), this, SIGNAL(sigModuleStopMonitor(quint16)));
     connect(command_thread, SIGNAL(sigModuleSingleMonitor(quint16)), this, SIGNAL(sigModuleSingleMonitor(quint16)));
 
-	connect(pstThread, SIGNAL(sigSenCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
+	connect(pstThread, SIGNAL(sigSendCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
 
     connect(this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SLOT(onSigModuleRecvResponse(quint16, QString&, QByteArray&)));
     connect(this, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SLOT(onSigSendCommandToModule(quint16, QString&)));
@@ -104,11 +104,11 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(_module2, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
 
     connect(_module1, SIGNAL(sigSendCommand(quint16, QString&)), _module1, SLOT(onSendCommand(quint16, QString&)));
-    connect(_module1, SIGNAL(sigSetProgress(quint16, quint16)), _module1, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
+//    connect(_module1, SIGNAL(sigSetProgress(quint16, quint16)), _module1, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
     connect(_module1, SIGNAL(sigOTDRChanged(quint16, quint16)), _module1, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
 
     connect(_module2, SIGNAL(sigSendCommand(quint16, QString&)), _module2, SLOT(onSendCommand(quint16, QString&)));
-    connect(_module2, SIGNAL(sigSetProgress(quint16, quint16)), _module2, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
+//    connect(_module2, SIGNAL(sigSetProgress(quint16, quint16)), _module2, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
     connect(_module2, SIGNAL(sigOTDRChanged(quint16, quint16)), _module2, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
 
 

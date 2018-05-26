@@ -50,7 +50,7 @@ void QPST::initConnections()
 void QPST::sendCommandToOTDRModule(quint16 channel, QString cmdline)
 {
 	quint16 module = channel/4;
-	emit this->sigSenCommandToModule(module, cmdline);
+    emit this->sigSendCommandToModule(module, cmdline);
 }
 
 

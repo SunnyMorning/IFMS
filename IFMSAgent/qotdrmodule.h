@@ -8,6 +8,7 @@
 #include <QMutex>
 #include <QFileSystemWatcher>
 #include <QMap>
+#include <QHash>
 #include <QThread>
 #include <QRunnable>
 #include <QThreadPool>
@@ -143,8 +144,14 @@ public:
         return ((getOTDRModuleState()>= STATE_GETINGSOR)&&(getOTDRModuleState()< STATE_GOTSOR4));
     }
 
-    void setProgress(qint16 progress);
-    qint16  getProgress(){return _progress;}
+    void setProgress(quint16 channel, quint16 progress);
+    void setProgress(quint16 progress);
+    quint16  getProgress();
+	quint16  getProgress(quint16 channel);
+	void increaseMeasuredCount(quint16 channel, quint32 count);
+	quint32	getMeasuredCount(quint16 channel);
+	void increaseMeasuredSORFiles(quint16 channel, quint32 count);
+	quint32	getMeasuredSORFiles(quint16 channel);
 
     void run();
 
@@ -153,6 +160,7 @@ signals:
     void sigRecvResponse(quint16 module, QString &cmdline, QByteArray &data);
     void sigSendCommand(quint16 module, QString &cmdline);
     void sigSetProgress(quint16 module, quint16 progress);
+	void sigSetMeasuredCount(quint16  channel, quint32 count);
     void sigOTDRChanged(quint16 module, quint16 channel);
     void sigOTDRTrap(quint16 module, QByteArray &data);
     void sigOTDRSetMode(quint16 mode);
@@ -161,7 +169,7 @@ public slots:
     void onCatchException(quint16 module, const QString& info);
     void onFileChanged(quint16 module, QString filename);
     void onSendCommand(quint16 module, QString &cmdline);
-    void onSetProgress(quint16 module, quint16 progress);
+//    void onSetProgress(quint16 module, quint16 progress);
     void onOTDRChanged(quint16 module, quint16 channel);
     void onSigOTDRSetMode(quint16 mode);
 
@@ -182,14 +190,17 @@ private:
     QFileSystemWatcher  _watcher;
     QStringList         _fileList;
     IFMSChannels_t      _MeasuredChannels;
-    quint16             _progress;
+
     QMap<QString, QFingerData*>  _OldFingers;
     QMap<QString, QFingerData*>  _NewFingers;
+	QMap<quint16, quint32> _MeasuredCounts;
+	QMap<quint16, quint32> _MeasuredSORFiles;
+	QMap<quint16, quint32> _MeasuringProgresss;
+	quint16			_progress;
 
     QTimer              *_timerTCPKeepAlive;
-
-    quint32             _measureCount;
     quint16             _moduleMode;
+	
 };
 
 #endif // QOTDRMODULE_H

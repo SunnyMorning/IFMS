@@ -1926,7 +1926,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
 				QPST *pst = QPST::getInstance();
 				u_char *startPosition = requests->requestvb->val.string;
 				QString cmdline("SPARA 260,10000,2,0");
-                emit pst->sigSenCommandToModule(index/CHANNELS_PER_MODULE, cmdline);
+                emit pst->sigSendCommandToModule(index/CHANNELS_PER_MODULE, cmdline);
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
