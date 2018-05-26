@@ -1572,6 +1572,7 @@ QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
 
     /* Initialise the contents of the table here */
 	long i = 0;
+	QPST *pst = QPST::getInstance();
 	netsnmp_tdata_row 	*row;
 
     struct pstIFMS1000MeasureTable_entry		*entry;
@@ -1581,7 +1582,8 @@ QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
 		row = pstIFMS1000MeasureTable_createEntry(table_data, i);
         entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
 		entry->valid = 1;
-		entry->pstIFMS1000MeasureAction = 4;
+		entry->pstIFMS1000MeasureAction = 2;
+		entry->pstIFMS1000MeasureProgressStatus = 0;
 	}
 
 }
@@ -1627,14 +1629,24 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                                             table_entry->pstIFMS1000MTPortNum);
                 break;
             case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+
+                long index = table_entry->pstIFMS1000MTPortNum;
+                QPST *pst = QPST::getInstance();
+
+                QString  startPosition = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureStartPosition(index);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstIFMS1000MeasureStartPosition,
-                                          table_entry->pstIFMS1000MeasureStartPosition_len);
+										 startPosition.toLatin1().data(),
+										 startPosition.length()
+                                          /*table_entry->pstIFMS1000MeasureStartPosition,
+                                          table_entry->pstIFMS1000MeasureStartPosition_len*/);
+            }
                 break;
             case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
                 if ( !table_entry ) {
@@ -1704,13 +1716,21 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                                             table_entry->pstIFMS1000MeasureTime);
                 break;
             case COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+
+                long index = table_entry->pstIFMS1000MTPortNum;
+                QPST *pst = QPST::getInstance();
+                pstIFMS1000MeasureEntry entry  = pst->m_product->m_pstIFMS1000.MeasureTable[index];
+                long progress = entry.pstIFMS1000MeasureProgressStatus;
+
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstIFMS1000MeasureProgressStatus);
+                                            progress);
+            }
                 break;
             case COLUMN_PSTIFMS1000MEASURETLOS:
                 if ( !table_entry ) {
@@ -1895,12 +1915,19 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
             switch (table_info->colnum) {
             case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
 	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+            	{
                 ret = netsnmp_check_vb_type_and_max_size(
                           request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureStartPosition));
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
+                long index = table_entry->pstIFMS1000MTPortNum;
+				QPST *pst = QPST::getInstance();
+				u_char *startPosition = requests->requestvb->val.string;
+				QString cmdline("SPARA 260,10000,2,0");
+                emit pst->sigSenCommandToModule(index/CHANNELS_PER_MODULE, cmdline);
+	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
 	        /* or possibly 'netsnmp_check_vb_type_and_size' */
@@ -1931,20 +1958,15 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 break;
             case COLUMN_PSTIFMS1000MEASUREACTION:
                 /* or possibly 'netsnmp_check_vb_int_range' */
-//                devName = (char*)(requests->requestvb->val.string);
-//                size_t len = requests->requestvb->val_len;
-//                QString name = QString::fromLatin1(devName,len);
-
-//                p->m_system->m_pstSystem.set_devName(name);
-{
+				{
 
                 ret = netsnmp_check_vb_int( request->requestvb );
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
-                long index = table_entry->pstIFMS1000MTPortNum;
                 long action = *(requests->requestvb->val.integer);
+                long index = table_entry->pstIFMS1000MTPortNum;
                 if(index < 4){
                     if(action == 1) // start
                     {
@@ -1985,6 +2007,8 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
+
+
                 break;
             case COLUMN_PSTIFMS1000MEASURETIME:
                 /* or possibly 'netsnmp_check_vb_int_range' */

@@ -1,5 +1,7 @@
 #include "qpst.h"
 
+static QMutex gPST_mutex;
+
 QAtomicPointer<QPST> _instance;/*!<使用原子指针,默认初始化为0。*/
 
 QPST::QPST(QObject *agent)
@@ -27,11 +29,28 @@ QPST* QPST::getInstance()
 
     return _instance;
 }
+
+void QPST::setKeepRunning(int running)
+{
+	QMutexLocker locker(&gPST_mutex);
+	_keeprunning = running;
+}
+
+int QPST::getKeepRunning(){
+	 QMutexLocker locker(&gPST_mutex);
+	 return _keeprunning;
+}
+
 void QPST::initConnections()
 {
     connect(this, SIGNAL(sigOTDRChanged(quint16,quint16)), this, SLOT(onSigOTDRChanged(quint16,quint16)), Qt::DirectConnection);
     connect(this, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), this, SLOT(onSigOTDRTrap(quint16,QByteArray&)), Qt::DirectConnection);
     connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
+}
+void QPST::sendCommandToOTDRModule(quint16 channel, QString cmdline)
+{
+	quint16 module = channel/4;
+	emit this->sigSenCommandToModule(module, cmdline);
 }
 
 

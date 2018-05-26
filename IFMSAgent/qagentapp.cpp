@@ -87,6 +87,8 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(command_thread, SIGNAL(sigModuleStopMonitor(quint16)), this, SIGNAL(sigModuleStopMonitor(quint16)));
     connect(command_thread, SIGNAL(sigModuleSingleMonitor(quint16)), this, SIGNAL(sigModuleSingleMonitor(quint16)));
 
+	connect(pstThread, SIGNAL(sigSenCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
+
     connect(this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SLOT(onSigModuleRecvResponse(quint16, QString&, QByteArray&)));
     connect(this, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SLOT(onSigSendCommandToModule(quint16, QString&)));
     connect(this, SIGNAL(sigModuleStartMonitor(quint16)), this, SLOT(onSigModuleStartMonitor(quint16)));
@@ -318,7 +320,6 @@ void QAgentApp::onSigSendCommandToModule(quint16 module, QString& cmdline)
     message(_currentModule,QString("onSigSendCommandToModule> %1 %2").arg(module).arg(cmdline));
     if(module == 0){
         emit  _module1->sigSendCommand(module,cmdline);
-//        _module1->onSendCommand(module,cmdline);  cause socketnotifier can not ...
     }
     else
     {

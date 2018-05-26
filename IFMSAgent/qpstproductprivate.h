@@ -15,6 +15,7 @@
 #define NUMBER_OF_CHANNES           8
 #define CHANNELS_PER_MODULE         4
 #define NNN                         32
+#define PRODUCT_SETTINGS_GROUP		"PRODUCT"
 
 using namespace std;
 
@@ -565,10 +566,14 @@ public:
     long get_pstIFMS1000SysLedPW1(QObject *agent);
     long get_pstIFMS1000SysLedPW2(QObject *agent);
     long get_pstIFMS1000SysLedStatus(QObject *agent);
+	QString get_pstIFMS1000MeasureStartPosition(long index);
     void setModuleMeasuringProgess(quint16 module, quint16 progress);
 signals:
 
 public slots:
+
+private:
+	QSettings    _ss;
 };
 
 #endif // QPSTPRODUCTPRIVATE_H

@@ -2,10 +2,11 @@
 
 #include "qpstproductprivate.h"
 #include "qpst.h"
+#include "qagentapp.h"
 
 QPSTProductPrivate::QPSTProductPrivate(QObject *parent) : QObject(parent)
 {
-
+    _ss.setPath(QSettings::IniFormat,QSettings::UserScope,QAgentApp::getConfigDir()+ "product.ini");
 }
 
 void QPSTProductPrivate::init_pstData()
@@ -26,6 +27,23 @@ void QPSTProductPrivate::init_pstData()
         portInfo.pstIFMS1000PortRunningStatus = 1;
         PortInfoTable.push_back(portInfo);
         }
+
+	QStringList		startPositions;
+	QStringList		endPositions;
+	startPositions <<"0" << "10"<<"20" << "30"<<"40" << "50"<<"60" << "70";
+	endPositions <<"160" << "160"<<"160" << "160"<<"160" << "160"<<"160" << "160";
+
+	_ss.beginGroup(PRODUCT_SETTINGS_GROUP);
+	
+	_ss.beginWriteArray("MeasureTable");
+    for(i=0;i<NUMBER_OF_TRAPTARGETS;i++){
+		_ss.setArrayIndex(i);
+		_ss.setValue("pstIFMS1000MeasureStartPosition", startPositions.at(i));
+		_ss.setValue("pstIFMS1000MeasureEndPosition", endPositions.at(i));
+    }
+	_ss.endArray();
+	_ss.endGroup();
+    _ss.sync();
     for(i=0;i<NUMBER_OF_CHANNES;i++){
         measure.pstIFMS1000MTPortNum = i+1;
 //        measure.pstIFMS1000MeasureStartPosition = "0";
@@ -47,6 +65,8 @@ void QPSTProductPrivate::init_pstData()
         measure.pstIFMS1000MeasureProgressStatus = 0;
         MeasureTable.push_back(measure);
         }
+
+	
     for(i=0;i<NUMBER_OF_CHANNES;i++){
         finger.pstIFMS1000FTPortNum = 0;
 //        finger.pstIFMS1000FingerStartPosition = "0";
@@ -68,11 +88,20 @@ long QPSTProductPrivate::get_pstIFMS1000SysLedStatus(QObject *agent){
 //    QPST *p = (QPST*)agent;
     return LedStatus.pstIFMS1000SystemLed.pstIFMS1000SysLedStatus;
 }
+
+QString QPSTProductPrivate::get_pstIFMS1000MeasureStartPosition(long index)
+{
+	QString  startPosition;
+	int size = _ss.beginReadArray("MeasureTable");
+	_ss.setArrayIndex(index);
+    startPosition = _ss.value("pstIFMS1000MeasureStartPosition", "0").toString();
+	return startPosition;
+}
+
+
 void QPSTProductPrivate::setModuleMeasuringProgess(quint16 module, quint16 progress)
 {
-    if(module == 0){
-        for(int i=0;i<CHANNELS_PER_MODULE;i++){
-             MeasureTable[i].pstIFMS1000MeasureProgressStatus = (long) (progress) ;
-        }
-    }
+    for(int i=0;i<CHANNELS_PER_MODULE;i++){
+             MeasureTable[module*CHANNELS_PER_MODULE+i].pstIFMS1000MeasureProgressStatus = (long) (progress) ;
+     }
 }

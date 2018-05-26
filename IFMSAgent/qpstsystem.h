@@ -15,8 +15,6 @@
 
 #include "qpstsystemprivate.h"
 
-static QMutex   gPSTSystem_mutex;
-
 /* column number definitions for table pstSystemTrapTargetTable */
        #define COLUMN_PSTSYSTEMTRAPTARGETNAME		1
        #define COLUMN_PSTSYSTEMTRAPTARGETIPADDR		2

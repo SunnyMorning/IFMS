@@ -40,8 +40,6 @@ public:
     char    *link;
 
     void setKeepRunning(int running);
-
-
     int getKeepRunning();
 
     void run();

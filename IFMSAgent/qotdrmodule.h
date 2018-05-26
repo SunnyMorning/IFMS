@@ -116,6 +116,8 @@ public:
     QByteArray generateOTDRTrapData(quint16 module, qint16 channel);
 
     void sendCommandWithResponse(quint16 module, QString cmdline, QByteArray *data);
+    void recvResponse(quint16 module, QString &cmdline, QByteArray &data);
+	void sendCommand(quint16 module, QString & cmdline);
 
     void sendStateCommand();
     void sendScanCommand();
@@ -144,98 +146,7 @@ public:
     void setProgress(qint16 progress);
     qint16  getProgress(){return _progress;}
 
-    void run(){
-            qDebug() << QThread::currentThreadId() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
-            qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
-
-            _pSerialPort = new QSerialPort();
-            if(_moduleIndex == 0){
-                setSerialPortParam(QString(UART_OF_MODULE1));
-            }
-            else
-            {
-                setSerialPortParam(QString(UART_OF_MODULE2));
-            }
-
-            _pTcpSocket = new QTcpSocket();
-
-            _timerTCPKeepAlive = new QTimer();
-            _timerTCPKeepAlive->setInterval(KEEP_ALIVE_TIMEOUT);
-            _timerTCPKeepAlive->start();
-            _tcpState = STATE_TCP_INIT;
-
-            connect(_pTcpSocket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
-            connect(_pTcpSocket, SIGNAL(disconnected()),this, SLOT(onSocketDisconnected()));
-            connect(_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-            connect(_timerTCPKeepAlive, SIGNAL(timeout()), this, SLOT(onTcpSocketAutoConnect()));
-
-
-            initTcpConnection();
-
-            if(_moduleMode == OTDR_WORK_MODE_STOP){
-                return;
-            }
-            sendScanCommand();
-
-            do{
-                qDebug() << "\n["<<QThread::currentThreadId() <<"] Monitoring on module[" << _moduleIndex << "] P:" << _progress << "S:"<< getOTDRModuleState() << endl;
-                if(getOTDRModuleState() == STATE_GOTSOR4){
-                    setOTDRModuleState(STATE_MEASURED);
-                }
-                QThread::msleep(5000);
-                if(isIdling()||isGetSOR()){
-
-                    setProgress(80);
-                    sendGetSorCommand();
-                    QThread::msleep(300);
-                }
-                else if(isMeasured())
-                {
-                    setProgress(100);
-                    if(_moduleMode == OTDR_WORK_MODE_AUTO){
-                        sendScanCommand();
-                    }
-                    setProgress(0);
-                }
-                else if(isMeasuring())
-                {
-                    _progress += 9;
-                    if(_progress >= 70){
-                        _progress = 70;
-                    }
-                    setProgress(_progress);
-                    sendStateCommand();
-                    if(_lastScanTime.addSecs(300) < QDateTime::currentDateTimeUtc())
-                    {
-                          setOTDRModuleState(STATE_GETINGSOR);
-                    }
-                }
-                else if(isGettingSOR())
-                {
-                    if(_lastGetSorTime.addSecs(60) < QDateTime::currentDateTimeUtc())
-                    {
-                          setOTDRModuleState(STATE_MEASURED);
-                          _MeasuredChannels.OTDRModule.channels = 0;
-                    }
-                    _progress += 9;
-                    if(_progress >= 90){
-                        _progress = 90;
-                    }
-                    setProgress(_progress);
-                }
-
-            }while(((_moduleMode == OTDR_WORK_MODE_SINGLE)&&(isMeasured()== false)) || (_moduleMode == OTDR_WORK_MODE_AUTO)||(getKeepRunning() == 1));
-            setOTDRModuleState(STATE_MEASURED);
-            qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
-			setProgress(0);
-            _MeasuredChannels.OTDRModule.channels = 0;
-            if(_pTcpSocket!=NULL){
-                _pTcpSocket->close();
-                delete _pTcpSocket;
-                _pTcpSocket = NULL;
-            }
-            exit(0);
-        }
+    void run();
 
 signals:
     void sigCatchException(quint16 module, const QString& info);
@@ -248,7 +159,6 @@ signals:
 
 public slots:
     void onCatchException(quint16 module, const QString& info);
-    void onRecvResponse(quint16 module, QString &cmdline, QByteArray &data);
     void onFileChanged(quint16 module, QString filename);
     void onSendCommand(quint16 module, QString &cmdline);
     void onSetProgress(quint16 module, quint16 progress);

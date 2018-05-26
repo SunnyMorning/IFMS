@@ -28,8 +28,6 @@
 #define  SUB_AGENT              "QPST"
 #define  AGENTX_MASTER_SOCKET   "tcp:localhost:1705"
 
-static QMutex gPST_mutex;
-
 class QPST : public QThread
 {
     Q_OBJECT
@@ -41,19 +39,13 @@ public:
     QPSTSystem  *m_system;
     void initConnections();
 
-    void setKeepRunning(int running)
-    {
-         QMutexLocker locker(&gPST_mutex);
-        _keeprunning = running;
-    }
+    void setKeepRunning(int running);
+    int  getKeepRunning();
 
-    int getKeepRunning(){
-         QMutexLocker locker(&gPST_mutex);
-         return _keeprunning;
-    }
+	void sendCommandToOTDRModule(quint16 channel, QString cmdline);
 
     // Trap
-        static int send_pstIFMS1000MeasureEvent_trap(void);
+    static int send_pstIFMS1000MeasureEvent_trap(void);
 
     void run(){
         qDebug() << "["<<QThread::currentThreadId() <<"] qpst running" << endl;
@@ -101,11 +93,14 @@ signals:
     void sigOTDRTrap(quint16 module, QByteArray &data);
     void sigSetProgress(quint16 module, quint16 progress);
 
+	void sigSenCommandToModule(quint16 module, QString &cmdline);
+
 
 public slots:
     void onSigOTDRChanged(quint16 module, quint16 channel);
     void onSigOTDRTrap(quint16 module, QByteArray& data);
     void onSigSetProgress(quint16 module, quint16 progress);
+	
 };
 
 #endif // QPST_H
