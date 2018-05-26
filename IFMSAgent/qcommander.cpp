@@ -1,6 +1,8 @@
 #include "qagentapp.h"
 #include "qcommander.h"
 
+static QMutex gCommander_mutex;
+
 void QCommander::run()
 {
         do{
@@ -96,3 +98,22 @@ void QCommander::run()
 
         qDebug() << "\n Exit Expert mode...."<<endl;
     }
+
+
+void QCommander::onSwitchModule(quint16 module)
+{
+     QMutexLocker locker(&gCommander_mutex);
+     moduleIndex = module;
+}
+
+void QCommander::setKeepRunning(int running)
+{
+     QMutexLocker locker(&gCommander_mutex);
+    _keeprunning = running;
+}
+
+int QCommander::getKeepRunning()
+{
+    QMutexLocker locker(&gCommander_mutex);
+    return _keeprunning;
+}

@@ -30,20 +30,20 @@ QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QThread(parent)
     _progress = 0;
     _measureCount = 0;
     _moduleMode = OTDR_WORK_MODE_STOP;
-    _pSerialPort = new QSerialPort();
-    _pTcpSocket = new QTcpSocket();
-    if(_moduleIndex == 0){
-        setSerialPortParam(QString(UART_OF_MODULE1));
-    }
-    else
-    {
-        setSerialPortParam(QString(UART_OF_MODULE2));
-    }
+//    _pSerialPort = new QSerialPort();
+////    _pTcpSocket = new QTcpSocket();
+//    if(_moduleIndex == 0){
+//        setSerialPortParam(QString(UART_OF_MODULE1));
+//    }
+//    else
+//    {
+//        setSerialPortParam(QString(UART_OF_MODULE2));
+//    }
 
-    _timerTCPKeepAlive = new QTimer();
-    _timerTCPKeepAlive->setInterval(KEEP_ALIVE_TIMEOUT);
-    _timerTCPKeepAlive->start();
-    _tcpState = STATE_TCP_INIT;
+//    _timerTCPKeepAlive = new QTimer();
+//    _timerTCPKeepAlive->setInterval(KEEP_ALIVE_TIMEOUT);
+//    _timerTCPKeepAlive->start();
+//    _tcpState = STATE_TCP_INIT;
 }
 
 QOTDRModule::~QOTDRModule()
@@ -51,6 +51,11 @@ QOTDRModule::~QOTDRModule()
     if(_pSerialPort != NULL){
         delete _pSerialPort;
         _pSerialPort = NULL;
+    }
+    if(_pTcpSocket != NULL){
+        _pTcpSocket->close();
+        delete _pTcpSocket;
+        _pTcpSocket = NULL;
     }
      exit(0);
      wait(1000);
@@ -156,7 +161,7 @@ void QOTDRModule::initTcpConnection()
             quint16 port = 6000;
              _pTcpSocket->connectToHost(host, port);
             if(false == _pTcpSocket->waitForConnected(TCP_CONNECT_TIMEOUT)){
-                qDebug() << "Failed to connect to " << host << "in " << TCP_CONNECT_TIMEOUT <<"seconds\n" << endl;
+                qDebug() << "Failed to connect to " << host << "in " << TCP_CONNECT_TIMEOUT <<"microseconds\n" << endl;
 
                 _pTcpSocket->abort();
             }
@@ -173,8 +178,7 @@ void QOTDRModule::initTcpConnection()
             _tcpState = STATE_TCP_CONNECTING;
             _pTcpSocket->connectToHost(QString(ADDRESS_OF_MODULE2), PORT_OF_MODULE2);
             if(false == _pTcpSocket->waitForConnected(6*1000)){
-                //qDebug() << "Failed to connect to " << host << "in " << timeout <<"seconds\n" << endl;
-
+                qDebug() << "Failed to connect to " << ADDRESS_OF_MODULE2 << "in " << TCP_CONNECT_TIMEOUT <<"microseconds\n" << endl;
                 _pTcpSocket->abort();
             }
             else
@@ -191,14 +195,14 @@ void QOTDRModule::setConnections()
     connect(this, SIGNAL(sigCatchException(quint16, const QString&)), this, SLOT(onCatchException(quint16, const QString&)),Qt::DirectConnection);
 //    connect(this, SIGNAL(sigRecvResponse(quint16, QString&,QByteArray&)), this, SLOT(onRecvResponse(quint16, QString&, QByteArray&)),Qt::DirectConnection);
 
-    connect(_pTcpSocket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
-    connect(_pTcpSocket, SIGNAL(disconnected()),this, SLOT(onSocketDisconnected()));
-    connect(_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
-    connect(_timerTCPKeepAlive, SIGNAL(timeout()), this, SLOT(onTcpSocketAutoConnect()));
+//    connect(_pTcpSocket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
+//    connect(_pTcpSocket, SIGNAL(disconnected()),this, SLOT(onSocketDisconnected()));
+//    connect(_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
+//    connect(_timerTCPKeepAlive, SIGNAL(timeout()), this, SLOT(onTcpSocketAutoConnect()));
 
 //  connect(&_watcher, SIGNAL(fileChanged(const QString)), this, SLOT(onFileChanged(QString)));
 //  connect(&_watcher, SIGNAL(directoryChanged(const QString)), this, SLOT(onFileChanged(QString)));
-    initTcpConnection();
+//    initTcpConnection();
 }
 
 QOTDRModule::OTDRModuleState QOTDRModule::getOTDRModuleState()
@@ -236,7 +240,7 @@ bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate b
 void QOTDRModule::sendCommandWithResponse(quint16 module, QString cmdline, QByteArray *data)
 {
 //    QMutexLocker locker(&gOTDRModule_mutex);
-    qDebug() << "["<< QThread::currentThreadId() << "] sendCommandWithResponse"<<endl;
+    qDebug() << "["<< QThread::currentThreadId() << "] sendCommandWithResponse to "<< module << endl;
     QByteArray  cmdData = cmdline.toLatin1();
     cmdData.append(0x0D);
     cmdData.append(0x0A);
@@ -292,7 +296,8 @@ void QOTDRModule::sendStateCommand()
 // 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
     QString cmdline = QString("STATE?");
     if(getOTDRModuleState() < STATE_GETINGSOR ){
-        emit    this->sigSendCommand(_moduleIndex,cmdline);
+        //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                    onSendCommand(_moduleIndex,cmdline);
     }
 }
 
@@ -311,47 +316,62 @@ if((getOTDRModuleState() == STATE_IDLING)||(getOTDRModuleState() == STATE_GETING
     if(_moduleIndex == 0){
         if(_MeasuredChannels.OTDRModule.I.ch1 == 0){
             QString cmdline = QString("getsor? %1").arg(0);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
-            _lastGetSorTime = QDateTime::currentDateTimeUtc();
             setOTDRModuleState(STATE_GETINGSOR1);
+//            emit this->sigSendCommand(_moduleIndex,cmdline);
+            onSendCommand(_moduleIndex,cmdline);
+            _lastGetSorTime = QDateTime::currentDateTimeUtc();
         }
-        if((_MeasuredChannels.OTDRModule.I.ch2 == 0)&&(getOTDRModuleState()==STATE_GETINGSOR1)){
+        if((_MeasuredChannels.OTDRModule.I.ch2 == 0)&&(getOTDRModuleState()==STATE_GOTSOR1)){
             QString cmdline = QString("getsor? %1").arg(1);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
             setOTDRModuleState(STATE_GETINGSOR2);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                        onSendCommand(_moduleIndex,cmdline);
+
         }
-        if((_MeasuredChannels.OTDRModule.I.ch3 == 0)&&(getOTDRModuleState()==STATE_GETINGSOR2)){
+        if((_MeasuredChannels.OTDRModule.I.ch3 == 0)&&(getOTDRModuleState()==STATE_GOTSOR2)){
             QString cmdline = QString("getsor? %1").arg(2);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
             setOTDRModuleState(STATE_GETINGSOR3);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                        onSendCommand(_moduleIndex,cmdline);
+
         }
-        if((_MeasuredChannels.OTDRModule.I.ch4 == 0)&&(getOTDRModuleState()==STATE_GETINGSOR3)){
+        if((_MeasuredChannels.OTDRModule.I.ch4 == 0)&&(getOTDRModuleState()==STATE_GOTSOR3)){
             QString cmdline = QString("getsor? %1").arg(3);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
             setOTDRModuleState(STATE_GETINGSOR4);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                        onSendCommand(_moduleIndex,cmdline);
+
         }
     }
     if(_moduleIndex == 1){
         if(_MeasuredChannels.OTDRModule.I.ch5 == 0){
             QString cmdline = QString("getsor? %1").arg(0);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
-            _lastGetSorTime = QDateTime::currentDateTimeUtc();
             setOTDRModuleState(STATE_GETINGSOR1);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                        onSendCommand(_moduleIndex,cmdline);
+            _lastGetSorTime = QDateTime::currentDateTimeUtc();
+
         }
-        if(_MeasuredChannels.OTDRModule.I.ch6 == 0){
+        if((_MeasuredChannels.OTDRModule.I.ch6 == 0)&&(getOTDRModuleState() == STATE_GOTSOR1)){
             QString cmdline = QString("getsor? %1").arg(1);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
             setOTDRModuleState(STATE_GETINGSOR2);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                        onSendCommand(_moduleIndex,cmdline);
+
         }
-        if(_MeasuredChannels.OTDRModule.I.ch7 == 0){
+        if((_MeasuredChannels.OTDRModule.I.ch7 == 0)&&(getOTDRModuleState()== STATE_GOTSOR2)){
             QString cmdline = QString("getsor? %1").arg(2);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
             setOTDRModuleState(STATE_GETINGSOR3);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+                        onSendCommand(_moduleIndex,cmdline);
+
         }
-        if(_MeasuredChannels.OTDRModule.I.ch8 == 0){
+        if((_MeasuredChannels.OTDRModule.I.ch8 == 0)&&(getOTDRModuleState()==STATE_GOTSOR3)){
             QString cmdline = QString("getsor? %1").arg(3);
-            emit this->sigSendCommand(_moduleIndex,cmdline);
             setOTDRModuleState(STATE_GETINGSOR4);
+            //            emit this->sigSendCommand(_moduleIndex,cmdline);
+            onSendCommand(_moduleIndex,cmdline);
+
         }
     }
  }
@@ -363,7 +383,9 @@ void QOTDRModule::sendScanCommand()
 // 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
     QString cmdline = QString("SCAN");
     if(/*(getOTDRModuleState() == STATE_IDLING)||*/(getOTDRModuleState() == STATE_MEASURED)){
-        emit    this->sigSendCommand(_moduleIndex,cmdline);
+//        emit    this->sigSendCommand(_moduleIndex,cmdline);
+        onSendCommand(_moduleIndex, cmdline);
+
         setOTDRModuleState(STATE_MEASURING);
     }
 }
@@ -480,16 +502,16 @@ void QOTDRModule::onRecvResponse(quint16 module, QString &cmdline, QByteArray &d
                 emit this->sigOTDRChanged(_moduleIndex, sorfile._channel);
                 p->toIFMSFingerFile();
             }
-            if(ch == 0 ){
+            if(ch == 1 ){
                 setOTDRModuleState(STATE_GOTSOR1);
             }
-            if(ch == 1 ){
+            if(ch == 2 ){
                 setOTDRModuleState(STATE_GOTSOR2);
             }
-            if(ch == 2 ){
+            if(ch == 3 ){
                 setOTDRModuleState(STATE_GOTSOR3);
             }
-            if(ch == 3 ){
+            if(ch == 4 ){
                 setOTDRModuleState(STATE_GOTSOR4);
             }
         }

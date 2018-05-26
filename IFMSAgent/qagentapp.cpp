@@ -79,6 +79,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 
     connect(command_thread, SIGNAL(sigExit(qint32)), this, SLOT(onSigExit(qint32)));
     connect(command_thread, SIGNAL(sigSwitchModule(quint16)), this, SLOT(onSwitchModule(quint16)));
+    connect(command_thread, SIGNAL(sigSwitchModule(quint16)), command_thread, SLOT(onSwitchModule(quint16)));
 
     connect(command_thread, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)));
     connect(command_thread, SIGNAL(sigSendCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
@@ -112,7 +113,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 // FOR DEBUG ONLY
 //    emit sigModuleStartMonitor(0);
 //    emit sigModuleStartMonitor(1);
-    emit command_thread->sigSwitchModule(0);
+    emit command_thread->sigSwitchModule(1);
 //    QString qcmdline = QString("SCAN");
 //    QString qcmdline = QString("GETSOR? 0");
 //    emit command_thread->sigSendCommandToModule(0,qcmdline);
@@ -153,55 +154,55 @@ void QAgentApp::initAppData(QPST* p)
 //    p->m_system->init_pstSystemData();
 
 
-    QString configDir = getConfigDir();
-    QString cacheDir  = getCacheDir();
+//    QString configDir = getConfigDir();
+//    QString cacheDir  = getCacheDir();
 
-    initDir(configDir);
-    initDir(cacheDir);
+//    initDir(configDir);
+//    initDir(cacheDir);
 
-    QSettings setting(getConfigFile(),QSettings::IniFormat);
-    setting.beginGroup("pstRoot");
-        setting.beginGroup("pstSystem");
-            setting.beginGroup("pstSystemBasicManagement");
-								setting.setValue("devName", QString("IFMS1000"));
-								setting.setValue("devIpAddr", QString("192.168.1.100"));
-								setting.setValue("devGateway", QString("192.168.1.1"));
-								setting.setValue("devNetMask", QString("255.255.255.0"));
-								setting.setValue("saveCurrentConfiguration", 0);
-								setting.setValue("reset2Factory", 0);
-								setting.setValue("reboot",0);
-            setting.endGroup();
-            setting.beginGroup("pstSystemVerInfo");
-								setting.setValue("pstHwVer", QString("1.0"));
-								setting.setValue("pstSwVer", QString("1.0"));
-								setting.setValue("pstModel", QString("IFMS1000"));
-								setting.setValue("pstSn", QString("123456789"));
-								setting.setValue("pstFwVer", QString("1.0"));
-								setting.setValue("devMacAddress", QString("aa:bb:cc:dd:ee:ff"));
-						setting.endGroup();
-            setting.beginGroup("pstSystemTrapInfo");
-								setting.setValue("pstSystemTrapFuncEn", 1);
+//    QSettings setting(getConfigFile(),QSettings::IniFormat);
+//    setting.beginGroup("pstRoot");
+//        setting.beginGroup("pstSystem");
+//            setting.beginGroup("pstSystemBasicManagement");
+//								setting.setValue("devName", QString("IFMS1000"));
+//								setting.setValue("devIpAddr", QString("192.168.1.100"));
+//								setting.setValue("devGateway", QString("192.168.1.1"));
+//								setting.setValue("devNetMask", QString("255.255.255.0"));
+//								setting.setValue("saveCurrentConfiguration", 0);
+//								setting.setValue("reset2Factory", 0);
+//								setting.setValue("reboot",0);
+//            setting.endGroup();
+//            setting.beginGroup("pstSystemVerInfo");
+//								setting.setValue("pstHwVer", QString("1.0"));
+//								setting.setValue("pstSwVer", QString("1.0"));
+//								setting.setValue("pstModel", QString("IFMS1000"));
+//								setting.setValue("pstSn", QString("123456789"));
+//								setting.setValue("pstFwVer", QString("1.0"));
+//								setting.setValue("devMacAddress", QString("aa:bb:cc:dd:ee:ff"));
+//						setting.endGroup();
+//            setting.beginGroup("pstSystemTrapInfo");
+//								setting.setValue("pstSystemTrapFuncEn", 1);
 								
 
-            setting.endGroup();
-            setting.beginGroup("pstSystemStatus");
+//            setting.endGroup();
+//            setting.beginGroup("pstSystemStatus");
 
 
-            setting.endGroup();
-            setting.beginGroup("pstSystemOnlineUpgrade");
+//            setting.endGroup();
+//            setting.beginGroup("pstSystemOnlineUpgrade");
 
 
-            setting.endGroup();
-            setting.beginGroup("pstSystemProductInfo");
+//            setting.endGroup();
+//            setting.beginGroup("pstSystemProductInfo");
 
 
-            setting.endGroup();
-        setting.endGroup();
-    setting.beginGroup("pstIFMS1000");
+//            setting.endGroup();
+//        setting.endGroup();
+//    setting.beginGroup("pstIFMS1000");
 
-    setting.endGroup();
-    setting.endGroup();
-    setting.sync();
+//    setting.endGroup();
+//    setting.endGroup();
+//    setting.sync();
 }
 
 //
@@ -346,7 +347,7 @@ void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
                 return;
             }
             _module2->setKeepRunning(1);
-            _module1->onSigOTDRSetMode(0);
+            _module2->onSigOTDRSetMode(0);
             _module2->start();
         }
     }

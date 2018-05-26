@@ -23,8 +23,6 @@
 #include "qsorfilebase.h"
 
 
-static QMutex gCommander_mutex;
-
 class QCommander : public QThread
 {
     Q_OBJECT
@@ -41,16 +39,10 @@ public:
     int     moduleIndex;
     char    *link;
 
-    void setKeepRunning(int running)
-    {
-         QMutexLocker locker(&gCommander_mutex);
-        _keeprunning = running;
-    }
+    void setKeepRunning(int running);
 
-    int getKeepRunning(){
-         QMutexLocker locker(&gCommander_mutex);
-         return _keeprunning;
-    }
+
+    int getKeepRunning();
 
     void run();
 
@@ -64,6 +56,7 @@ signals:
     void sigModuleStopMonitor(quint16 module);
     void sigModuleSingleMonitor(quint16 module);
 public slots:
+    void onSwitchModule(quint16 module);
 
 private:
     int         _keeprunning;

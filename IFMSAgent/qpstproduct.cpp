@@ -1943,9 +1943,9 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
-                long index = requests->index;
+                long index = table_entry->pstIFMS1000MTPortNum;
                 long action = *(requests->requestvb->val.integer);
-                if(0< index < 4){
+                if(index < 4){
                     if(action == 1) // start
                     {
                         emit QAgentApp::getInstance()->sigModuleStartMonitor(0);

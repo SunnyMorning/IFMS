@@ -13,6 +13,7 @@
 #include <QThreadPool>
 #include <QDateTime>
 #include <QTimer>
+#include <QMetaType>
 #include <QDebug>
 
 #include    "qfingerdata.h"
@@ -23,8 +24,8 @@
 #define  UART_OF_MODULE1        "/dev/ttyO2"
 #define  UART_OF_MODULE2        "/dev/ttyO3"
 
-#define  ADDRESS_OF_MODULE1     "172.16.1.102"
-#define  ADDRESS_OF_MODULE2     "172.16.1.101"
+#define  ADDRESS_OF_MODULE1     "172.16.1.101"
+#define  ADDRESS_OF_MODULE2     "172.16.1.102"
 
 #define  PORT_OF_MODULE1        6000
 #define  PORT_OF_MODULE2        6000
@@ -145,6 +146,31 @@ public:
 
     void run(){
             qDebug() << QThread::currentThreadId() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
+            qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
+
+            _pSerialPort = new QSerialPort();
+            if(_moduleIndex == 0){
+                setSerialPortParam(QString(UART_OF_MODULE1));
+            }
+            else
+            {
+                setSerialPortParam(QString(UART_OF_MODULE2));
+            }
+
+            _pTcpSocket = new QTcpSocket();
+
+            _timerTCPKeepAlive = new QTimer();
+            _timerTCPKeepAlive->setInterval(KEEP_ALIVE_TIMEOUT);
+            _timerTCPKeepAlive->start();
+            _tcpState = STATE_TCP_INIT;
+
+            connect(_pTcpSocket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
+            connect(_pTcpSocket, SIGNAL(disconnected()),this, SLOT(onSocketDisconnected()));
+            connect(_pTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(onSocketError(QAbstractSocket::SocketError)));
+            connect(_timerTCPKeepAlive, SIGNAL(timeout()), this, SLOT(onTcpSocketAutoConnect()));
+
+
+            initTcpConnection();
 
             if(_moduleMode == OTDR_WORK_MODE_STOP){
                 return;
@@ -158,9 +184,10 @@ public:
                 }
                 QThread::msleep(5000);
                 if(isIdling()||isGetSOR()){
+
                     setProgress(80);
                     sendGetSorCommand();
-                    QThread::msleep(3000);
+                    QThread::msleep(300);
                 }
                 else if(isMeasured())
                 {
@@ -188,6 +215,7 @@ public:
                     if(_lastGetSorTime.addSecs(60) < QDateTime::currentDateTimeUtc())
                     {
                           setOTDRModuleState(STATE_MEASURED);
+                          _MeasuredChannels.OTDRModule.channels = 0;
                     }
                     _progress += 9;
                     if(_progress >= 90){
@@ -200,6 +228,12 @@ public:
             setOTDRModuleState(STATE_MEASURED);
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
 			setProgress(0);
+            _MeasuredChannels.OTDRModule.channels = 0;
+            if(_pTcpSocket!=NULL){
+                _pTcpSocket->close();
+                delete _pTcpSocket;
+                _pTcpSocket = NULL;
+            }
             exit(0);
         }
 
