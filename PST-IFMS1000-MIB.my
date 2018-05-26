@@ -114,7 +114,7 @@
 		-- 1.3.6.1.4.1.48391.3.5.1.1.5
 		pstIFMS1000PortActive OBJECT-TYPE
 			SYNTAX Integer32 (0..1)
-			MAX-ACCESS read-only
+			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
 				"Indicates whether the port is active for work.
@@ -184,15 +184,47 @@
 					Integer32,
 				pstIFMS1000MeasureAction
 					Integer32,
-				pstIFMS1000MeasureResultFile
+				pstIFMS1000MeasurePulseWidth
 					OCTET STRING,
-				pstIFMS1000MeasureResultRawDataFile
-					OCTET STRING,
+				pstIFMS1000MeasureMeasureTime
+					Integer32,
 				pstIFMS1000MeasureProgressStatus
 					Integer32,
-				pstIFMS1000MeasureResultRawPointFile
-					OCTET STRING
-			 }
+				pstIFMS1000MeasureTLOS
+					OCTET STRING,  
+				pstIFMS1000MeasureTREF
+					OCTET STRING,
+				pstIFMS1000MeasureFiberLengthChangeThreshold 
+					OCTET STRING, 
+				pstIFMS1000MeasureEndToEndLossCriticalThreshold 
+					OCTET STRING,										         
+				pstIFMS1000MeasureEndToEndLossMajorThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureEndToEndLossMinorThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureNewLossCriticalThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureNewLossMajorThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureNewLossMinorThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureOldLossCriticalThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureOldLossMajorThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureOldLossMinorThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureTempHighThreshold 
+					OCTET STRING,	
+				pstIFMS1000MeasureTempLowThreshold 
+					OCTET STRING,																					
+				pstIFMS1000MeasureNumber 
+					OCTET STRING,					
+				pstIFMS1000MeasureNumberSORStoredEachChannel 
+					OCTET STRING					
+																					
+			 }    
+			 
 
 		-- 1.3.6.1.4.1.48391.3.5.2.1.1
 		pstIFMS1000MTPortNum OBJECT-TYPE
@@ -212,7 +244,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The start position in the measurement. This field is only valid when start a single measurement."
+				"The start position in the measurement. Default value:0"
 			::= { pstIFMS1000MeasureEntry 2 }
 
 		
@@ -220,12 +252,11 @@
 		-- 1.3.6.1.4.1.48391.3.5.2.1.3
 		pstIFMS1000MeasureEndPosition OBJECT-TYPE
 			SYNTAX OCTET STRING (SIZE (1..32))
-			UNITS "Meter"
+			UNITS "KiloMeter"
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The total length in the measurement. This field is only valid when start a single measurement.
-				pstIFMS1000MeasureStartPosition must be set before the pstIFMS1000MeasureEndPosition is set."
+				"The total length in the measurement.(5,25?¨º,50,125,160,260)(km)"
 			::= { pstIFMS1000MeasureEntry 3 }
 
 		
@@ -235,7 +266,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The refractive index in the measurement. This field is only valid when start a single measurement."
+				"The refractive index in the measurement. Default value:1.465; Range:1.400~1.700"
 			::= { pstIFMS1000MeasureEntry 4 }
 
 		
@@ -246,7 +277,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The resolution in the measurement. This field is only valid when start a single measurement."
+				"The resolution in the measurement. (0.32,0.64,1.2,2.5,5,10,20)(m)"
 			::= { pstIFMS1000MeasureEntry 5 }
 
 		
@@ -257,17 +288,12 @@
 			STATUS current
 			DESCRIPTION
 				"The measurement action.
-				0. Idle. The port is idle now.
-				1. Manual Auto measurement. The port is running in monitor mode.
-				2. An event is found in auto measurement.
-				3. Single C-OTDR measurement is running. A single measurement is running in this port.
-				4. Single C-OTDR measurement is done. A single measurement is done.
-				5. Failure.
-				6. Auto measurement with thermal. This port is running in auto measurement with thermal process enabled.
-				7. Reserved.
-				8. Single P-OTDR measurement is running. A single measurement is running in this port.
-				9. Single P-OTDR measurement is done. A single measurement is done.
-				 "
+					0. Idle. The port is idle now. 
+					1. Auto measurement is running. 
+					2. Single OTDR measurement is running. 
+					3. Single OTDR measurement is done. 
+					4. Measurement Failure. 
+				"
 			::= { pstIFMS1000MeasureEntry 6 }
 
 		
@@ -278,36 +304,31 @@
 			STATUS current
 			DESCRIPTION
 				"The measurement action.
-				1. Start manual-auto measurement. The port will run in manual monitor mode after this action.
-				2. Start a C-OTDR single measurement. The port will start a single C-OTDR measurement after this action.
-				3. Stop measurement. The measurement will be stopped after this action.
-				4. Start auto measurement with thermal. The port will run in auto monitor mode with thermal process enabled.
-				5. Continue auto measurement with thermal. The port will continue run in auto monitor mode with thermal process enabled when an even is found and processed.
-				6. Start a P-OTDR single measurement. The port will start a single P-OTDR measurement after this action.
+					1. Start Auto measurement. 				
+					2. Stop Auto measurement.
+					3. Start Single measurement.
 				"
 			::= { pstIFMS1000MeasureEntry 7 }
 
 		
 		-- 1.3.6.1.4.1.48391.3.5.2.1.8
-		pstIFMS1000MeasureResultFile OBJECT-TYPE
-			SYNTAX OCTET STRING (SIZE (1..128))
-			MAX-ACCESS read-only
+		pstIFMS1000MeasurePulseWidth OBJECT-TYPE    
+			SYNTAX OCTET STRING (SIZE (1..32))
+			UNITS "ns"
+			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The result will be saved in the file. You can get the result file by FTP. 
-				This field is only valid after a measurement is finished in a single measurement or a diff is found in auto measurement."
+				"The pulse width is 10,30,100,300,1000,3000,10000,20000, ns"
 			::= { pstIFMS1000MeasureEntry 8 }
 
 		
 		-- 1.3.6.1.4.1.48391.3.5.2.1.9
-		pstIFMS1000MeasureResultRawDataFile OBJECT-TYPE
-			SYNTAX OCTET STRING (SIZE (1..128))
-			MAX-ACCESS read-only
+		pstIFMS1000MeasureTime OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The result of raw data will be saved in the file. You can get the result file by FTP. 
-				This field is only valid after a measurement is finished in a single measurement or a diff is found in auto measurement. 
-				It is only available for expert."
+				"5~300 Second"
 			::= { pstIFMS1000MeasureEntry 9 }
 
 		
@@ -322,17 +343,167 @@
 
 		
 		-- 1.3.6.1.4.1.48391.3.5.2.1.11
-		pstIFMS1000MeasureResultRawPointFile OBJECT-TYPE
+		pstIFMS1000MeasureTLOS OBJECT-TYPE
 			SYNTAX OCTET STRING (SIZE (1..32))
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The result of raw pint data will be saved in the file. You can get the result file by FTP. 
-				This field is only valid after a measurement is finished in a single measurement. 
-				It is only available for expert."
-			::= { pstIFMS1000MeasureEntry 11 }
+				"The default value is 0(0~9.99), initialization module TLOS."
+			::= { pstIFMS1000MeasureEntry 11 }       
 
-		
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.12
+		pstIFMS1000MeasureTREF OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"The default value is -80(-14~-80), initialization module TREF."
+			::= { pstIFMS1000MeasureEntry 12 }    
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.13
+		pstIFMS1000MeasureFiberLengthChangeThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Fiber length change threshold, unit m, Default value:100m."
+			::= { pstIFMS1000MeasureEntry 13 } 			
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.14
+		pstIFMS1000MeasureEndToEndLossCriticalThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"End to end loss change, unit dB, Critical alarm, Default value:6dB."
+			::= { pstIFMS1000MeasureEntry 14 }			
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.15
+		pstIFMS1000MeasureEndToEndLossMajorThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"End to end loss change, unit dB, Major alarm, Default value:4dB."
+			::= { pstIFMS1000MeasureEntry 15 }				
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.16
+		pstIFMS1000MeasureEndToEndLossMinorThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"End to end loss change, unit dB, Minor alarm, Default value:2dB."
+			::= { pstIFMS1000MeasureEntry 16 }			
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.17
+		pstIFMS1000MeasureNewLossCriticalThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Loss changes of new events, unit dB, Critical alarm, Default value:0.6dB."
+			::= { pstIFMS1000MeasureEntry 17 }			
+
+						
+		-- 1.3.6.1.4.1.48391.3.5.2.1.18
+		pstIFMS1000MeasureNewLossMajorThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Loss changes of new events, unit dB, Major alarm, Default value:0.4dB."
+			::= { pstIFMS1000MeasureEntry 18 }	
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.19
+		pstIFMS1000MeasureNewLossMinorThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Loss changes of new events, unit dB, Minor alarm, Default value:0.2dB."
+			::= { pstIFMS1000MeasureEntry 19 }		
+
+			
+		-- 1.3.6.1.4.1.48391.3.5.2.1.20
+		pstIFMS1000MeasureOldLossCriticalThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Changes in loss of events, unit dB, Critical alarm, Default value:0.6dB."
+			::= { pstIFMS1000MeasureEntry 20 }			
+
+						
+		-- 1.3.6.1.4.1.48391.3.5.2.1.21
+		pstIFMS1000MeasureOldLossMajorThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Changes in loss of events, unit dB, Major alarm, Default value:0.4dB."
+			::= { pstIFMS1000MeasureEntry 21 }				   			
+
+
+ 		-- 1.3.6.1.4.1.48391.3.5.2.1.22
+		pstIFMS1000MeasureOldLossMinorThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Changes in loss of events, unit dB, Minor alarm, Default value:0.2dB."
+			::= { pstIFMS1000MeasureEntry 22 }	
+
+
+ 		-- 1.3.6.1.4.1.48391.3.5.2.1.23
+		pstIFMS1000MeasureTempHighThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"High temperature warning threshold, unit Centigrade, Default value:55."
+			::= { pstIFMS1000MeasureEntry 23 }	
+
+
+ 		-- 1.3.6.1.4.1.48391.3.5.2.1.24
+		pstIFMS1000MeasureTempLowThreshold OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"Low temperature warning threshold, unit Centigrade, Default value:-5."
+			::= { pstIFMS1000MeasureEntry 24 }	    
+			
+
+ 		-- 1.3.6.1.4.1.48391.3.5.2.1.25
+		pstIFMS1000MeasureNumber OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"The number of scanned times that have been completed in automatic monitoring."
+			::= { pstIFMS1000MeasureEntry 25 }	
+                                             
+                                             
+ 		-- 1.3.6.1.4.1.48391.3.5.2.1.26
+		pstIFMS1000MeasureNumberSORStoredEachChannel OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..32))
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"The maximum number of SOR files per channel can be stored in FLAH automatically."
+			::= { pstIFMS1000MeasureEntry 26 }	
+
+
+			
+					
 		-- 1.3.6.1.4.1.48391.3.5.3
 		pstIFMS1000FingerTable OBJECT-TYPE
 			SYNTAX SEQUENCE OF PSTIFMS1000FingerEntry
@@ -387,9 +558,9 @@
 			STATUS current
 			DESCRIPTION
 				"Description."
-			::= { pstIFMS1000FingerEntry 1 }
-
-		
+			::= { pstIFMS1000FingerEntry 1 }     
+			
+			
 		-- 1.3.6.1.4.1.48391.3.5.3.1.2
 		pstIFMS1000FingerStartPosition OBJECT-TYPE
 			SYNTAX OCTET STRING (SIZE (1..32))
@@ -397,10 +568,10 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The start position in the finger measurement. "
+				"The Start position in the finger measurement. "
 			::= { pstIFMS1000FingerEntry 2 }
 
-		
+			
 		-- 1.3.6.1.4.1.48391.3.5.3.1.3
 		pstIFMS1000FingerEndPosition OBJECT-TYPE
 			SYNTAX OCTET STRING (SIZE (1..32))

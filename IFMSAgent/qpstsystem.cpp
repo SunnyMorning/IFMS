@@ -18,75 +18,6 @@ void QPSTSystem::init_pstSystemData(){
     m_pstSystem.init_pstData();
 }
 
-//QString QPSTSystem::get_devName()
-//{
-//    return m_pstSystem.get_devName();
-//}
-
-//void    QPSTSystem::set_devName(QString name)
-//{
-//    m_pstSystem.set_devName(name);
-//}
-
-//QString QPSTSystem::get_devIpAddr()
-//{
-
-//}
-
-//void    QPSTSystem::set_devIpAddr(QString ip)
-//{
-
-//}
-
-//QString QPSTSystem::get_devGateway()
-//{
-
-//}
-
-//void    QPSTSystem::set_devGateway(QString gw)
-//{
-
-//}
-
-//QString QPSTSystem::get_devNetMask()
-//{
-
-//}
-
-//void    QPSTSystem::set_devNetMask(QString msk)
-//{
-
-//}
-
-//long    QPSTSystem::get_saveCurrentConfiguration()
-//{
-
-//}
-
-//void    QPSTSystem::set_saveCurrentConfiguration(long cfg)
-//{
-
-//}
-
-//long    QPSTSystem::get_reset2Factory()
-//{
-
-//}
-//void    QPSTSystem::set_reset2Factory(long rf)
-//{
-
-//}
-
-//long    QPSTSystem::get_reboot()
-//{
-
-//}
-
-//void    QPSTSystem::set_reboot(long rb)
-//{
-
-//}
-
 void QPSTSystem::init_pstSystem()
 {
     const oid devName_oid[] = { 1,3,6,1,4,1,48391,2,1,1,1 };
@@ -327,21 +258,21 @@ int
             }
             break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -391,41 +322,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -475,41 +406,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -558,41 +489,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -639,41 +570,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -718,41 +649,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -799,41 +730,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1065,41 +996,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1229,55 +1160,55 @@ int
                                      sizeof(it)/* XXX: the length of the data in bytes */);
             break;
 
-//        /*
-//         * SET REQUEST
-//         *
-//         * multiple states in the transaction.  See:
-//         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
-//         */
-//        case MODE_SET_RESERVE1:
-//                /* or you could use netsnmp_check_vb_type_and_size instead */
-//            ret = netsnmp_check_vb_type(requests->requestvb, ASN_IPADDRESS);
-//            if ( ret != SNMP_ERR_NOERROR ) {
-//                netsnmp_set_request_error(reqinfo, requests, ret );
-//            }
-//            break;
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_IPADDRESS);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+            break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1323,41 +1254,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1402,41 +1333,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1483,41 +1414,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1562,41 +1493,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1641,41 +1572,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1720,41 +1651,41 @@ int
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1857,7 +1788,7 @@ int
 /* create a new row in the table */
 static netsnmp_tdata_row *
 pstSystemTrapTargetTable_createEntry(netsnmp_tdata *table_data
-                 , u_char* pstSystemTrapTargetName
+                 , char* pstSystemTrapTargetName
                  , size_t pstSystemTrapTargetName_len
                 ) {
     struct pstSystemTrapTargetTable_entry *entry;
@@ -1904,105 +1835,6 @@ pstSystemTrapTargetTable_removeEntry(netsnmp_tdata     *table_data,
         netsnmp_tdata_delete_row( row );
 }
 
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstSystemFanTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstSystemFanIndex
-                ) {
-    struct pstSystemFanTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstSystemFanTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstSystemFanTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstSystemFanIndex = pstSystemFanIndex;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstSystemFanIndex),
-                                 sizeof(entry->pstSystemFanIndex));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstSystemFanTable_removeEntry(netsnmp_tdata     *table_data,
-                 netsnmp_tdata_row *row) {
-    struct pstSystemFanTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstSystemFanTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstSystemFanTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );
-}
-
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstSystemPowerTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstSystemPowerIndex
-                ) {
-    struct pstSystemPowerTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstSystemPowerTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstSystemPowerTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstSystemPowerIndex = pstSystemPowerIndex;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstSystemPowerIndex),
-                                 sizeof(entry->pstSystemPowerIndex));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstSystemPowerTable_removeEntry(netsnmp_tdata     *table_data,
-                 netsnmp_tdata_row *row) {
-    struct pstSystemPowerTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstSystemPowerTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstSystemPowerTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );
-}
-
 /** Initialize the pstSystemTrapTargetTable table by defining its contents and how it's structured */
 void
  QPSTSystem::initialize_table_pstSystemTrapTargetTable(void)
@@ -2041,10 +1873,6 @@ void
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
-	QPST *p = QPST::getInstance();
-
-	int i;
-	
 #if 0
 	char *kwgs[] = {
 		"karls working group1",
@@ -2080,7 +1908,9 @@ void
 		entry->nsIETFWGChair2_len = strlen(knames2[i]);
 	}
 #endif
-	i = 0;
+	QPST *p = QPST::getInstance();
+	long i = 0;
+	
 	netsnmp_tdata_row 	*row;
 	QString  targetName;
 	QString	 targetCommunity;
@@ -2088,21 +1918,51 @@ void
 	for(i = 0; i < NUMBER_OF_TRAPTARGETS; i++){
 		targetName  = p->m_system->m_pstSystem.get_pstSystemTrapTargetName(i);
 		targetCommunity = p->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
-		u_char	*pstSystemTrapTargetName = (u_char*)targetName.toLatin1().data();
+		char pstSystemTrapTargetName[32];
+        strcpy(pstSystemTrapTargetName,targetName.toLatin1().data());
 		size_t	pstSystemTrapTargetName_len = targetName.length() ;
 		row = pstSystemTrapTargetTable_createEntry(table_data, pstSystemTrapTargetName, pstSystemTrapTargetName_len);
+
         entry = (struct pstSystemTrapTargetTable_entry *)row->data;
-		entry->pstSystemTrapTargetIpAddr = p->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+        strcpy(entry->pstSystemTrapTargetName,targetName.toLatin1().data());
+		entry->pstSystemTrapTargetName_len = targetName.length();
+		entry->pstSystemTrapTargetIpAddr = 0;//p->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+		entry->old_pstSystemTrapTargetIpAddr = 0;
 		strcpy(entry->pstSystemTrapTargetCommunity, targetCommunity.toLatin1().data());
+		strcpy(entry->old_pstSystemTrapTargetCommunity, targetCommunity.toLatin1().data());
 		entry->pstSystemTrapTargetCommunity_len = targetCommunity.length();
-		entry->pstSystemTrapTargetTrapVersion = p->m_system->m_pstSystem.get_pstSystemTrapTargetTrapVersion(i);
-		entry->pstSystemTrapTargetRowStatus = p->m_system->m_pstSystem.get_pstSystemTrapTargetRowStatus(i);
-		}
+		entry->old_pstSystemTrapTargetCommunity_len = targetCommunity.length();
+		entry->pstSystemTrapTargetTrapVersion = 2;//p->m_system->m_pstSystem.get_pstSystemTrapTargetTrapVersion(i);
+		entry->old_pstSystemTrapTargetTrapVersion = 2;
+		entry->pstSystemTrapTargetRowStatus = i;//p->m_system->m_pstSystem.get_pstSystemTrapTargetRowStatus(i);
+		entry->old_pstSystemTrapTargetRowStatus = 0;
+	}
 
 //	return table_data;
 
 
 }
+
+//    /* Typical data structure for a row entry */
+//struct pstSystemTrapTargetTable_entry {
+//    /* Index values */
+//    char pstSystemTrapTargetName[NNN];
+//    size_t pstSystemTrapTargetName_len;
+
+//    /* Column values */
+//    in_addr_t pstSystemTrapTargetIpAddr;
+//    in_addr_t old_pstSystemTrapTargetIpAddr;
+//    char pstSystemTrapTargetCommunity[NNN];
+//    size_t pstSystemTrapTargetCommunity_len;
+//    char old_pstSystemTrapTargetCommunity[NNN];
+//    size_t old_pstSystemTrapTargetCommunity_len;
+//    long pstSystemTrapTargetTrapVersion;
+//    long old_pstSystemTrapTargetTrapVersion;
+//    long pstSystemTrapTargetRowStatus;
+//    long old_pstSystemTrapTargetRowStatus;
+
+//    int   valid;
+//};
 
 /** handles requests for the pstSystemTrapTargetTable table */
 int
@@ -2247,7 +2107,7 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
             case COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS:
                 if ( !table_row ) {
                     table_row = pstSystemTrapTargetTable_createEntry(table_data
-                        ,  table_info->indexes->val.string
+                        ,(char*)table_info->indexes->val.string
                         ,  table_info->indexes->val_len
                         );
                     if (table_row) {
@@ -2386,6 +2246,55 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
     return SNMP_ERR_NOERROR;
 }
 
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstSystemFanTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstSystemFanIndex
+                ) {
+    struct pstSystemFanTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstSystemFanTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstSystemFanTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstSystemFanIndex = pstSystemFanIndex;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstSystemFanIndex),
+                                 sizeof(entry->pstSystemFanIndex));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstSystemFanTable_removeEntry(netsnmp_tdata     *table_data,
+                 netsnmp_tdata_row *row) {
+    struct pstSystemFanTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstSystemFanTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstSystemFanTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );
+}
+
 /** Initialize the pstSystemFanTable table by defining its contents and how it's structured */
 void
 QPSTSystem::initialize_table_pstSystemFanTable(void)
@@ -2424,7 +2333,32 @@ QPSTSystem::initialize_table_pstSystemFanTable(void)
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+    long i= 0;
+	netsnmp_tdata_row 	*row;
+
+	struct pstSystemFanTable_entry		*entry;
+	for(i = 0; i < NUMBER_OF_FANS; i++){
+        row = pstSystemFanTable_createEntry(table_data, i);
+
+        entry = (struct pstSystemFanTable_entry *)row->data;
+		entry->pstSystemFanIndex= i;
+		entry->pstSystemFanSpeed=255;
+		entry->pstSystemFanStatus=0;
+		}
 }
+
+//    /* Typical data structure for a row entry */
+//struct pstSystemFanTable_entry {
+//    /* Index values */
+//    long pstSystemFanIndex;
+
+//    /* Column values */
+//    long pstSystemFanIndex;
+//    long pstSystemFanStatus;
+//    long pstSystemFanSpeed;
+
+//    int   valid;
+//};
 
 /** handles requests for the pstSystemFanTable table */
 int
@@ -2525,16 +2459,98 @@ QPSTSystem::initialize_table_pstSystemPowerTable(void)
         return;
     }
     netsnmp_table_helper_add_indexes(table_info,
-                           ASN_INTEGER,  /* index: pstSystemPowerIndex */
+                           ASN_OCTET_STR,  /* index: pstSystemPowerIndex */
                            0);
 
     table_info->min_column = COLUMN_PSTSYSTEMPOWERINDEX;
-    table_info->max_column = COLUMN_PSTSYSTEMPOWERCURRENT;
+    table_info->max_column = COLUMN_PSTSYSTEMPOWERVOLTAGE1V8RTC;
     
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
 }
+
+//    /* Typical data structure for a row entry */
+//struct pstSystemPowerTable_entry {
+//    /* Index values */
+//    char pstSystemPowerIndex[NNN];
+//    size_t pstSystemPowerIndex_len;
+
+//    /* Column values */
+//    char pstSystemPowerIndex[NNN];
+//    size_t pstSystemPowerIndex_len;
+//    char pstSystemPowerMaximumConsumption[NNN];
+//    size_t pstSystemPowerMaximumConsumption_len;
+//    char pstSystemPowerVoltage12VA[NNN];
+//    size_t pstSystemPowerVoltage12VA_len;
+//    char pstSystemPowerVoltage12VB[NNN];
+//    size_t pstSystemPowerVoltage12VB_len;
+//    char pstSystemPowerVoltage12VFAN[NNN];
+//    size_t pstSystemPowerVoltage12VFAN_len;
+//    char pstSystemPowerVoltage12VOTDR1[NNN];
+//    size_t pstSystemPowerVoltage12VOTDR1_len;
+//    char pstSystemPowerVoltage12VOTDR2[NNN];
+//    size_t pstSystemPowerVoltage12VOTDR2_len;
+//    char pstSystemPowerVoltageVDD5V[NNN];
+//    size_t pstSystemPowerVoltageVDD5V_len;
+//    char pstSystemPowerVoltageVDD3V3[NNN];
+//    size_t pstSystemPowerVoltageVDD3V3_len;
+//    char pstSystemPowerVoltage1V8RTC[NNN];
+//    size_t pstSystemPowerVoltage1V8RTC_len;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+netsnmp_tdata_row *
+pstSystemPowerTable_createEntry(netsnmp_tdata *table_data
+                 , char* pstSystemPowerIndex
+                 , size_t pstSystemPowerIndex_len
+                ) {
+    struct pstSystemPowerTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstSystemPowerTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstSystemPowerTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    memcpy(entry->pstSystemPowerIndex, pstSystemPowerIndex, pstSystemPowerIndex_len);
+    entry->pstSystemPowerIndex_len = pstSystemPowerIndex_len;
+    netsnmp_tdata_row_add_index( row, ASN_OCTET_STR,
+                                 entry->pstSystemPowerIndex, pstSystemPowerIndex_len);
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+void
+pstSystemPowerTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstSystemPowerTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstSystemPowerTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstSystemPowerTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 
 /** handles requests for the pstSystemPowerTable table */
 int
@@ -2573,37 +2589,99 @@ QPSTSystem::pstSystemPowerTable_handler(
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
-                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstSystemPowerIndex);
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerIndex,
+                                          table_entry->pstSystemPowerIndex_len);
                 break;
-            case COLUMN_PSTSYSTEMPOWERSTATUS:
-                if ( !table_entry ) {
-                    netsnmp_set_request_error(reqinfo, request,
-                                              SNMP_NOSUCHINSTANCE);
-                    continue;
-                }
-                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstSystemPowerStatus);
-                break;
-            case COLUMN_PSTSYSTEMPOWERVOLTAGE:
+            case COLUMN_PSTSYSTEMPOWERMAXIMUMCONSUMPTION:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage,
-                                          table_entry->pstSystemPowerVoltage_len);
+                                          table_entry->pstSystemPowerMaximumConsumption,
+                                          table_entry->pstSystemPowerMaximumConsumption_len);
                 break;
-            case COLUMN_PSTSYSTEMPOWERCURRENT:
+            case COLUMN_PSTSYSTEMPOWERVOLTAGE12VA:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerCurrent,
-                                          table_entry->pstSystemPowerCurrent_len);
+                                          table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGE12VB:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltage12VB,
+                                          table_entry->pstSystemPowerVoltage12VB_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGE12VFAN:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltage12VFAN,
+                                          table_entry->pstSystemPowerVoltage12VFAN_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGE12VOTDR1:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltage12VOTDR1,
+                                          table_entry->pstSystemPowerVoltage12VOTDR1_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGE12VOTDR2:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltage12VOTDR2,
+                                          table_entry->pstSystemPowerVoltage12VOTDR2_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGEVDD5V:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltageVDD5V,
+                                          table_entry->pstSystemPowerVoltageVDD5V_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGEVDD3V3:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltageVDD3V3,
+                                          table_entry->pstSystemPowerVoltageVDD3V3_len);
+                break;
+            case COLUMN_PSTSYSTEMPOWERVOLTAGE1V8RTC:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstSystemPowerVoltage1V8RTC,
+                                          table_entry->pstSystemPowerVoltage1V8RTC_len);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,

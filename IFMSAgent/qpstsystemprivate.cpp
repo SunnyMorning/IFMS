@@ -1,6 +1,8 @@
 #include "qpstsystemprivate.h"
 
 #include "qagentapp.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 QPSTSystemPrivate::QPSTSystemPrivate(QObject *parent) : QObject(parent)
 {
@@ -92,11 +94,14 @@ void QPSTSystemPrivate::init_pstData()
     }
 
     Status.pstSystemPowerTotalNum = NUMBER_OF_POWERS;
+    QString  powerIndex;
+
     for(i=0;i<NUMBER_OF_POWERS;i++){
-        power.pstSystemPowerIndex = i+1;
+        powerIndex = QString("%1").arg(i);
+        strcpy(power.pstSystemPowerIndex, powerIndex.toLatin1().data());
 //        power.pstSystemPowerCurrent = "1";
 //        power.pstSystemPowerVoltage = "12";
-        power.pstSystemPowerStatus = 0;
+//        power.pstSystemPowerStatus = 0;
         Status.pstSystemPowerTable.push_back(power);
     }
 

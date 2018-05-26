@@ -41,24 +41,24 @@ typedef struct  _pstSystemVerInfo
         char* devMacAddress;
 }pstSystemVerInfo;
 
-typedef struct pstSystemTrapTargetTable_entry{
-		/* Index values */
-		char pstSystemTrapTargetName[NNN];
-		size_t pstSystemTrapTargetName_len;
-	
-		/* Column values */
-		in_addr_t pstSystemTrapTargetIpAddr;
-		in_addr_t old_pstSystemTrapTargetIpAddr;
-		char pstSystemTrapTargetCommunity[NNN];
-		size_t pstSystemTrapTargetCommunity_len;
-		char old_pstSystemTrapTargetCommunity[NNN];
-		size_t old_pstSystemTrapTargetCommunity_len;
-		long pstSystemTrapTargetTrapVersion;
-		long old_pstSystemTrapTargetTrapVersion;
-		long pstSystemTrapTargetRowStatus;
-		long old_pstSystemTrapTargetRowStatus;
-	
-		int   valid;
+typedef struct pstSystemTrapTargetTable_entry {
+    /* Index values */
+    char pstSystemTrapTargetName[NNN];
+    size_t pstSystemTrapTargetName_len;
+
+    /* Column values */
+    in_addr_t pstSystemTrapTargetIpAddr;
+    in_addr_t old_pstSystemTrapTargetIpAddr;
+    char pstSystemTrapTargetCommunity[NNN];
+    size_t pstSystemTrapTargetCommunity_len;
+    char old_pstSystemTrapTargetCommunity[NNN];
+    size_t old_pstSystemTrapTargetCommunity_len;
+    long pstSystemTrapTargetTrapVersion;
+    long old_pstSystemTrapTargetTrapVersion;
+    long pstSystemTrapTargetRowStatus;
+    long old_pstSystemTrapTargetRowStatus;
+
+    int   valid;
 }pstSystemTrapTargetEntry;
 
 
@@ -69,12 +69,12 @@ typedef struct _pstSystemTrapInfo
     vector<pstSystemTrapTargetEntry>   pstSystemTrapTargetTable;
 }pstSystemTrapInfo;
 
-typedef struct pstSystemFanTable_entry{
+typedef struct pstSystemFanTable_entry {
     /* Index values */
-//    long pstSystemFanIndex;
+    long pstSystemFanIndex;
 
     /* Column values */
-    long pstSystemFanIndex;
+//    long pstSystemFanIndex;
     long pstSystemFanStatus;
     long pstSystemFanSpeed;
 
@@ -82,18 +82,33 @@ typedef struct pstSystemFanTable_entry{
 }pstSystemFanEntry;
 
 typedef struct pstSystemPowerTable_entry {
-		 /* Index values */
-//		 long pstSystemPowerIndex;
-	 
-		 /* Column values */
-		 long pstSystemPowerIndex;
-		 long pstSystemPowerStatus;
-		 char pstSystemPowerVoltage[NNN];
-		 size_t pstSystemPowerVoltage_len;
-		 char pstSystemPowerCurrent[NNN];
-		 size_t pstSystemPowerCurrent_len;
-	 
-		 int   valid;
+    /* Index values */
+    char pstSystemPowerIndex[NNN];
+    size_t pstSystemPowerIndex_len;
+
+    /* Column values */
+//    char pstSystemPowerIndex[NNN];
+//    size_t pstSystemPowerIndex_len;
+    char pstSystemPowerMaximumConsumption[NNN];
+    size_t pstSystemPowerMaximumConsumption_len;
+    char pstSystemPowerVoltage12VA[NNN];
+    size_t pstSystemPowerVoltage12VA_len;
+    char pstSystemPowerVoltage12VB[NNN];
+    size_t pstSystemPowerVoltage12VB_len;
+    char pstSystemPowerVoltage12VFAN[NNN];
+    size_t pstSystemPowerVoltage12VFAN_len;
+    char pstSystemPowerVoltage12VOTDR1[NNN];
+    size_t pstSystemPowerVoltage12VOTDR1_len;
+    char pstSystemPowerVoltage12VOTDR2[NNN];
+    size_t pstSystemPowerVoltage12VOTDR2_len;
+    char pstSystemPowerVoltageVDD5V[NNN];
+    size_t pstSystemPowerVoltageVDD5V_len;
+    char pstSystemPowerVoltageVDD3V3[NNN];
+    size_t pstSystemPowerVoltageVDD3V3_len;
+    char pstSystemPowerVoltage1V8RTC[NNN];
+    size_t pstSystemPowerVoltage1V8RTC_len;
+
+    int   valid;
 }pstSystemPowerEntry;
 
 typedef struct  _pstSystemStatus
@@ -125,14 +140,6 @@ typedef struct _pstSystemProductInfo
     long pstSystemProductType;
 }pstSystemProductInfo;
 
-//typedef struct _pstSystem{
-//    pstSystemBasicManagement  BasicManagement;
-//    pstSystemVerInfo  VerInfo;
-//    pstSystemTrapInfo  TrapInfo;
-//    pstSystemStatus  Status;
-//    pstSystemOnlineUpgrade  OnlineUpgrade;
-//    pstSystemProductInfo  ProductInfo;
-//}pstSystem;
 
 class QPSTSystemPrivate : public QObject
 {

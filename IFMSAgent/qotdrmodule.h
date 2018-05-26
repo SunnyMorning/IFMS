@@ -82,7 +82,7 @@ public:
 
     enum TCPConnectionState
     {
-        STATE_TCP_INIT = 0,                 // 初始状态
+        STATE_TCP_INIT = 0,             // 初始状态
         STATE_TCP_CONNECTING,           // 正在进行TCP连接
         STATE_TCP_CONNECTED,            // TCP连接成功
         STATE_TCP_DISCONNECTING,        // 正在断开TCP连接

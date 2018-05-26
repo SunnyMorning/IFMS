@@ -16,6 +16,7 @@
 #include "qotdrmodule.h"
 #include "qagentapp.h"
 #include "qsorfilebase.h"
+#include "qpst.h"
 
 static QMutex   gOTDRModule_mutex;
 
@@ -455,7 +456,7 @@ void QOTDRModule::onRecvResponse(quint16 module, QString &cmdline, QByteArray &d
             sorfile._channel = _moduleIndex*4+ch;
             filename = QFingerData::getIFMSFingerFileName(sorfile._channel);
 //TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
-            quint32  OSRLen = length - 5;
+            quint32  OSRLen = length - 4;
 //            memcpy(&OSRLen, data.mid(1,4).data(), sizeof(OSRLen));
 
             QByteArray  OSRRawData = data.mid(4);
@@ -544,7 +545,8 @@ void QOTDRModule::onOTDRChanged(quint16 module, quint16 channel)
     }
 
     QByteArray  data = generateOTDRTrapData(module, channel);
-    emit this->sigOTDRTrap(module, data);
+//    emit this->sigOTDRTrap(module, data);
+    emit QPST::getInstance()->sigOTDRTrap(module, data);
 }
 
 void QOTDRModule::onSigOTDRSetMode(quint16 mode)

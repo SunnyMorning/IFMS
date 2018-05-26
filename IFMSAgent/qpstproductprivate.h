@@ -31,6 +31,7 @@ typedef struct pstIFMS1000PortInfoTable_entry {
     long pstIFMS1000PortWorkMode;
     long old_pstIFMS1000PortWorkMode;
     long pstIFMS1000PortActive;
+    long old_pstIFMS1000PortActive;
     long pstIFMS1000PortFiberAppType;
     long old_pstIFMS1000PortFiberAppType;
     long pstIFMS1000PortRunningStatus;
@@ -63,15 +64,75 @@ typedef struct pstIFMS1000MeasureTable_entry {
     long pstIFMS1000MeasureStatus;
     long pstIFMS1000MeasureAction;
     long old_pstIFMS1000MeasureAction;
-    char pstIFMS1000MeasureResultFile[NNN];
-    size_t pstIFMS1000MeasureResultFile_len;
-    char pstIFMS1000MeasureResultRawDataFile[NNN];
-    size_t pstIFMS1000MeasureResultRawDataFile_len;
+    char pstIFMS1000MeasurePulseWidth[NNN];
+    size_t pstIFMS1000MeasurePulseWidth_len;
+    char old_pstIFMS1000MeasurePulseWidth[NNN];
+    size_t old_pstIFMS1000MeasurePulseWidth_len;
+    long pstIFMS1000MeasureTime;
+    long old_pstIFMS1000MeasureTime;
     long pstIFMS1000MeasureProgressStatus;
-    char pstIFMS1000MeasureResultRawPointFile[NNN];
-    size_t pstIFMS1000MeasureResultRawPointFile_len;
-    char old_pstIFMS1000MeasureResultRawPointFile[NNN];
-    size_t old_pstIFMS1000MeasureResultRawPointFile_len;
+    char pstIFMS1000MeasureTLOS[NNN];
+    size_t pstIFMS1000MeasureTLOS_len;
+    char old_pstIFMS1000MeasureTLOS[NNN];
+    size_t old_pstIFMS1000MeasureTLOS_len;
+    char pstIFMS1000MeasureTREF[NNN];
+    size_t pstIFMS1000MeasureTREF_len;
+    char old_pstIFMS1000MeasureTREF[NNN];
+    size_t old_pstIFMS1000MeasureTREF_len;
+    char pstIFMS1000MeasureFiberLengthChangeThreshold[NNN];
+    size_t pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+    char old_pstIFMS1000MeasureFiberLengthChangeThreshold[NNN];
+    size_t old_pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+    char pstIFMS1000MeasureEndToEndLossCriticalThreshold[NNN];
+    size_t pstIFMS1000MeasureEndToEndLossCriticalThreshold_len;
+    char old_pstIFMS1000MeasureEndToEndLossCriticalThreshold[NNN];
+    size_t old_pstIFMS1000MeasureEndToEndLossCriticalThreshold_len;
+    char pstIFMS1000MeasureEndToEndLossMajorThreshold[NNN];
+    size_t pstIFMS1000MeasureEndToEndLossMajorThreshold_len;
+    char old_pstIFMS1000MeasureEndToEndLossMajorThreshold[NNN];
+    size_t old_pstIFMS1000MeasureEndToEndLossMajorThreshold_len;
+    char pstIFMS1000MeasureEndToEndLossMinorThreshold[NNN];
+    size_t pstIFMS1000MeasureEndToEndLossMinorThreshold_len;
+    char old_pstIFMS1000MeasureEndToEndLossMinorThreshold[NNN];
+    size_t old_pstIFMS1000MeasureEndToEndLossMinorThreshold_len;
+    char pstIFMS1000MeasureNewLossCriticalThreshold[NNN];
+    size_t pstIFMS1000MeasureNewLossCriticalThreshold_len;
+    char old_pstIFMS1000MeasureNewLossCriticalThreshold[NNN];
+    size_t old_pstIFMS1000MeasureNewLossCriticalThreshold_len;
+    char pstIFMS1000MeasureNewLossMajorThreshold[NNN];
+    size_t pstIFMS1000MeasureNewLossMajorThreshold_len;
+    char old_pstIFMS1000MeasureNewLossMajorThreshold[NNN];
+    size_t old_pstIFMS1000MeasureNewLossMajorThreshold_len;
+    char pstIFMS1000MeasureNewLossMinorThreshold[NNN];
+    size_t pstIFMS1000MeasureNewLossMinorThreshold_len;
+    char old_pstIFMS1000MeasureNewLossMinorThreshold[NNN];
+    size_t old_pstIFMS1000MeasureNewLossMinorThreshold_len;
+    char pstIFMS1000MeasureOldLossCriticalThreshold[NNN];
+    size_t pstIFMS1000MeasureOldLossCriticalThreshold_len;
+    char old_pstIFMS1000MeasureOldLossCriticalThreshold[NNN];
+    size_t old_pstIFMS1000MeasureOldLossCriticalThreshold_len;
+    char pstIFMS1000MeasureOldLossMajorThreshold[NNN];
+    size_t pstIFMS1000MeasureOldLossMajorThreshold_len;
+    char old_pstIFMS1000MeasureOldLossMajorThreshold[NNN];
+    size_t old_pstIFMS1000MeasureOldLossMajorThreshold_len;
+    char pstIFMS1000MeasureOldLossMinorThreshold[NNN];
+    size_t pstIFMS1000MeasureOldLossMinorThreshold_len;
+    char old_pstIFMS1000MeasureOldLossMinorThreshold[NNN];
+    size_t old_pstIFMS1000MeasureOldLossMinorThreshold_len;
+    char pstIFMS1000MeasureTempHighThreshold[NNN];
+    size_t pstIFMS1000MeasureTempHighThreshold_len;
+    char old_pstIFMS1000MeasureTempHighThreshold[NNN];
+    size_t old_pstIFMS1000MeasureTempHighThreshold_len;
+    char pstIFMS1000MeasureTempLowThreshold[NNN];
+    size_t pstIFMS1000MeasureTempLowThreshold_len;
+    char old_pstIFMS1000MeasureTempLowThreshold[NNN];
+    size_t old_pstIFMS1000MeasureTempLowThreshold_len;
+    char pstIFMS1000MeasureNumber[NNN];
+    size_t pstIFMS1000MeasureNumber_len;
+    char pstIFMS1000MeasureNumberSORStoredEachChannel[NNN];
+    size_t pstIFMS1000MeasureNumberSORStoredEachChannel_len;
+    char old_pstIFMS1000MeasureNumberSORStoredEachChannel[NNN];
+    size_t old_pstIFMS1000MeasureNumberSORStoredEachChannel_len;
 
     int   valid;
 }pstIFMS1000MeasureEntry;
@@ -262,32 +323,32 @@ struct pstIFMS1000DiagnoseTable_entry {
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000DebugRegTable_entry {
-/* Index values */
-long pstIFMS1000DbPortNum;
+    /* Index values */
+    long pstIFMS1000DbPortNum;
 
-/* Column values */
+    /* Column values */
 //    long pstIFMS1000DbPortNum;
-long pstIFMS1000DbRegAddr;
-long old_pstIFMS1000DbRegAddr;
-long pstIFMS1000DbRegValue;
-long old_pstIFMS1000DbRegValue;
+    long pstIFMS1000DbRegAddr;
+    long old_pstIFMS1000DbRegAddr;
+    long pstIFMS1000DbRegValue;
+    long old_pstIFMS1000DbRegValue;
 
-int   valid;
+    int   valid;
 };
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000DebugDACTable_entry {
-/* Index values */
-long pstIFMS1000DacTPortNum;
+    /* Index values */
+    long pstIFMS1000DacTPortNum;
 
-/* Column values */
+    /* Column values */
 //    long pstIFMS1000DacTPortNum;
-long pstIFMS1000DacTChannelNum;
-long old_pstIFMS1000DacTChannelNum;
-long pstIFMS1000TDacValue;
-long old_pstIFMS1000TDacValue;
+    long pstIFMS1000DacTChannelNum;
+    long old_pstIFMS1000DacTChannelNum;
+    long pstIFMS1000TDacValue;
+    long old_pstIFMS1000TDacValue;
 
-int   valid;
+    int   valid;
 };
 
     /* Typical data structure for a row entry */
@@ -320,168 +381,167 @@ struct pstIFMS1000ExtendAlarmTable_entry {
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ExpertExtendTable_entry {
-/* Index values */
-long pstIFMS1000EEPortNum;
+    /* Index values */
+    long pstIFMS1000EEPortNum;
 
-/* Column values */
+    /* Column values */
 //    long pstIFMS1000EEPortNum;
-char pstIFMS1000DgPBias1[NNN];
-size_t pstIFMS1000DgPBias1_len;
-char old_pstIFMS1000DgPBias1[NNN];
-size_t old_pstIFMS1000DgPBias1_len;
-char pstIFMS1000DgPBias2[NNN];
-size_t pstIFMS1000DgPBias2_len;
-char old_pstIFMS1000DgPBias2[NNN];
-size_t old_pstIFMS1000DgPBias2_len;
-char pstIFMS1000DgPModulation1[NNN];
-size_t pstIFMS1000DgPModulation1_len;
-char old_pstIFMS1000DgPModulation1[NNN];
-size_t old_pstIFMS1000DgPModulation1_len;
-char pstIFMS1000DgPModulation2[NNN];
-size_t pstIFMS1000DgPModulation2_len;
-char old_pstIFMS1000DgPModulation2[NNN];
-size_t old_pstIFMS1000DgPModulation2_len;
-long pstIFMS1000DgPBackScatter;
-long old_pstIFMS1000DgPBackScatter;
-char pstIFMS1000DgPMeasureDeltaThld[NNN];
-size_t pstIFMS1000DgPMeasureDeltaThld_len;
-char old_pstIFMS1000DgPMeasureDeltaThld[NNN];
-size_t old_pstIFMS1000DgPMeasureDeltaThld_len;
-char pstIFMS1000DgPCutPointThld[NNN];
-size_t pstIFMS1000DgPCutPointThld_len;
-char old_pstIFMS1000DgPCutPointThld[NNN];
-size_t old_pstIFMS1000DgPCutPointThld_len;
-char pstIFMS1000DgPMFactor[NNN];
-size_t pstIFMS1000DgPMFactor_len;
-char old_pstIFMS1000DgPMFactor[NNN];
-size_t old_pstIFMS1000DgPMFactor_len;
-char pstIFMS1000DgFaultCriticalThld[NNN];
-size_t pstIFMS1000DgFaultCriticalThld_len;
-char old_pstIFMS1000DgFaultCriticalThld[NNN];
-size_t old_pstIFMS1000DgFaultCriticalThld_len;
-char pstIFMS1000DgFaultMajorThld[NNN];
-size_t pstIFMS1000DgFaultMajorThld_len;
-char old_pstIFMS1000DgFaultMajorThld[NNN];
-size_t old_pstIFMS1000DgFaultMajorThld_len;
-char pstIFMS1000DgFaultMinorThld[NNN];
-size_t pstIFMS1000DgFaultMinorThld_len;
-char old_pstIFMS1000DgFaultMinorThld[NNN];
-size_t old_pstIFMS1000DgFaultMinorThld_len;
-char pstIFMS1000DgPAFactor[NNN];
-size_t pstIFMS1000DgPAFactor_len;
-char old_pstIFMS1000DgPAFactor[NNN];
-size_t old_pstIFMS1000DgPAFactor_len;
-char pstIFMS1000DgPBFactor[NNN];
-size_t pstIFMS1000DgPBFactor_len;
-char old_pstIFMS1000DgPBFactor[NNN];
-size_t old_pstIFMS1000DgPBFactor_len;
+    char pstIFMS1000DgPBias1[NNN];
+    size_t pstIFMS1000DgPBias1_len;
+    char old_pstIFMS1000DgPBias1[NNN];
+    size_t old_pstIFMS1000DgPBias1_len;
+    char pstIFMS1000DgPBias2[NNN];
+    size_t pstIFMS1000DgPBias2_len;
+    char old_pstIFMS1000DgPBias2[NNN];
+    size_t old_pstIFMS1000DgPBias2_len;
+    char pstIFMS1000DgPModulation1[NNN];
+    size_t pstIFMS1000DgPModulation1_len;
+    char old_pstIFMS1000DgPModulation1[NNN];
+    size_t old_pstIFMS1000DgPModulation1_len;
+    char pstIFMS1000DgPModulation2[NNN];
+    size_t pstIFMS1000DgPModulation2_len;
+    char old_pstIFMS1000DgPModulation2[NNN];
+    size_t old_pstIFMS1000DgPModulation2_len;
+    long pstIFMS1000DgPBackScatter;
+    long old_pstIFMS1000DgPBackScatter;
+    char pstIFMS1000DgPMeasureDeltaThld[NNN];
+    size_t pstIFMS1000DgPMeasureDeltaThld_len;
+    char old_pstIFMS1000DgPMeasureDeltaThld[NNN];
+    size_t old_pstIFMS1000DgPMeasureDeltaThld_len;
+    char pstIFMS1000DgPCutPointThld[NNN];
+    size_t pstIFMS1000DgPCutPointThld_len;
+    char old_pstIFMS1000DgPCutPointThld[NNN];
+    size_t old_pstIFMS1000DgPCutPointThld_len;
+    char pstIFMS1000DgPMFactor[NNN];
+    size_t pstIFMS1000DgPMFactor_len;
+    char old_pstIFMS1000DgPMFactor[NNN];
+    size_t old_pstIFMS1000DgPMFactor_len;
+    char pstIFMS1000DgFaultCriticalThld[NNN];
+    size_t pstIFMS1000DgFaultCriticalThld_len;
+    char old_pstIFMS1000DgFaultCriticalThld[NNN];
+    size_t old_pstIFMS1000DgFaultCriticalThld_len;
+    char pstIFMS1000DgFaultMajorThld[NNN];
+    size_t pstIFMS1000DgFaultMajorThld_len;
+    char old_pstIFMS1000DgFaultMajorThld[NNN];
+    size_t old_pstIFMS1000DgFaultMajorThld_len;
+    char pstIFMS1000DgFaultMinorThld[NNN];
+    size_t pstIFMS1000DgFaultMinorThld_len;
+    char old_pstIFMS1000DgFaultMinorThld[NNN];
+    size_t old_pstIFMS1000DgFaultMinorThld_len;
+    char pstIFMS1000DgPAFactor[NNN];
+    size_t pstIFMS1000DgPAFactor_len;
+    char old_pstIFMS1000DgPAFactor[NNN];
+    size_t old_pstIFMS1000DgPAFactor_len;
+    char pstIFMS1000DgPBFactor[NNN];
+    size_t pstIFMS1000DgPBFactor_len;
+    char old_pstIFMS1000DgPBFactor[NNN];
+    size_t old_pstIFMS1000DgPBFactor_len;
 
-int   valid;
+    int   valid;
 };
 
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000PonConfTable_entry {
-/* Index values */
-u_long pctPortNum;
+    /* Index values */
+    u_long pctPortNum;
 
-/* Column values */
+    /* Column values */
 //    u_long pctPortNum;
-u_long pctSp1LocItem;
-u_long old_pctSp1LocItem;
+    u_long pctSp1LocItem;
+    u_long old_pctSp1LocItem;
 
-int   valid;
+    int   valid;
 };
 
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ParamsV32TotalNumTable_entry {
-/* Index values */
-long v32TPortNum;
+    /* Index values */
+    long v32TPortNum;
 
-/* Column values */
+    /* Column values */
 //    long v32TPortNum;
-long v32PortTotalNum;
+    long v32PortTotalNum;
 
-int   valid;
+    int   valid;
 };
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ParamsV32NameTable_entry {
-/* Index values */
-long v32PortNum;
-long v32ParamNameNum;
+    /* Index values */
+    long v32PortNum;
+    long v32ParamNameNum;
 
-/* Column values */
-//    long v32PortNum;
-//    long v32ParamNameNum;
-char v32ParamName[NNN];
-size_t v32ParamName_len;
+    /* Column values */
+    //    long v32PortNum;
+    //    long v32ParamNameNum;
+    char v32ParamName[NNN];
+    size_t v32ParamName_len;
 
-int   valid;
+    int   valid;
 };
 
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ParamsV32ValTable_entry {
-/* Index values */
-long v32ValPortNum;
-long v32ParamValNum;
+    /* Index values */
+    long v32ValPortNum;
+    long v32ParamValNum;
 
-/* Column values */
-//    long v32ValPortNum;
-//    long v32ParamValNum;
-u_long v32ParamVal;
-u_long old_v32ParamVal;
+    /* Column values */
+    //    long v32ValPortNum;
+    //    long v32ParamValNum;
+    u_long v32ParamVal;
+    u_long old_v32ParamVal;
 
-int   valid;
+    int   valid;
 };
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ParamsS32TotalNumTable_entry {
-/* Index values */
-long s32TPortNum;
+    /* Index values */
+    long s32TPortNum;
 
-/* Column values */
-//    long s32TPortNum;
-long s32PortTotalNum;
+    /* Column values */
+    //    long s32TPortNum;
+    long s32PortTotalNum;
 
-int   valid;
+    int   valid;
 };
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ParamsS32NameTable_entry {
-/* Index values */
-long s32PortNum;
-long s32ParamNameNum;
+    /* Index values */
+    long s32PortNum;
+    long s32ParamNameNum;
 
-/* Column values */
-//    long s32PortNum;
-//    long s32ParamNameNum;
-char s32ParamNameVal[NNN];
-size_t s32ParamNameVal_len;
+    /* Column values */
+    //    long s32PortNum;
+    //    long s32ParamNameNum;
+    char s32ParamNameVal[NNN];
+    size_t s32ParamNameVal_len;
 
-int   valid;
+    int   valid;
 };
 
 
 /* Typical data structure for a row entry */
 struct pstIFMS1000ParamsS32ValTable_entry {
-/* Index values */
-long s32ValPortNum;
-long s32ParamValNum;
+    /* Index values */
+    long s32ValPortNum;
+    long s32ParamValNum;
 
-/* Column values */
-//    long s32ValPortNum;
-//    long s32ParamValNum;
-char s32ParamVal[NNN];
-size_t s32ParamVal_len;
-char old_s32ParamVal[NNN];
-size_t old_s32ParamVal_len;
+    /* Column values */
+    //    long s32ValPortNum;
+    //    long s32ParamValNum;
+    char s32ParamVal[NNN];
+    size_t s32ParamVal_len;
+    char old_s32ParamVal[NNN];
+    size_t old_s32ParamVal_len;
 
-int   valid;
+    int   valid;
 };
-
 
 
 class QPSTProductPrivate : public QObject

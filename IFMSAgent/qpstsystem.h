@@ -31,9 +31,15 @@ static QMutex   gPSTSystem_mutex;
 
 /* column number definitions for table pstSystemPowerTable */
        #define COLUMN_PSTSYSTEMPOWERINDEX		1
-       #define COLUMN_PSTSYSTEMPOWERSTATUS		2
-       #define COLUMN_PSTSYSTEMPOWERVOLTAGE		3
-       #define COLUMN_PSTSYSTEMPOWERCURRENT		4
+       #define COLUMN_PSTSYSTEMPOWERMAXIMUMCONSUMPTION		2
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGE12VA		3
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGE12VB		4
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGE12VFAN		5
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGE12VOTDR1		6
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGE12VOTDR2		7
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGEVDD5V		8
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGEVDD3V3		9
+       #define COLUMN_PSTSYSTEMPOWERVOLTAGE1V8RTC		10
 
 class QPSTSystem : public QObject
 {
@@ -82,20 +88,6 @@ static Netsnmp_Node_Handler pstSystemPowerTable_handler;
 signals:
 
 public slots:
-//QString get_devName();
-//void    set_devName(QString name);
-//QString get_devIpAddr();
-//void    set_devIpAddr(QString ip);
-//QString get_devGateway();
-//void    set_devGateway(QString gw);
-//QString get_devNetMask();
-//void    set_devNetMask(QString msk);
-//long    get_saveCurrentConfiguration();
-//void    set_saveCurrentConfiguration(long cfg);
-//long    get_reset2Factory();
-//void    set_reset2Factory(long rf);
-//long    get_reboot();
-//void    set_reboot(long rb);
 
 private:
 

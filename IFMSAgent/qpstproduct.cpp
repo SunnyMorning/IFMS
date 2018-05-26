@@ -53,7 +53,7 @@ void QPSTProduct::init_pstIFMS1000()
     const oid pstIFMS1000SysLedPW1_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,1 };
     const oid pstIFMS1000SysLedPW2_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,2 };
     const oid pstIFMS1000SysLedStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,3 };
-    const oid pstIFMS1000BootMode_oid[] = { 1,3,6,1,4,1,48391,3,5,11,1,0 };
+    const oid pstIFMS1000BootMode_oid[] = { 1,3,6,1,4,1,48391,3,5,11,1 };
     const oid pstIFMS1000SwitchModuleNum_oid[] = { 1,3,6,1,4,1,48391,3,5,17,1 };
     const oid pstIFMS1000SwitchInterval_oid[] = { 1,3,6,1,4,1,48391,3,5,17,2 };
     const oid pstIFMS1000SwitchCurrentPort_oid[] = { 1,3,6,1,4,1,48391,3,5,17,3 };
@@ -299,12 +299,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -312,28 +312,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -408,12 +408,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -421,28 +421,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -518,12 +518,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -531,28 +531,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -598,12 +598,12 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
         case MODE_SET_FREE:
             /* XXX: free resources allocated in RESERVE1 and/or
@@ -611,28 +611,28 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
                below won't be called. */
             break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -678,41 +678,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -761,41 +761,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -841,41 +841,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -921,41 +921,41 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
             }
             break;
 
-//        case MODE_SET_RESERVE2:
-//            /* XXX malloc "undo" storage buffer */
-//            if (/* XXX if malloc, or whatever, failed: */) {
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
-//            }
-//            break;
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
 
-//        case MODE_SET_FREE:
-//            /* XXX: free resources allocated in RESERVE1 and/or
-//               RESERVE2.  Something failed somewhere, and the states
-//               below won't be called. */
-//            break;
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
 
-//        case MODE_SET_ACTION:
-//            /* XXX: perform the value change here */
-//            if (/* XXX: error? */) {
-//                netsnmp_set_request_error(reqinfo, requests, /* some error */);
-//            }
-//            break;
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
 
-//        case MODE_SET_COMMIT:
-//            /* XXX: delete temporary storage */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
-//            }
-//            break;
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
 
-//        case MODE_SET_UNDO:
-//            /* XXX: UNDO and return to previous value for the object */
-//            if (/* XXX: error? */) {
-//                /* try _really_really_ hard to never get to this point */
-//                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
-//            }
-//            break;
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1057,6 +1057,67 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 }
 
 // Table
+/** Initialize the pstIFMS1000PortInfoTable table by defining its contents and how it's structured */
+void
+QPSTProduct::initialize_table_pstIFMS1000PortInfoTable(void)
+{
+    const oid pstIFMS1000PortInfoTable_oid[] = {1,3,6,1,4,1,48391,3,5,1};
+    const size_t pstIFMS1000PortInfoTable_oid_len   = OID_LENGTH(pstIFMS1000PortInfoTable_oid);
+    netsnmp_handler_registration    *reg;
+    netsnmp_tdata                   *table_data;
+    netsnmp_table_registration_info *table_info;
+
+    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000PortInfoTable\n"));
+
+    reg = netsnmp_create_handler_registration(
+              "pstIFMS1000PortInfoTable",     pstIFMS1000PortInfoTable_handler,
+              pstIFMS1000PortInfoTable_oid, pstIFMS1000PortInfoTable_oid_len,
+              HANDLER_CAN_RWRITE
+              );
+
+    table_data = netsnmp_tdata_create_table( "pstIFMS1000PortInfoTable", 0 );
+    if (NULL == table_data) {
+        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000PortInfoTable\n");
+        return;
+    }
+    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
+    if (NULL == table_info) {
+        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000PortInfoTable\n");
+        return;
+    }
+    netsnmp_table_helper_add_indexes(table_info,
+                           ASN_INTEGER,  /* index: pstIFMS1000PortNum */
+                           0);
+
+    table_info->min_column = COLUMN_PSTIFMS1000PORTNUM;
+    table_info->max_column = COLUMN_PSTIFMS1000PORTRUNNINGSTATUS;
+    
+    netsnmp_tdata_register( reg, table_data, table_info );
+
+    /* Initialise the contents of the table here */
+}
+
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000PortInfoTable_entry {
+//    /* Index values */
+//    long pstIFMS1000PortNum;
+
+//    /* Column values */
+//    long pstIFMS1000PortNum;
+//    char pstIFMS1000PortRxPwr[NNN];
+//    size_t pstIFMS1000PortRxPwr_len;
+//    char pstIFMS1000PortTxPwr[NNN];
+//    size_t pstIFMS1000PortTxPwr_len;
+//    long pstIFMS1000PortWorkMode;
+//    long old_pstIFMS1000PortWorkMode;
+//    long pstIFMS1000PortActive;
+//    long old_pstIFMS1000PortActive;
+//    long pstIFMS1000PortFiberAppType;
+//    long old_pstIFMS1000PortFiberAppType;
+//    long pstIFMS1000PortRunningStatus;
+
+//    int   valid;
+//};
 
 /* create a new row in the table */
 static netsnmp_tdata_row *
@@ -1107,955 +1168,7 @@ pstIFMS1000PortInfoTable_removeEntry(netsnmp_tdata     *table_data,
         netsnmp_tdata_delete_row( row );    
 }
 
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000MeasureTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000MTPortNum
-                ) {
-    struct pstIFMS1000MeasureTable_entry *entry;
-    netsnmp_tdata_row *row;
 
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000MeasureTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000MeasureTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000MTPortNum = pstIFMS1000MTPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000MTPortNum),
-                                 sizeof(entry->pstIFMS1000MTPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000MeasureTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000MeasureTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000MeasureTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000FingerTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000FTPortNum
-                ) {
-    struct pstIFMS1000FingerTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000FingerTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000FingerTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000FTPortNum = pstIFMS1000FTPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000FTPortNum),
-                                 sizeof(entry->pstIFMS1000FTPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000FingerTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000FingerTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000FingerTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000FingerTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000DiffTotalTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000DtPortNum
-                ) {
-    struct pstIFMS1000DiffTotalTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiffTotalTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000DiffTotalTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000DtPortNum = pstIFMS1000DtPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DtPortNum),
-                                 sizeof(entry->pstIFMS1000DtPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000DiffTotalTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000DiffTotalTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000DiffTotalTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000DiffTotalTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000DiffInfoTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000DiffInfoPortNum
-                 , long  pstIFMS1000DiffInfoPortItemIndex
-                ) {
-    struct pstIFMS1000DiffInfoTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiffInfoTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000DiffInfoTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000DiffInfoPortNum = pstIFMS1000DiffInfoPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DiffInfoPortNum),
-                                 sizeof(entry->pstIFMS1000DiffInfoPortNum));
-    entry->pstIFMS1000DiffInfoPortItemIndex = pstIFMS1000DiffInfoPortItemIndex;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DiffInfoPortItemIndex),
-                                 sizeof(entry->pstIFMS1000DiffInfoPortItemIndex));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000DiffInfoTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000DiffInfoTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000DiffInfoTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000DiffInfoTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000PortLedTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000PortLedPortNum
-                ) {
-    struct pstIFMS1000PortLedTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PortLedTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000PortLedTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000PortLedPortNum = pstIFMS1000PortLedPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000PortLedPortNum),
-                                 sizeof(entry->pstIFMS1000PortLedPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000PortLedTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000PortLedTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000PortLedTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000PortLedTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000DiagnoseTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000DgPortNum
-                ) {
-    struct pstIFMS1000DiagnoseTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiagnoseTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000DiagnoseTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000DgPortNum = pstIFMS1000DgPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DgPortNum),
-                                 sizeof(entry->pstIFMS1000DgPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000DiagnoseTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000DiagnoseTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000DiagnoseTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000DiagnoseTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000DebugRegTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000DbPortNum
-                ) {
-    struct pstIFMS1000DebugRegTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugRegTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000DebugRegTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000DbPortNum = pstIFMS1000DbPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DbPortNum),
-                                 sizeof(entry->pstIFMS1000DbPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000DebugRegTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000DebugRegTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000DebugRegTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000DebugRegTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000DebugDACTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000DacTPortNum
-                ) {
-    struct pstIFMS1000DebugDACTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugDACTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000DebugDACTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000DacTPortNum = pstIFMS1000DacTPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DacTPortNum),
-                                 sizeof(entry->pstIFMS1000DacTPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-void
-static pstIFMS1000DebugDACTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000DebugDACTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000DebugDACTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000DebugDACTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000DebugE2promTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000DbE2TPortNum
-                ) {
-    struct pstIFMS1000DebugE2promTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugE2promTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000DebugE2promTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000DbE2TPortNum = pstIFMS1000DbE2TPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000DbE2TPortNum),
-                                 sizeof(entry->pstIFMS1000DbE2TPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000DebugE2promTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000DebugE2promTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000DebugE2promTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000DebugE2promTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ExtendAlarmTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000EAPortNum
-                ) {
-    struct pstIFMS1000ExtendAlarmTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ExtendAlarmTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ExtendAlarmTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000EAPortNum = pstIFMS1000EAPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000EAPortNum),
-                                 sizeof(entry->pstIFMS1000EAPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-void
-static pstIFMS1000ExtendAlarmTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ExtendAlarmTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ExtendAlarmTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ExtendAlarmTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ExpertExtendTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000EEPortNum
-                ) {
-    struct pstIFMS1000ExpertExtendTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ExpertExtendTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ExpertExtendTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000EEPortNum = pstIFMS1000EEPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000EEPortNum),
-                                 sizeof(entry->pstIFMS1000EEPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ExpertExtendTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ExpertExtendTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ExpertExtendTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ExpertExtendTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000PonConfTable_createEntry(netsnmp_tdata *table_data
-                 , u_long  pctPortNum
-                ) {
-    struct pstIFMS1000PonConfTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PonConfTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000PonConfTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pctPortNum = pctPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_UNSIGNED,
-                                 &(entry->pctPortNum),
-                                 sizeof(entry->pctPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000PonConfTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000PonConfTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000PonConfTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000PonConfTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ParamsV32TotalNumTable_createEntry(netsnmp_tdata *table_data
-                 , long  v32TPortNum
-                ) {
-    struct pstIFMS1000ParamsV32TotalNumTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32TotalNumTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ParamsV32TotalNumTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->v32TPortNum = v32TPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->v32TPortNum),
-                                 sizeof(entry->v32TPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ParamsV32TotalNumTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ParamsV32TotalNumTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ParamsV32TotalNumTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ParamsV32TotalNumTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ParamsV32NameTable_createEntry(netsnmp_tdata *table_data
-                 , long  v32PortNum
-                 , long  v32ParamNameNum
-                ) {
-    struct pstIFMS1000ParamsV32NameTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32NameTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ParamsV32NameTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->v32PortNum = v32PortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->v32PortNum),
-                                 sizeof(entry->v32PortNum));
-    entry->v32ParamNameNum = v32ParamNameNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->v32ParamNameNum),
-                                 sizeof(entry->v32ParamNameNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ParamsV32NameTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ParamsV32NameTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ParamsV32NameTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ParamsV32NameTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ParamsV32ValTable_createEntry(netsnmp_tdata *table_data
-                 , long  v32ValPortNum
-                 , long  v32ParamValNum
-                ) {
-    struct pstIFMS1000ParamsV32ValTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32ValTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ParamsV32ValTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->v32ValPortNum = v32ValPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->v32ValPortNum),
-                                 sizeof(entry->v32ValPortNum));
-    entry->v32ParamValNum = v32ParamValNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->v32ParamValNum),
-                                 sizeof(entry->v32ParamValNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ParamsV32ValTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ParamsV32ValTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ParamsV32ValTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ParamsV32ValTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ParamsS32TotalNumTable_createEntry(netsnmp_tdata *table_data
-                 , long  s32TPortNum
-                ) {
-    struct pstIFMS1000ParamsS32TotalNumTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32TotalNumTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ParamsS32TotalNumTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->s32TPortNum = s32TPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->s32TPortNum),
-                                 sizeof(entry->s32TPortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ParamsS32TotalNumTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ParamsS32TotalNumTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ParamsS32TotalNumTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ParamsS32TotalNumTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ParamsS32NameTable_createEntry(netsnmp_tdata *table_data
-                 , long  s32PortNum
-                 , long  s32ParamNameNum
-                ) {
-    struct pstIFMS1000ParamsS32NameTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32NameTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ParamsS32NameTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->s32PortNum = s32PortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->s32PortNum),
-                                 sizeof(entry->s32PortNum));
-    entry->s32ParamNameNum = s32ParamNameNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->s32ParamNameNum),
-                                 sizeof(entry->s32ParamNameNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ParamsS32NameTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ParamsS32NameTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ParamsS32NameTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ParamsS32NameTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000ParamsS32ValTable_createEntry(netsnmp_tdata *table_data
-                 , long  s32ValPortNum
-                 , long  s32ParamValNum
-                ) {
-    struct pstIFMS1000ParamsS32ValTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32ValTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
-    }
-    row->data = entry;
-
-    DEBUGMSGT(("pstIFMS1000ParamsS32ValTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->s32ValPortNum = s32ValPortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->s32ValPortNum),
-                                 sizeof(entry->s32ValPortNum));
-    entry->s32ParamValNum = s32ParamValNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->s32ParamValNum),
-                                 sizeof(entry->s32ParamValNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
-}
-
-/* remove a row from the table */
-static void
-pstIFMS1000ParamsS32ValTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000ParamsS32ValTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000ParamsS32ValTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000ParamsS32ValTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
-/** Initialize the pstIFMS1000PortInfoTable table by defining its contents and how it's structured */
-void
-QPSTProduct::initialize_table_pstIFMS1000PortInfoTable(void)
-{
-    const oid pstIFMS1000PortInfoTable_oid[] = {1,3,6,1,4,1,48391,3,5,1};
-    const size_t pstIFMS1000PortInfoTable_oid_len   = OID_LENGTH(pstIFMS1000PortInfoTable_oid);
-    netsnmp_handler_registration    *reg;
-    netsnmp_tdata                   *table_data;
-    netsnmp_table_registration_info *table_info;
-
-    DEBUGMSGTL(("pstIFMS1000:init", "initializing table pstIFMS1000PortInfoTable\n"));
-
-    reg = netsnmp_create_handler_registration(
-              "pstIFMS1000PortInfoTable",     pstIFMS1000PortInfoTable_handler,
-              pstIFMS1000PortInfoTable_oid, pstIFMS1000PortInfoTable_oid_len,
-              HANDLER_CAN_RWRITE
-              );
-
-    table_data = netsnmp_tdata_create_table( "pstIFMS1000PortInfoTable", 0 );
-    if (NULL == table_data) {
-        snmp_log(LOG_ERR,"error creating tdata table for pstIFMS1000PortInfoTable\n");
-        return;
-    }
-    table_info = SNMP_MALLOC_TYPEDEF( netsnmp_table_registration_info );
-    if (NULL == table_info) {
-        snmp_log(LOG_ERR,"error creating table info for pstIFMS1000PortInfoTable\n");
-        return;
-    }
-    netsnmp_table_helper_add_indexes(table_info,
-                           ASN_INTEGER,  /* index: pstIFMS1000PortNum */
-                           0);
-
-    table_info->min_column = COLUMN_PSTIFMS1000PORTNUM;
-    table_info->max_column = COLUMN_PSTIFMS1000PORTRUNNINGSTATUS;
-    
-    netsnmp_tdata_register( reg, table_data, table_info );
-
-    /* Initialise the contents of the table here */
-}
-
-    /* Typical data structure for a row entry */
 /** handles requests for the pstIFMS1000PortInfoTable table */
 int
 QPSTProduct::pstIFMS1000PortInfoTable_handler(
@@ -2181,6 +1294,14 @@ QPSTProduct::pstIFMS1000PortInfoTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 break;
+            case COLUMN_PSTIFMS1000PORTACTIVE:
+                /* or possibly 'netsnmp_check_vb_int_range' */
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
             case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
                 /* or possibly 'netsnmp_check_vb_int_range' */
                 ret = netsnmp_check_vb_int( request->requestvb );
@@ -2217,6 +1338,10 @@ QPSTProduct::pstIFMS1000PortInfoTable_handler(
                 table_entry->old_pstIFMS1000PortWorkMode = table_entry->pstIFMS1000PortWorkMode;
                 table_entry->pstIFMS1000PortWorkMode     = *request->requestvb->val.integer;
                 break;
+            case COLUMN_PSTIFMS1000PORTACTIVE:
+                table_entry->old_pstIFMS1000PortActive = table_entry->pstIFMS1000PortActive;
+                table_entry->pstIFMS1000PortActive     = *request->requestvb->val.integer;
+                break;
             case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
                 table_entry->old_pstIFMS1000PortFiberAppType = table_entry->pstIFMS1000PortFiberAppType;
                 table_entry->pstIFMS1000PortFiberAppType     = *request->requestvb->val.integer;
@@ -2241,6 +1366,10 @@ QPSTProduct::pstIFMS1000PortInfoTable_handler(
                 table_entry->pstIFMS1000PortWorkMode     = table_entry->old_pstIFMS1000PortWorkMode;
                 table_entry->old_pstIFMS1000PortWorkMode = 0;
                 break;
+            case COLUMN_PSTIFMS1000PORTACTIVE:
+                table_entry->pstIFMS1000PortActive     = table_entry->old_pstIFMS1000PortActive;
+                table_entry->old_pstIFMS1000PortActive = 0;
+                break;
             case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
                 table_entry->pstIFMS1000PortFiberAppType     = table_entry->old_pstIFMS1000PortFiberAppType;
                 table_entry->old_pstIFMS1000PortFiberAppType = 0;
@@ -2254,6 +1383,155 @@ QPSTProduct::pstIFMS1000PortInfoTable_handler(
     }
     return SNMP_ERR_NOERROR;
 }
+	
+	//	  /* Typical data structure for a row entry */
+	//struct pstIFMS1000MeasureTable_entry {
+	//	  /* Index values */
+	//	  long pstIFMS1000MTPortNum;
+	
+	//	  /* Column values */
+	//	  long pstIFMS1000MTPortNum;
+	//	  char pstIFMS1000MeasureStartPosition[NNN];
+	//	  size_t pstIFMS1000MeasureStartPosition_len;
+	//	  char old_pstIFMS1000MeasureStartPosition[NNN];
+	//	  size_t old_pstIFMS1000MeasureStartPosition_len;
+	//	  char pstIFMS1000MeasureEndPosition[NNN];
+	//	  size_t pstIFMS1000MeasureEndPosition_len;
+	//	  char old_pstIFMS1000MeasureEndPosition[NNN];
+	//	  size_t old_pstIFMS1000MeasureEndPosition_len;
+	//	  char pstIFMS1000MeasureRefIndex[NNN];
+	//	  size_t pstIFMS1000MeasureRefIndex_len;
+	//	  char old_pstIFMS1000MeasureRefIndex[NNN];
+	//	  size_t old_pstIFMS1000MeasureRefIndex_len;
+	//	  char pstIFMS1000MeasureResolution[NNN];
+	//	  size_t pstIFMS1000MeasureResolution_len;
+	//	  char old_pstIFMS1000MeasureResolution[NNN];
+	//	  size_t old_pstIFMS1000MeasureResolution_len;
+	//	  long pstIFMS1000MeasureStatus;
+	//	  long pstIFMS1000MeasureAction;
+	//	  long old_pstIFMS1000MeasureAction;
+	//	  char pstIFMS1000MeasurePulseWidth[NNN];
+	//	  size_t pstIFMS1000MeasurePulseWidth_len;
+	//	  char old_pstIFMS1000MeasurePulseWidth[NNN];
+	//	  size_t old_pstIFMS1000MeasurePulseWidth_len;
+	//	  long pstIFMS1000MeasureTime;
+	//	  long old_pstIFMS1000MeasureTime;
+	//	  long pstIFMS1000MeasureProgressStatus;
+	//	  char pstIFMS1000MeasureTLOS[NNN];
+	//	  size_t pstIFMS1000MeasureTLOS_len;
+	//	  char old_pstIFMS1000MeasureTLOS[NNN];
+	//	  size_t old_pstIFMS1000MeasureTLOS_len;
+	//	  char pstIFMS1000MeasureTREF[NNN];
+	//	  size_t pstIFMS1000MeasureTREF_len;
+	//	  char old_pstIFMS1000MeasureTREF[NNN];
+	//	  size_t old_pstIFMS1000MeasureTREF_len;
+	//	  char pstIFMS1000MeasureFiberLengthChangeThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+	//	  char old_pstIFMS1000MeasureFiberLengthChangeThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+	//	  char pstIFMS1000MeasureEndToEndLossCriticalThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureEndToEndLossCriticalThreshold_len;
+	//	  char old_pstIFMS1000MeasureEndToEndLossCriticalThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureEndToEndLossCriticalThreshold_len;
+	//	  char pstIFMS1000MeasureEndToEndLossMajorThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureEndToEndLossMajorThreshold_len;
+	//	  char old_pstIFMS1000MeasureEndToEndLossMajorThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureEndToEndLossMajorThreshold_len;
+	//	  char pstIFMS1000MeasureEndToEndLossMinorThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureEndToEndLossMinorThreshold_len;
+	//	  char old_pstIFMS1000MeasureEndToEndLossMinorThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureEndToEndLossMinorThreshold_len;
+	//	  char pstIFMS1000MeasureNewLossCriticalThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureNewLossCriticalThreshold_len;
+	//	  char old_pstIFMS1000MeasureNewLossCriticalThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureNewLossCriticalThreshold_len;
+	//	  char pstIFMS1000MeasureNewLossMajorThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureNewLossMajorThreshold_len;
+	//	  char old_pstIFMS1000MeasureNewLossMajorThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureNewLossMajorThreshold_len;
+	//	  char pstIFMS1000MeasureNewLossMinorThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureNewLossMinorThreshold_len;
+	//	  char old_pstIFMS1000MeasureNewLossMinorThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureNewLossMinorThreshold_len;
+	//	  char pstIFMS1000MeasureOldLossCriticalThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureOldLossCriticalThreshold_len;
+	//	  char old_pstIFMS1000MeasureOldLossCriticalThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureOldLossCriticalThreshold_len;
+	//	  char pstIFMS1000MeasureOldLossMajorThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureOldLossMajorThreshold_len;
+	//	  char old_pstIFMS1000MeasureOldLossMajorThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureOldLossMajorThreshold_len;
+	//	  char pstIFMS1000MeasureOldLossMinorThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureOldLossMinorThreshold_len;
+	//	  char old_pstIFMS1000MeasureOldLossMinorThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureOldLossMinorThreshold_len;
+	//	  char pstIFMS1000MeasureTempHighThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureTempHighThreshold_len;
+	//	  char old_pstIFMS1000MeasureTempHighThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureTempHighThreshold_len;
+	//	  char pstIFMS1000MeasureTempLowThreshold[NNN];
+	//	  size_t pstIFMS1000MeasureTempLowThreshold_len;
+	//	  char old_pstIFMS1000MeasureTempLowThreshold[NNN];
+	//	  size_t old_pstIFMS1000MeasureTempLowThreshold_len;
+	//	  char pstIFMS1000MeasureNumber[NNN];
+	//	  size_t pstIFMS1000MeasureNumber_len;
+	//	  char pstIFMS1000MeasureNumberSORStoredEachChannel[NNN];
+	//	  size_t pstIFMS1000MeasureNumberSORStoredEachChannel_len;
+	//	  char old_pstIFMS1000MeasureNumberSORStoredEachChannel[NNN];
+	//	  size_t old_pstIFMS1000MeasureNumberSORStoredEachChannel_len;
+	
+	//	  int	valid;
+	//};
+	
+	/* create a new row in the table */
+	static netsnmp_tdata_row *
+	pstIFMS1000MeasureTable_createEntry(netsnmp_tdata *table_data
+					 , long  pstIFMS1000MTPortNum
+					) {
+		struct pstIFMS1000MeasureTable_entry *entry;
+		netsnmp_tdata_row *row;
+	
+		entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000MeasureTable_entry);
+		if (!entry)
+			return NULL;
+	
+		row = netsnmp_tdata_create_row();
+		if (!row) {
+			SNMP_FREE(entry);
+			return NULL;
+		}
+		row->data = entry;
+	
+		DEBUGMSGT(("pstIFMS1000MeasureTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+		entry->pstIFMS1000MTPortNum = pstIFMS1000MTPortNum;
+		netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+									 &(entry->pstIFMS1000MTPortNum),
+									 sizeof(entry->pstIFMS1000MTPortNum));
+		if (table_data)
+			netsnmp_tdata_add_row( table_data, row );
+		return row;
+	}
+	
+	/* remove a row from the table */
+	static void
+	pstIFMS1000MeasureTable_removeEntry(netsnmp_tdata	  *table_data, 
+					 netsnmp_tdata_row *row) {
+		struct pstIFMS1000MeasureTable_entry *entry;
+	
+		if (!row)
+			return;    /* Nothing to remove */
+	
+		DEBUGMSGT(("pstIFMS1000MeasureTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+	
+		entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
+		SNMP_FREE( entry );   /* XXX - release any other internal resources */
+	
+		if (table_data)
+			netsnmp_tdata_remove_and_delete_row( table_data, row );
+		else
+			netsnmp_tdata_delete_row( row );	
+	}
+	
 
 /** Initialize the pstIFMS1000MeasureTable table by defining its contents and how it's structured */
 void
@@ -2288,15 +1566,25 @@ QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
                            0);
 
     table_info->min_column = COLUMN_PSTIFMS1000MTPORTNUM;
-    table_info->max_column = COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE;
+    table_info->max_column = COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL;
     
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+	long i = 0;
+	netsnmp_tdata_row 	*row;
+
+    struct pstIFMS1000MeasureTable_entry		*entry;
+	for(i = 0; i < NUMBER_OF_CHANNES; i++){
+
+
+		row = pstIFMS1000MeasureTable_createEntry(table_data, i);
+        entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
+		entry->valid = 1;
+		entry->pstIFMS1000MeasureAction = 4;
+	}
+
 }
-
-    /* Typical data structure for a row entry */
-
 
 /** handles requests for the pstIFMS1000MeasureTable table */
 int
@@ -2396,25 +1684,24 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
                                             table_entry->pstIFMS1000MeasureAction);
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTFILE:
+            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstIFMS1000MeasureResultFile,
-                                          table_entry->pstIFMS1000MeasureResultFile_len);
+                                          table_entry->pstIFMS1000MeasurePulseWidth,
+                                          table_entry->pstIFMS1000MeasurePulseWidth_len);
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWDATAFILE:
+            case COLUMN_PSTIFMS1000MEASURETIME:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
-                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstIFMS1000MeasureResultRawDataFile,
-                                          table_entry->pstIFMS1000MeasureResultRawDataFile_len);
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstIFMS1000MeasureTime);
                 break;
             case COLUMN_PSTIFMS1000MEASUREPROGRESSSTATUS:
                 if ( !table_entry ) {
@@ -2425,15 +1712,165 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
                                             table_entry->pstIFMS1000MeasureProgressStatus);
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+            case COLUMN_PSTIFMS1000MEASURETLOS:
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstIFMS1000MeasureResultRawPointFile,
-                                          table_entry->pstIFMS1000MeasureResultRawPointFile_len);
+                                          table_entry->pstIFMS1000MeasureTLOS,
+                                          table_entry->pstIFMS1000MeasureTLOS_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURETREF:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureTREF,
+                                          table_entry->pstIFMS1000MeasureTREF_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+                                          table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSCRITICALTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold,
+                                          table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMAJORTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold,
+                                          table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMINORTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold,
+                                          table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+                                          table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+                                          table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+                                          table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+                                          table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+                                          table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+                                          table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPHIGHTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureTempHighThreshold,
+                                          table_entry->pstIFMS1000MeasureTempHighThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPLOWTHRESHOLD:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureTempLowThreshold,
+                                          table_entry->pstIFMS1000MeasureTempLowThreshold_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURENUMBER:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureNumber,
+                                          table_entry->pstIFMS1000MeasureNumber_len);
+                break;
+            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+                                          table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+                                          table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len);
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,
@@ -2494,16 +1931,199 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 break;
             case COLUMN_PSTIFMS1000MEASUREACTION:
                 /* or possibly 'netsnmp_check_vb_int_range' */
+//                devName = (char*)(requests->requestvb->val.string);
+//                size_t len = requests->requestvb->val_len;
+//                QString name = QString::fromLatin1(devName,len);
+
+//                p->m_system->m_pstSystem.set_devName(name);
+{
+
+                ret = netsnmp_check_vb_int( request->requestvb );
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                long index = requests->index;
+                long action = *(requests->requestvb->val.integer);
+                if(0< index < 4){
+                    if(action == 1) // start
+                    {
+                        emit QAgentApp::getInstance()->sigModuleStartMonitor(0);
+                    }
+                    else if(action == 3 )  // start single
+                    {
+                        emit QAgentApp::getInstance()->sigModuleSingleMonitor(0);
+                    }
+                    else
+                    {
+                        emit QAgentApp::getInstance()->sigModuleStopMonitor(0);
+                    }
+                }
+                else if(4<= index)
+                {
+                    if(action == 1) // start
+                    {
+                        emit QAgentApp::getInstance()->sigModuleStartMonitor(1);
+                    }
+                    else if(action == 3 )  // start single
+                    {
+                        emit QAgentApp::getInstance()->sigModuleSingleMonitor(1);
+                    }
+                    else
+                    {
+                        emit QAgentApp::getInstance()->sigModuleStopMonitor(1);
+                    }
+                }
+
+            }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURETIME:
+                /* or possibly 'netsnmp_check_vb_int_range' */
                 ret = netsnmp_check_vb_int( request->requestvb );
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
+            case COLUMN_PSTIFMS1000MEASURETLOS:
 	        /* or possibly 'netsnmp_check_vb_type_and_size' */
                 ret = netsnmp_check_vb_type_and_max_size(
-                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureTLOS));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURETREF:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureTREF));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSCRITICALTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMAJORTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMINORTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPHIGHTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPLOWTHRESHOLD:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error( reqinfo, request, ret );
+                    return SNMP_ERR_NOERROR;
+                }
+                break;
+            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
+	        /* or possibly 'netsnmp_check_vb_type_and_size' */
+                ret = netsnmp_check_vb_type_and_max_size(
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
@@ -2593,18 +2213,232 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 table_entry->old_pstIFMS1000MeasureAction = table_entry->pstIFMS1000MeasureAction;
                 table_entry->pstIFMS1000MeasureAction     = *request->requestvb->val.integer;
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
-                memcpy( table_entry->old_pstIFMS1000MeasureResultRawPointFile,
-                        table_entry->pstIFMS1000MeasureResultRawPointFile,
-                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
-                table_entry->old_pstIFMS1000MeasureResultRawPointFile_len =
-                        table_entry->pstIFMS1000MeasureResultRawPointFile_len;
-                memset( table_entry->pstIFMS1000MeasureResultRawPointFile, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
-                memcpy( table_entry->pstIFMS1000MeasureResultRawPointFile,
+            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
+                memcpy( table_entry->old_pstIFMS1000MeasurePulseWidth,
+                        table_entry->pstIFMS1000MeasurePulseWidth,
+                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+                table_entry->old_pstIFMS1000MeasurePulseWidth_len =
+                        table_entry->pstIFMS1000MeasurePulseWidth_len;
+                memset( table_entry->pstIFMS1000MeasurePulseWidth, 0,
+                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+                memcpy( table_entry->pstIFMS1000MeasurePulseWidth,
                         request->requestvb->val.string,
                         request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureResultRawPointFile_len =
+                table_entry->pstIFMS1000MeasurePulseWidth_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETIME:
+                table_entry->old_pstIFMS1000MeasureTime = table_entry->pstIFMS1000MeasureTime;
+                table_entry->pstIFMS1000MeasureTime     = *request->requestvb->val.integer;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETLOS:
+                memcpy( table_entry->old_pstIFMS1000MeasureTLOS,
+                        table_entry->pstIFMS1000MeasureTLOS,
+                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+                table_entry->old_pstIFMS1000MeasureTLOS_len =
+                        table_entry->pstIFMS1000MeasureTLOS_len;
+                memset( table_entry->pstIFMS1000MeasureTLOS, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+                memcpy( table_entry->pstIFMS1000MeasureTLOS,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureTLOS_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETREF:
+                memcpy( table_entry->old_pstIFMS1000MeasureTREF,
+                        table_entry->pstIFMS1000MeasureTREF,
+                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+                table_entry->old_pstIFMS1000MeasureTREF_len =
+                        table_entry->pstIFMS1000MeasureTREF_len;
+                memset( table_entry->pstIFMS1000MeasureTREF, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+                memcpy( table_entry->pstIFMS1000MeasureTREF,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureTREF_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold,
+                        table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+                table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold_len =
+                        table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSCRITICALTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossCriticalThreshold,
+                        table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold));
+                table_entry->old_pstIFMS1000MeasureEndToEndLossCriticalThreshold_len =
+                        table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMAJORTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossMajorThreshold,
+                        table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold));
+                table_entry->old_pstIFMS1000MeasureEndToEndLossMajorThreshold_len =
+                        table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMINORTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossMinorThreshold,
+                        table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold));
+                table_entry->old_pstIFMS1000MeasureEndToEndLossMinorThreshold_len =
+                        table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold,
+                        table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+                table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold_len =
+                        table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold,
+                        table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+                table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold_len =
+                        table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureNewLossMajorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold,
+                        table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+                table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold_len =
+                        table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureNewLossMinorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold,
+                        table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+                table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold_len =
+                        table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold,
+                        table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+                table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold_len =
+                        table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureOldLossMajorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold,
+                        table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+                table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len =
+                        table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureOldLossMinorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPHIGHTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureTempHighThreshold,
+                        table_entry->pstIFMS1000MeasureTempHighThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
+                table_entry->old_pstIFMS1000MeasureTempHighThreshold_len =
+                        table_entry->pstIFMS1000MeasureTempHighThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureTempHighThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureTempHighThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureTempHighThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPLOWTHRESHOLD:
+                memcpy( table_entry->old_pstIFMS1000MeasureTempLowThreshold,
+                        table_entry->pstIFMS1000MeasureTempLowThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
+                table_entry->old_pstIFMS1000MeasureTempLowThreshold_len =
+                        table_entry->pstIFMS1000MeasureTempLowThreshold_len;
+                memset( table_entry->pstIFMS1000MeasureTempLowThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
+                memcpy( table_entry->pstIFMS1000MeasureTempLowThreshold,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureTempLowThreshold_len =
+                        request->requestvb->val_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
+                memcpy( table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel,
+                        table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+                table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel_len =
+                        table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len;
+                memset( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+                memcpy( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+                        request->requestvb->val.string,
+                        request->requestvb->val_len);
+                table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len =
                         request->requestvb->val_len;
                 break;
             }
@@ -2663,14 +2497,153 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 table_entry->pstIFMS1000MeasureAction     = table_entry->old_pstIFMS1000MeasureAction;
                 table_entry->old_pstIFMS1000MeasureAction = 0;
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESULTRAWPOINTFILE:
-                memcpy( table_entry->pstIFMS1000MeasureResultRawPointFile,
-                        table_entry->old_pstIFMS1000MeasureResultRawPointFile,
-                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
-                memset( table_entry->old_pstIFMS1000MeasureResultRawPointFile, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureResultRawPointFile));
-                table_entry->pstIFMS1000MeasureResultRawPointFile_len =
-                        table_entry->old_pstIFMS1000MeasureResultRawPointFile_len;
+            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
+                memcpy( table_entry->pstIFMS1000MeasurePulseWidth,
+                        table_entry->old_pstIFMS1000MeasurePulseWidth,
+                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+                memset( table_entry->old_pstIFMS1000MeasurePulseWidth, 0,
+                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+                table_entry->pstIFMS1000MeasurePulseWidth_len =
+                        table_entry->old_pstIFMS1000MeasurePulseWidth_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETIME:
+                table_entry->pstIFMS1000MeasureTime     = table_entry->old_pstIFMS1000MeasureTime;
+                table_entry->old_pstIFMS1000MeasureTime = 0;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETLOS:
+                memcpy( table_entry->pstIFMS1000MeasureTLOS,
+                        table_entry->old_pstIFMS1000MeasureTLOS,
+                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+                memset( table_entry->old_pstIFMS1000MeasureTLOS, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+                table_entry->pstIFMS1000MeasureTLOS_len =
+                        table_entry->old_pstIFMS1000MeasureTLOS_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETREF:
+                memcpy( table_entry->pstIFMS1000MeasureTREF,
+                        table_entry->old_pstIFMS1000MeasureTREF,
+                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+                memset( table_entry->old_pstIFMS1000MeasureTREF, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+                table_entry->pstIFMS1000MeasureTREF_len =
+                        table_entry->old_pstIFMS1000MeasureTREF_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+                        table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+                table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSCRITICALTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold,
+                        table_entry->old_pstIFMS1000MeasureEndToEndLossCriticalThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossCriticalThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold));
+                table_entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureEndToEndLossCriticalThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMAJORTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold,
+                        table_entry->old_pstIFMS1000MeasureEndToEndLossMajorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossMajorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold));
+                table_entry->pstIFMS1000MeasureEndToEndLossMajorThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureEndToEndLossMajorThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMINORTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold,
+                        table_entry->old_pstIFMS1000MeasureEndToEndLossMinorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossMinorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold));
+                table_entry->pstIFMS1000MeasureEndToEndLossMinorThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureEndToEndLossMinorThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+                        table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+                table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+                        table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+                table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+                        table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+                table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+                        table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+                table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+                        table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+                table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPHIGHTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureTempHighThreshold,
+                        table_entry->old_pstIFMS1000MeasureTempHighThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureTempHighThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
+                table_entry->pstIFMS1000MeasureTempHighThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureTempHighThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURETEMPLOWTHRESHOLD:
+                memcpy( table_entry->pstIFMS1000MeasureTempLowThreshold,
+                        table_entry->old_pstIFMS1000MeasureTempLowThreshold,
+                        sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
+                memset( table_entry->old_pstIFMS1000MeasureTempLowThreshold, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
+                table_entry->pstIFMS1000MeasureTempLowThreshold_len =
+                        table_entry->old_pstIFMS1000MeasureTempLowThreshold_len;
+                break;
+            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
+                memcpy( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+                        table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel,
+                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+                memset( table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel, 0,
+                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+                table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len =
+                        table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel_len;
                 break;
             }
         }
@@ -2722,8 +2695,91 @@ QPSTProduct::initialize_table_pstIFMS1000FingerTable(void)
     /* Initialise the contents of the table here */
 }
 
-    /* Typical data structure for a row entry */
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000FingerTable_entry {
+//    /* Index values */
+//    long pstIFMS1000FTPortNum;
 
+//    /* Column values */
+//    long pstIFMS1000FTPortNum;
+//    char pstIFMS1000FingerStartPosition[NNN];
+//    size_t pstIFMS1000FingerStartPosition_len;
+//    char old_pstIFMS1000FingerStartPosition[NNN];
+//    size_t old_pstIFMS1000FingerStartPosition_len;
+//    char pstIFMS1000FingerEndPosition[NNN];
+//    size_t pstIFMS1000FingerEndPosition_len;
+//    char old_pstIFMS1000FingerEndPosition[NNN];
+//    size_t old_pstIFMS1000FingerEndPosition_len;
+//    char pstIFMS1000FingerRefIndex[NNN];
+//    size_t pstIFMS1000FingerRefIndex_len;
+//    char old_pstIFMS1000FingerRefIndex[NNN];
+//    size_t old_pstIFMS1000FingerRefIndex_len;
+//    char pstIFMS1000FingerResolution[NNN];
+//    size_t pstIFMS1000FingerResolution_len;
+//    char old_pstIFMS1000FingerResolution[NNN];
+//    size_t old_pstIFMS1000FingerResolution_len;
+//    char pstIFMS1000FingerCreateTime[NNN];
+//    size_t pstIFMS1000FingerCreateTime_len;
+//    long pstIFMS1000FingerFileStatus;
+//    long pstIFMS1000FingerAction;
+//    long old_pstIFMS1000FingerAction;
+//    long pstIFMS1000FingerActionStatus;
+//    char pstIFMS1000FingerSavedFileName[NNN];
+//    size_t pstIFMS1000FingerSavedFileName_len;
+//    char pstIFMS1000FingerCurrentFileName[NNN];
+//    size_t pstIFMS1000FingerCurrentFileName_len;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000FingerTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000FTPortNum
+                ) {
+    struct pstIFMS1000FingerTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000FingerTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000FingerTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000FTPortNum = pstIFMS1000FTPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000FTPortNum),
+                                 sizeof(entry->pstIFMS1000FTPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000FingerTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000FingerTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000FingerTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000FingerTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
 
 
 /** handles requests for the pstIFMS1000FingerTable table */
@@ -3118,8 +3174,66 @@ QPSTProduct::initialize_table_pstIFMS1000DiffTotalTable(void)
     /* Initialise the contents of the table here */
 }
 
-    /* Typical data structure for a row entry */
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000DiffTotalTable_entry {
+//    /* Index values */
+//    long pstIFMS1000DtPortNum;
 
+//    /* Column values */
+//    long pstIFMS1000DtPortNum;
+//    long pstIFMS1000DtTotalNum;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DiffTotalTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DtPortNum
+                ) {
+    struct pstIFMS1000DiffTotalTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiffTotalTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DiffTotalTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DtPortNum = pstIFMS1000DtPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DtPortNum),
+                                 sizeof(entry->pstIFMS1000DtPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DiffTotalTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DiffTotalTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DiffTotalTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DiffTotalTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
 
 
 /** handles requests for the pstIFMS1000DiffTotalTable table */
@@ -3224,8 +3338,80 @@ QPSTProduct::initialize_table_pstIFMS1000DiffInfoTable(void)
     /* Initialise the contents of the table here */
 }
 
-    /* Typical data structure for a row entry */
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000DiffInfoTable_entry {
+//    /* Index values */
+//    long pstIFMS1000DiffInfoPortNum;
+//    long pstIFMS1000DiffInfoPortItemIndex;
 
+//    /* Column values */
+//    long pstIFMS1000DiffInfoPortNum;
+//    long pstIFMS1000DiffInfoPortItemIndex;
+//    char pstIFMS1000DiffInfoDistance[NNN];
+//    size_t pstIFMS1000DiffInfoDistance_len;
+//    char pstIFMS1000DiffInfoNVal[NNN];
+//    size_t pstIFMS1000DiffInfoNVal_len;
+//    char pstIFMS1000DiffInfodBVal[NNN];
+//    size_t pstIFMS1000DiffInfodBVal_len;
+//    long pstIFMS1000DiffInfoDiffType;
+//    u_long pstIFMS1000DiffInfoPointId;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DiffInfoTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DiffInfoPortNum
+                 , long  pstIFMS1000DiffInfoPortItemIndex
+                ) {
+    struct pstIFMS1000DiffInfoTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiffInfoTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DiffInfoTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DiffInfoPortNum = pstIFMS1000DiffInfoPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DiffInfoPortNum),
+                                 sizeof(entry->pstIFMS1000DiffInfoPortNum));
+    entry->pstIFMS1000DiffInfoPortItemIndex = pstIFMS1000DiffInfoPortItemIndex;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DiffInfoPortItemIndex),
+                                 sizeof(entry->pstIFMS1000DiffInfoPortItemIndex));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DiffInfoTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DiffInfoTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DiffInfoTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DiffInfoTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
 
 
 /** handles requests for the pstIFMS1000DiffInfoTable table */
@@ -3377,8 +3563,66 @@ QPSTProduct::initialize_table_pstIFMS1000PortLedTable(void)
     /* Initialise the contents of the table here */
 }
 
-    /* Typical data structure for a row entry */
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000PortLedTable_entry {
+//    /* Index values */
+//    long pstIFMS1000PortLedPortNum;
 
+//    /* Column values */
+//    long pstIFMS1000PortLedPortNum;
+//    long pstIFMS1000PortLedStatus;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000PortLedTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000PortLedPortNum
+                ) {
+    struct pstIFMS1000PortLedTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PortLedTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000PortLedTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000PortLedPortNum = pstIFMS1000PortLedPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000PortLedPortNum),
+                                 sizeof(entry->pstIFMS1000PortLedPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000PortLedTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000PortLedTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000PortLedTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000PortLedTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
 
 
 /** handles requests for the pstIFMS1000PortLedTable table */
@@ -3482,8 +3726,142 @@ QPSTProduct::initialize_table_pstIFMS1000DiagnoseTable(void)
     /* Initialise the contents of the table here */
 }
 
-    /* Typical data structure for a row entry */
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000DiagnoseTable_entry {
+//    /* Index values */
+//    long pstIFMS1000DgPortNum;
 
+//    /* Column values */
+//    long pstIFMS1000DgPortNum;
+//    char pstIFMS1000DgLaserACBias[NNN];
+//    size_t pstIFMS1000DgLaserACBias_len;
+//    char old_pstIFMS1000DgLaserACBias[NNN];
+//    size_t old_pstIFMS1000DgLaserACBias_len;
+//    char pstIFMS1000DgLaserDCBias[NNN];
+//    size_t pstIFMS1000DgLaserDCBias_len;
+//    char old_pstIFMS1000DgLaserDCBias[NNN];
+//    size_t old_pstIFMS1000DgLaserDCBias_len;
+//    char pstIFMS1000DgLaserACModulation[NNN];
+//    size_t pstIFMS1000DgLaserACModulation_len;
+//    char old_pstIFMS1000DgLaserACModulation[NNN];
+//    size_t old_pstIFMS1000DgLaserACModulation_len;
+//    char pstIFMS1000DgLaserDCModulation[NNN];
+//    size_t pstIFMS1000DgLaserDCModulation_len;
+//    char old_pstIFMS1000DgLaserDCModulation[NNN];
+//    size_t old_pstIFMS1000DgLaserDCModulation_len;
+//    long pstIFMS1000DgLaserEn;
+//    long old_pstIFMS1000DgLaserEn;
+//    long pstIFMS1000DgPwm;
+//    long old_pstIFMS1000DgPwm;
+//    long pstIFMS1000DgSeed;
+//    long old_pstIFMS1000DgSeed;
+//    long pstIFMS1000DgPrbs;
+//    long old_pstIFMS1000DgPrbs;
+//    long pstIFMS1000DgAverage;
+//    long old_pstIFMS1000DgAverage;
+//    long pstIFMS1000DgRegAddr;
+//    long old_pstIFMS1000DgRegAddr;
+//    long pstIFMS1000DgRegValue;
+//    long old_pstIFMS1000DgRegValue;
+//    char pstIFMS1000DgMaskStartPoint[NNN];
+//    size_t pstIFMS1000DgMaskStartPoint_len;
+//    char old_pstIFMS1000DgMaskStartPoint[NNN];
+//    size_t old_pstIFMS1000DgMaskStartPoint_len;
+//    char pstIFMS1000DgMaskStopPoint[NNN];
+//    size_t pstIFMS1000DgMaskStopPoint_len;
+//    char old_pstIFMS1000DgMaskStopPoint[NNN];
+//    size_t old_pstIFMS1000DgMaskStopPoint_len;
+//    long pstIFMS1000DgMaskAction;
+//    long old_pstIFMS1000DgMaskAction;
+//    char pstIFMS1000DgMeasureDeltaThld[NNN];
+//    size_t pstIFMS1000DgMeasureDeltaThld_len;
+//    char old_pstIFMS1000DgMeasureDeltaThld[NNN];
+//    size_t old_pstIFMS1000DgMeasureDeltaThld_len;
+//    char pstIFMS1000DgCutPointThld[NNN];
+//    size_t pstIFMS1000DgCutPointThld_len;
+//    char old_pstIFMS1000DgCutPointThld[NNN];
+//    size_t old_pstIFMS1000DgCutPointThld_len;
+//    long pstIFMS1000DgPeriod;
+//    long old_pstIFMS1000DgPeriod;
+//    long pstIFMS1000DgDAC;
+//    long old_pstIFMS1000DgDAC;
+//    long pstIFMS1000DgCounterClockMode;
+//    long old_pstIFMS1000DgCounterClockMode;
+//    long pstIFMS1000DgScanRunType;
+//    long old_pstIFMS1000DgScanRunType;
+//    u_long pstIFMS1000DgOpt;
+//    u_long old_pstIFMS1000DgOpt;
+//    char pstIFMS1000DgFiberOffset[NNN];
+//    size_t pstIFMS1000DgFiberOffset_len;
+//    char old_pstIFMS1000DgFiberOffset[NNN];
+//    size_t old_pstIFMS1000DgFiberOffset_len;
+//    u_long pstIFMS1000DgTestWaveLen;
+//    u_long old_pstIFMS1000DgTestWaveLen;
+//    u_long pstIFMS1000DgPRT;
+//    u_long old_pstIFMS1000DgPRT;
+//    u_long pstIFMS1000DgPPW;
+//    u_long old_pstIFMS1000DgPPW;
+//    u_long pstIFMS1000DgPPrescale;
+//    u_long old_pstIFMS1000DgPPrescale;
+//    u_long pstIFMS1000DgPAvg;
+//    u_long old_pstIFMS1000DgPAvg;
+//    u_long pstIFMS1000DgPGain;
+//    u_long old_pstIFMS1000DgPGain;
+//    u_long pstIFMS1000DgPAdcData;
+//    u_long pstIFMS1000DgPE2promAction;
+//    u_long old_pstIFMS1000DgPE2promAction;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DiagnoseTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DgPortNum
+                ) {
+    struct pstIFMS1000DiagnoseTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DiagnoseTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DiagnoseTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DgPortNum = pstIFMS1000DgPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DgPortNum),
+                                 sizeof(entry->pstIFMS1000DgPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DiagnoseTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DiagnoseTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DiagnoseTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DiagnoseTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
 
 
 /** handles requests for the pstIFMS1000DiagnoseTable table */
@@ -4524,6 +4902,71 @@ QPSTProduct::initialize_table_pstIFMS1000DebugRegTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000DebugRegTable_entry {
+//    /* Index values */
+//    long pstIFMS1000DbPortNum;
+
+//    /* Column values */
+//    long pstIFMS1000DbPortNum;
+//    long pstIFMS1000DbRegAddr;
+//    long old_pstIFMS1000DbRegAddr;
+//    long pstIFMS1000DbRegValue;
+//    long old_pstIFMS1000DbRegValue;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DebugRegTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DbPortNum
+                ) {
+    struct pstIFMS1000DebugRegTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugRegTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DebugRegTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DbPortNum = pstIFMS1000DbPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DbPortNum),
+                                 sizeof(entry->pstIFMS1000DbPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DebugRegTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DebugRegTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DebugRegTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DebugRegTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+
 /** handles requests for the pstIFMS1000DebugRegTable table */
 int
 QPSTProduct::pstIFMS1000DebugRegTable_handler(
@@ -4723,6 +5166,70 @@ QPSTProduct::initialize_table_pstIFMS1000DebugDACTable(void)
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+}
+
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000DebugDACTable_entry {
+//    /* Index values */
+//    long pstIFMS1000DacTPortNum;
+
+//    /* Column values */
+//    long pstIFMS1000DacTPortNum;
+//    long pstIFMS1000DacTChannelNum;
+//    long old_pstIFMS1000DacTChannelNum;
+//    long pstIFMS1000TDacValue;
+//    long old_pstIFMS1000TDacValue;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DebugDACTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DacTPortNum
+                ) {
+    struct pstIFMS1000DebugDACTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugDACTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DebugDACTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DacTPortNum = pstIFMS1000DacTPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DacTPortNum),
+                                 sizeof(entry->pstIFMS1000DacTPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DebugDACTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DebugDACTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DebugDACTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DebugDACTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
 }
 
 
@@ -4927,6 +5434,71 @@ QPSTProduct::initialize_table_pstIFMS1000DebugE2promTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000DebugE2promTable_entry {
+//    /* Index values */
+//    long pstIFMS1000DbE2TPortNum;
+
+//    /* Column values */
+//    long pstIFMS1000DbE2TPortNum;
+//    long pstIFMS1000DbE2TAddr;
+//    long old_pstIFMS1000DbE2TAddr;
+//    long pstIFMS1000DbE2TValue;
+//    long old_pstIFMS1000DbE2TValue;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000DebugE2promTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000DbE2TPortNum
+                ) {
+    struct pstIFMS1000DebugE2promTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000DebugE2promTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000DebugE2promTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000DbE2TPortNum = pstIFMS1000DbE2TPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000DbE2TPortNum),
+                                 sizeof(entry->pstIFMS1000DbE2TPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000DebugE2promTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000DebugE2promTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000DebugE2promTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000DebugE2promTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+
 /** handles requests for the pstIFMS1000DebugE2promTable table */
 int
 QPSTProduct::pstIFMS1000DebugE2promTable_handler(
@@ -5128,6 +5700,69 @@ QPSTProduct::initialize_table_pstIFMS1000ExtendAlarmTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ExtendAlarmTable_entry {
+//    /* Index values */
+//    long pstIFMS1000EAPortNum;
+
+//    /* Column values */
+//    long pstIFMS1000EAPortNum;
+//    u_long pstIFMS1000ExtendAlarm;
+//    u_long old_pstIFMS1000ExtendAlarm;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ExtendAlarmTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000EAPortNum
+                ) {
+    struct pstIFMS1000ExtendAlarmTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ExtendAlarmTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ExtendAlarmTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000EAPortNum = pstIFMS1000EAPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000EAPortNum),
+                                 sizeof(entry->pstIFMS1000EAPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ExtendAlarmTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ExtendAlarmTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ExtendAlarmTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ExtendAlarmTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+
 /** handles requests for the pstIFMS1000ExtendAlarmTable table */
 int
 QPSTProduct::pstIFMS1000ExtendAlarmTable_handler(
@@ -5303,6 +5938,117 @@ QPSTProduct::initialize_table_pstIFMS1000ExpertExtendTable(void)
 
     /* Initialise the contents of the table here */
 }
+
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ExpertExtendTable_entry {
+//    /* Index values */
+//    long pstIFMS1000EEPortNum;
+
+//    /* Column values */
+//    long pstIFMS1000EEPortNum;
+//    char pstIFMS1000DgPBias1[NNN];
+//    size_t pstIFMS1000DgPBias1_len;
+//    char old_pstIFMS1000DgPBias1[NNN];
+//    size_t old_pstIFMS1000DgPBias1_len;
+//    char pstIFMS1000DgPBias2[NNN];
+//    size_t pstIFMS1000DgPBias2_len;
+//    char old_pstIFMS1000DgPBias2[NNN];
+//    size_t old_pstIFMS1000DgPBias2_len;
+//    char pstIFMS1000DgPModulation1[NNN];
+//    size_t pstIFMS1000DgPModulation1_len;
+//    char old_pstIFMS1000DgPModulation1[NNN];
+//    size_t old_pstIFMS1000DgPModulation1_len;
+//    char pstIFMS1000DgPModulation2[NNN];
+//    size_t pstIFMS1000DgPModulation2_len;
+//    char old_pstIFMS1000DgPModulation2[NNN];
+//    size_t old_pstIFMS1000DgPModulation2_len;
+//    long pstIFMS1000DgPBackScatter;
+//    long old_pstIFMS1000DgPBackScatter;
+//    char pstIFMS1000DgPMeasureDeltaThld[NNN];
+//    size_t pstIFMS1000DgPMeasureDeltaThld_len;
+//    char old_pstIFMS1000DgPMeasureDeltaThld[NNN];
+//    size_t old_pstIFMS1000DgPMeasureDeltaThld_len;
+//    char pstIFMS1000DgPCutPointThld[NNN];
+//    size_t pstIFMS1000DgPCutPointThld_len;
+//    char old_pstIFMS1000DgPCutPointThld[NNN];
+//    size_t old_pstIFMS1000DgPCutPointThld_len;
+//    char pstIFMS1000DgPMFactor[NNN];
+//    size_t pstIFMS1000DgPMFactor_len;
+//    char old_pstIFMS1000DgPMFactor[NNN];
+//    size_t old_pstIFMS1000DgPMFactor_len;
+//    char pstIFMS1000DgFaultCriticalThld[NNN];
+//    size_t pstIFMS1000DgFaultCriticalThld_len;
+//    char old_pstIFMS1000DgFaultCriticalThld[NNN];
+//    size_t old_pstIFMS1000DgFaultCriticalThld_len;
+//    char pstIFMS1000DgFaultMajorThld[NNN];
+//    size_t pstIFMS1000DgFaultMajorThld_len;
+//    char old_pstIFMS1000DgFaultMajorThld[NNN];
+//    size_t old_pstIFMS1000DgFaultMajorThld_len;
+//    char pstIFMS1000DgFaultMinorThld[NNN];
+//    size_t pstIFMS1000DgFaultMinorThld_len;
+//    char old_pstIFMS1000DgFaultMinorThld[NNN];
+//    size_t old_pstIFMS1000DgFaultMinorThld_len;
+//    char pstIFMS1000DgPAFactor[NNN];
+//    size_t pstIFMS1000DgPAFactor_len;
+//    char old_pstIFMS1000DgPAFactor[NNN];
+//    size_t old_pstIFMS1000DgPAFactor_len;
+//    char pstIFMS1000DgPBFactor[NNN];
+//    size_t pstIFMS1000DgPBFactor_len;
+//    char old_pstIFMS1000DgPBFactor[NNN];
+//    size_t old_pstIFMS1000DgPBFactor_len;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ExpertExtendTable_createEntry(netsnmp_tdata *table_data
+                 , long  pstIFMS1000EEPortNum
+                ) {
+    struct pstIFMS1000ExpertExtendTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ExpertExtendTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ExpertExtendTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pstIFMS1000EEPortNum = pstIFMS1000EEPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstIFMS1000EEPortNum),
+                                 sizeof(entry->pstIFMS1000EEPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ExpertExtendTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ExpertExtendTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ExpertExtendTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ExpertExtendTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 
 /** handles requests for the pstIFMS1000ExpertExtendTable table */
 int
@@ -5984,6 +6730,69 @@ QPSTProduct::initialize_table_pstIFMS1000PonConfTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000PonConfTable_entry {
+//    /* Index values */
+//    u_long pctPortNum;
+
+//    /* Column values */
+//    u_long pctPortNum;
+//    u_long pctSp1LocItem;
+//    u_long old_pctSp1LocItem;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000PonConfTable_createEntry(netsnmp_tdata *table_data
+                 , u_long  pctPortNum
+                ) {
+    struct pstIFMS1000PonConfTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PonConfTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000PonConfTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->pctPortNum = pctPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_UNSIGNED,
+                                 &(entry->pctPortNum),
+                                 sizeof(entry->pctPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000PonConfTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000PonConfTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000PonConfTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000PonConfTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
+
 /** handles requests for the pstIFMS1000PonConfTable table */
 int
 QPSTProduct::pstIFMS1000PonConfTable_handler(
@@ -6160,6 +6969,67 @@ QPSTProduct::initialize_table_pstIFMS1000ParamsV32TotalNumTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ParamsV32TotalNumTable_entry {
+//    /* Index values */
+//    long v32TPortNum;
+
+//    /* Column values */
+//    long v32TPortNum;
+//    long v32PortTotalNum;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsV32TotalNumTable_createEntry(netsnmp_tdata *table_data
+                 , long  v32TPortNum
+                ) {
+    struct pstIFMS1000ParamsV32TotalNumTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32TotalNumTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32TotalNumTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->v32TPortNum = v32TPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32TPortNum),
+                                 sizeof(entry->v32TPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsV32TotalNumTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsV32TotalNumTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32TotalNumTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsV32TotalNumTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 
 /** handles requests for the pstIFMS1000ParamsV32TotalNumTable table */
 int
@@ -6262,6 +7132,76 @@ QPSTProduct::initialize_table_pstIFMS1000ParamsV32NameTable(void)
 
     /* Initialise the contents of the table here */
 }
+
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ParamsV32NameTable_entry {
+//    /* Index values */
+//    long v32PortNum;
+//    long v32ParamNameNum;
+
+//    /* Column values */
+//    long v32PortNum;
+//    long v32ParamNameNum;
+//    char v32ParamName[NNN];
+//    size_t v32ParamName_len;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsV32NameTable_createEntry(netsnmp_tdata *table_data
+                 , long  v32PortNum
+                 , long  v32ParamNameNum
+                ) {
+    struct pstIFMS1000ParamsV32NameTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32NameTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32NameTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->v32PortNum = v32PortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32PortNum),
+                                 sizeof(entry->v32PortNum));
+    entry->v32ParamNameNum = v32ParamNameNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32ParamNameNum),
+                                 sizeof(entry->v32ParamNameNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsV32NameTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsV32NameTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32NameTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsV32NameTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 
 /** handles requests for the pstIFMS1000ParamsV32NameTable table */
 int
@@ -6373,6 +7313,75 @@ QPSTProduct::initialize_table_pstIFMS1000ParamsV32ValTable(void)
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+}
+
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ParamsV32ValTable_entry {
+//    /* Index values */
+//    long v32ValPortNum;
+//    long v32ParamValNum;
+
+//    /* Column values */
+//    long v32ValPortNum;
+//    long v32ParamValNum;
+//    u_long v32ParamVal;
+//    u_long old_v32ParamVal;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsV32ValTable_createEntry(netsnmp_tdata *table_data
+                 , long  v32ValPortNum
+                 , long  v32ParamValNum
+                ) {
+    struct pstIFMS1000ParamsV32ValTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsV32ValTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32ValTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->v32ValPortNum = v32ValPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32ValPortNum),
+                                 sizeof(entry->v32ValPortNum));
+    entry->v32ParamValNum = v32ParamValNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->v32ParamValNum),
+                                 sizeof(entry->v32ParamValNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsV32ValTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsV32ValTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsV32ValTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsV32ValTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
 }
 
 
@@ -6561,6 +7570,67 @@ QPSTProduct::initialize_table_pstIFMS1000ParamsS32TotalNumTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ParamsS32TotalNumTable_entry {
+//    /* Index values */
+//    long s32TPortNum;
+
+//    /* Column values */
+//    long s32TPortNum;
+//    long s32PortTotalNum;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsS32TotalNumTable_createEntry(netsnmp_tdata *table_data
+                 , long  s32TPortNum
+                ) {
+    struct pstIFMS1000ParamsS32TotalNumTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32TotalNumTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32TotalNumTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->s32TPortNum = s32TPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32TPortNum),
+                                 sizeof(entry->s32TPortNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsS32TotalNumTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsS32TotalNumTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32TotalNumTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsS32TotalNumTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 
 /** handles requests for the pstIFMS1000ParamsS32TotalNumTable table */
 int
@@ -6664,6 +7734,74 @@ QPSTProduct::initialize_table_pstIFMS1000ParamsS32NameTable(void)
     /* Initialise the contents of the table here */
 }
 
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ParamsS32NameTable_entry {
+//    /* Index values */
+//    long s32PortNum;
+//    long s32ParamNameNum;
+
+//    /* Column values */
+//    long s32PortNum;
+//    long s32ParamNameNum;
+//    char s32ParamNameVal[NNN];
+//    size_t s32ParamNameVal_len;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsS32NameTable_createEntry(netsnmp_tdata *table_data
+                 , long  s32PortNum
+                 , long  s32ParamNameNum
+                ) {
+    struct pstIFMS1000ParamsS32NameTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32NameTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32NameTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->s32PortNum = s32PortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32PortNum),
+                                 sizeof(entry->s32PortNum));
+    entry->s32ParamNameNum = s32ParamNameNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32ParamNameNum),
+                                 sizeof(entry->s32ParamNameNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsS32NameTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsS32NameTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32NameTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsS32NameTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
 
 
 /** handles requests for the pstIFMS1000ParamsS32NameTable table */
@@ -6777,6 +7915,78 @@ QPSTProduct::initialize_table_pstIFMS1000ParamsS32ValTable(void)
 
     /* Initialise the contents of the table here */
 }
+
+//    /* Typical data structure for a row entry */
+//struct pstIFMS1000ParamsS32ValTable_entry {
+//    /* Index values */
+//    long s32ValPortNum;
+//    long s32ParamValNum;
+
+//    /* Column values */
+//    long s32ValPortNum;
+//    long s32ParamValNum;
+//    char s32ParamVal[NNN];
+//    size_t s32ParamVal_len;
+//    char old_s32ParamVal[NNN];
+//    size_t old_s32ParamVal_len;
+
+//    int   valid;
+//};
+
+/* create a new row in the table */
+static netsnmp_tdata_row *
+pstIFMS1000ParamsS32ValTable_createEntry(netsnmp_tdata *table_data
+                 , long  s32ValPortNum
+                 , long  s32ParamValNum
+                ) {
+    struct pstIFMS1000ParamsS32ValTable_entry *entry;
+    netsnmp_tdata_row *row;
+
+    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000ParamsS32ValTable_entry);
+    if (!entry)
+        return NULL;
+
+    row = netsnmp_tdata_create_row();
+    if (!row) {
+        SNMP_FREE(entry);
+        return NULL;
+    }
+    row->data = entry;
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32ValTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+    entry->s32ValPortNum = s32ValPortNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32ValPortNum),
+                                 sizeof(entry->s32ValPortNum));
+    entry->s32ParamValNum = s32ParamValNum;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->s32ParamValNum),
+                                 sizeof(entry->s32ParamValNum));
+    if (table_data)
+        netsnmp_tdata_add_row( table_data, row );
+    return row;
+}
+
+/* remove a row from the table */
+static void
+pstIFMS1000ParamsS32ValTable_removeEntry(netsnmp_tdata     *table_data, 
+                 netsnmp_tdata_row *row) {
+    struct pstIFMS1000ParamsS32ValTable_entry *entry;
+
+    if (!row)
+        return;    /* Nothing to remove */
+
+    DEBUGMSGT(("pstIFMS1000ParamsS32ValTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+    entry = (struct pstIFMS1000ParamsS32ValTable_entry *)row->data;
+    SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+    if (table_data)
+        netsnmp_tdata_remove_and_delete_row( table_data, row );
+    else
+        netsnmp_tdata_delete_row( row );    
+}
+
 
 /** handles requests for the pstIFMS1000ParamsS32ValTable table */
 int

@@ -9,10 +9,12 @@
 #include <QDebug>
 #include <QReadWriteLock>
 #include <QAtomicPointer>
-#include <stdbool.h>
+#include <QMap>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <vector>
 
 #include "qpstproduct.h"
@@ -50,9 +52,17 @@ public:
          return _keeprunning;
     }
 
-
+    // Trap
+        static int send_pstIFMS1000MeasureEvent_trap(void);
 
     void run(){
+        qDebug() << "["<<QThread::currentThreadId() <<"] qpst running" << endl;
+        char peername[256];
+        char community[256];
+        strcpy(peername,"192.168.1.200:1622");
+        strcpy(community,"public");
+
+
         netsnmp_enable_subagent();
         netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_X_SOCKET,AGENTX_MASTER_SOCKET);
 
@@ -65,6 +75,8 @@ public:
 
         init_snmp(SUB_AGENT);
 
+        create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
+//        _sinks.insert()
 
         do{
             agent_check_and_process(1);
@@ -80,6 +92,7 @@ private:
     QPST & operator=(const QPST &);//禁止赋值拷贝函数。
 
     QReadWriteLock internalMutex;//函数使用的读写锁
+    QMap<QString, int>  _sinks;
 
     int         _keeprunning;
 

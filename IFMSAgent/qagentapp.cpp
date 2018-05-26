@@ -116,9 +116,9 @@ bool QAgentApp::startSession(int &argc, char **argv)
 //    QString qcmdline = QString("SCAN");
 //    QString qcmdline = QString("GETSOR? 0");
 //    emit command_thread->sigSendCommandToModule(0,qcmdline);
-    emit sigModuleSingleMonitor(0);
+//    emit sigModuleSingleMonitor(0);
 
-
+    qDebug() << "[" << QThread::currentThreadId() << "] QAgent:StartSession" << endl;
     return true;
 }
 
@@ -277,13 +277,7 @@ void QAgentApp::showStatusMessage(const QStringList &msgList, int ModuleIndex, i
     emit statusMessage(msgList, ModuleIndex, time);
 }
 
-////==================================
-//void QAgentApp::onOTDRTrap(quint16 module, QByteArray &data)
-//{
-//// TODO: send trap to nms
-//    message(module, QString(data));
-//    QPSTProduct::send_pstIFMS1000MeasureEvent_trap();
-//}
+//==================================
 
 void QAgentApp::onSigExit(qint32 num)
 {
