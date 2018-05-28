@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QString>
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -18,6 +19,9 @@
 #define PRODUCT_SETTINGS_GROUP		"PRODUCT"
 
 using namespace std;
+
+//static QString  org = QString("IFMS");
+//static QString  app = QString("product");
 
 typedef struct pstIFMS1000PortInfoTable_entry {
     /* Index values */
@@ -566,14 +570,30 @@ public:
     long get_pstIFMS1000SysLedPW1(QObject *agent);
     long get_pstIFMS1000SysLedPW2(QObject *agent);
     long get_pstIFMS1000SysLedStatus(QObject *agent);
+
+    void set_pstIFMS1000PortActive(quint16 channel, int active);
+    long get_pstIFMS1000PortActive(quint16 channel);
+
+    void set_pstIFMS1000PortFiberAppType(quint16 channel, int type);
+    long get_pstIFMS1000PortFiberAppType(quint16 channel);
+
 	QString get_pstIFMS1000MeasureStartPosition(long index);
     void setModuleMeasuringProgess(quint16 module, quint16 progress);
+    long getModuleMeasuringProgess(quint16 channel);
+
+    void set_pstIFMS1000MeasureNumber(quint16 channel, quint32 count);
+    char* get_pstIFMS1000MeasureNumber(quint16 channel);
+
+    void setMouleMode(quint16 module, quint16 mode);
+    long getMouleMode(quint16 channel);
+
+
 signals:
 
 public slots:
 
 private:
-	QSettings    _ss;
+    QSettings    _ss;
 };
 
 #endif // QPSTPRODUCTPRIVATE_H

@@ -41,9 +41,9 @@ QByteArray  QFingerData::toByteArray()
     return data;
 }
 
-void QFingerData::toIFMSFingerFile()
+void QFingerData::toIFMSFingerFile(QString filename)
 {
-    QString filename = getIFMSFingerFileName(mChannel);
+//    QString filename = getIFMSFingerFileName(mChannel);
     if(!filename.isEmpty()){
         QFile   file(filename);
         if(file.open(QIODevice::WriteOnly)){
@@ -52,67 +52,4 @@ void QFingerData::toIFMSFingerFile()
             file.close();
         }
     }
-}
-
-QString QFingerData::getIFMSFingerFileName(qint16 channel)
-{
-    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
-    if(channel == 1){
-            filename = QAgentApp::getCacheDir()+QString(CH1_FINGER_FILE);
-    }
-    if(channel == 2){
-            filename = QAgentApp::getCacheDir()+QString(CH2_FINGER_FILE);
-    }
-    if(channel == 3){
-            filename = QAgentApp::getCacheDir()+QString(CH3_FINGER_FILE);
-    }
-    if(channel == 4){
-            filename = QAgentApp::getCacheDir()+QString(CH4_FINGER_FILE);
-    }
-    if(channel == 5){
-            filename = QAgentApp::getCacheDir()+QString(CH5_FINGER_FILE);
-    }
-    if(channel == 6){
-            filename = QAgentApp::getCacheDir()+QString(CH6_FINGER_FILE);
-    }
-    if(channel == 7){
-            filename = QAgentApp::getCacheDir()+QString(CH7_FINGER_FILE);
-    }
-    if(channel == 8){
-            filename = QAgentApp::getCacheDir()+QString(CH8_FINGER_FILE);
-    }
-
-    return filename;
-}
-
-
-QString QFingerData::getIFMSSorFileName(qint16 channel)
-{
-    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
-    if(channel == 1){
-            filename = QAgentApp::getCacheDir()+QString(CH1_SOR_FILE);
-    }
-    if(channel == 2){
-            filename = QAgentApp::getCacheDir()+QString(CH2_SOR_FILE);
-    }
-    if(channel == 3){
-            filename = QAgentApp::getCacheDir()+QString(CH3_SOR_FILE);
-    }
-    if(channel == 4){
-            filename = QAgentApp::getCacheDir()+QString(CH4_SOR_FILE);
-    }
-    if(channel == 5){
-            filename = QAgentApp::getCacheDir()+QString(CH5_SOR_FILE);
-    }
-    if(channel == 6){
-            filename = QAgentApp::getCacheDir()+QString(CH6_SOR_FILE);
-    }
-    if(channel == 7){
-            filename = QAgentApp::getCacheDir()+QString(CH7_SOR_FILE);
-    }
-    if(channel == 8){
-            filename = QAgentApp::getCacheDir()+QString(CH8_SOR_FILE);
-    }
-
-    return filename;
 }

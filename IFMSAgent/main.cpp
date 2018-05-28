@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
 {
     int ret = 0;
     QAgentApp app(argc, argv);
+    app.setOrganizationName("IFMS");
+    app.setApplicationName("IFMS1000");
 //    qInstallMsgHandler(customHandler);
 
     if(app.startSession(argc, argv)){

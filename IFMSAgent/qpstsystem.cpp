@@ -6,12 +6,10 @@
 #include "qagentapp.h"
 #include "qpst.h"
 
-static QObject *system_agent;
 static QMutex   gPSTSystem_mutex;
 
 QPSTSystem::QPSTSystem(QObject *parent) : QObject(parent)
 {
-    system_agent = parent;
     init_pstSystemData();
 }
 

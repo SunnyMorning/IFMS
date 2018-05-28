@@ -90,44 +90,44 @@ void QOTDRModule::initModuleFingerData()
 {
     QString filename;
     if(getModuleIndex() == 0){
-        filename = QFingerData::getIFMSFingerFileName(1);
+        filename = getIFMSFingerFileName(1);
         initFingerBinFile(filename);
          _OldFingers.insert(filename, new QFingerData(this));
          _NewFingers.insert(filename, new QFingerData(this));
 
-         filename = QFingerData::getIFMSFingerFileName(2);
+         filename = getIFMSFingerFileName(2);
          initFingerBinFile(filename);
           _OldFingers.insert(filename, new QFingerData(this));
           _NewFingers.insert(filename, new QFingerData(this));
 
-          filename = QFingerData::getIFMSFingerFileName(3);
+          filename = getIFMSFingerFileName(3);
           initFingerBinFile(filename);
            _OldFingers.insert(filename, new QFingerData(this));
            _NewFingers.insert(filename, new QFingerData(this));
 
-           filename = QFingerData::getIFMSFingerFileName(4);
+           filename = getIFMSFingerFileName(4);
            initFingerBinFile(filename);
             _OldFingers.insert(filename, new QFingerData(this));
             _NewFingers.insert(filename, new QFingerData(this));
     }
 
     if(getModuleIndex() == 1 ){
-        filename = QFingerData::getIFMSFingerFileName(5);
+        filename = getIFMSFingerFileName(5);
         initFingerBinFile(filename);
          _OldFingers.insert(filename, new QFingerData(this));
          _NewFingers.insert(filename, new QFingerData(this));
 
-         filename = QFingerData::getIFMSFingerFileName(6);
+         filename = getIFMSFingerFileName(6);
          initFingerBinFile(filename);
           _OldFingers.insert(filename, new QFingerData(this));
           _NewFingers.insert(filename, new QFingerData(this));
 
-          filename = QFingerData::getIFMSFingerFileName(7);
+          filename = getIFMSFingerFileName(7);
           initFingerBinFile(filename);
            _OldFingers.insert(filename, new QFingerData(this));
            _NewFingers.insert(filename, new QFingerData(this));
 
-           filename = QFingerData::getIFMSFingerFileName(8);
+           filename = getIFMSFingerFileName(8);
            initFingerBinFile(filename);
             _OldFingers.insert(filename, new QFingerData(this));
             _NewFingers.insert(filename, new QFingerData(this));
@@ -271,7 +271,7 @@ void QOTDRModule::run()
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
             setProgress(0);
             _MeasuredChannels.OTDRModule.channels = 0;
-            emit sigOTDRSetMode(OTDR_WORK_MODE_STOP);
+            emit sigOTDRSetMode(_moduleIndex, OTDR_WORK_MODE_STOP);
             if(_pTcpSocket!=NULL){
                 _pTcpSocket->close();
                 delete _pTcpSocket;
@@ -516,7 +516,7 @@ quint32 QOTDRModule::getMeasuredSORFiles(quint16 channel)
 QByteArray QOTDRModule::generateOTDRTrapData(quint16 module, qint16 channel)
 {
     QByteArray  data = QString("Traped on %1").arg(channel).toLatin1();
-    QString     filename = QFingerData::getIFMSFingerFileName(channel);
+    QString     filename = getIFMSFingerFileName(channel);
     QFingerData    *oldFingerData = _OldFingers.value(filename);
     QFingerData    *newFingerData = _NewFingers.value(filename);
 
@@ -529,6 +529,71 @@ void QOTDRModule::sendCommand(quint16 module, QString &cmdline)
     QByteArray  data;
     sendCommandWithResponse(module ,cmdline, &data);
 }
+
+
+QString QOTDRModule::getIFMSFingerFileName(qint16 channel)
+{
+    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
+    if(channel == 0){
+            filename = QAgentApp::getCacheDir()+QString(CH1_FINGER_FILE);
+    }
+    if(channel == 1){
+            filename = QAgentApp::getCacheDir()+QString(CH2_FINGER_FILE);
+    }
+    if(channel == 2){
+            filename = QAgentApp::getCacheDir()+QString(CH3_FINGER_FILE);
+    }
+    if(channel == 3){
+            filename = QAgentApp::getCacheDir()+QString(CH4_FINGER_FILE);
+    }
+    if(channel == 4){
+            filename = QAgentApp::getCacheDir()+QString(CH5_FINGER_FILE);
+    }
+    if(channel == 5){
+            filename = QAgentApp::getCacheDir()+QString(CH6_FINGER_FILE);
+    }
+    if(channel == 6){
+            filename = QAgentApp::getCacheDir()+QString(CH7_FINGER_FILE);
+    }
+    if(channel == 7){
+            filename = QAgentApp::getCacheDir()+QString(CH8_FINGER_FILE);
+    }
+
+    return filename;
+}
+
+
+QString QOTDRModule::getIFMSSorFileName(qint16 channel)
+{
+    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
+    if(channel == 0){
+            filename = QAgentApp::getCacheDir()+QString(CH1_SOR_FILE);
+    }
+    if(channel == 1){
+            filename = QAgentApp::getCacheDir()+QString(CH2_SOR_FILE);
+    }
+    if(channel == 2){
+            filename = QAgentApp::getCacheDir()+QString(CH3_SOR_FILE);
+    }
+    if(channel == 3){
+            filename = QAgentApp::getCacheDir()+QString(CH4_SOR_FILE);
+    }
+    if(channel == 4){
+            filename = QAgentApp::getCacheDir()+QString(CH5_SOR_FILE);
+    }
+    if(channel == 5){
+            filename = QAgentApp::getCacheDir()+QString(CH6_SOR_FILE);
+    }
+    if(channel == 6){
+            filename = QAgentApp::getCacheDir()+QString(CH7_SOR_FILE);
+    }
+    if(channel == 7){
+            filename = QAgentApp::getCacheDir()+QString(CH8_SOR_FILE);
+    }
+
+    return filename;
+}
+
 
 //=============================SLOTS====================================================
 
@@ -595,16 +660,17 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
         qDebug() << "getsor? command" << endl;
         if(cmdcount == 2){
             QString channel = qcmdlist.at(1);
-            qint16 ch = channel.toShort()+1;
+            qint16 ch = channel.toShort();
             sorfile._channel = _moduleIndex*4+ch;
-            filename = QFingerData::getIFMSFingerFileName(sorfile._channel);
+            filename = getIFMSFingerFileName(sorfile._channel);
 //TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
             quint32  OSRLen = length - 4;
 //            memcpy(&OSRLen, data.mid(1,4).data(), sizeof(OSRLen));
 
             QByteArray  OSRRawData = data.mid(4);
 
-            QString sorfilename = QFingerData::getIFMSSorFileName(sorfile._channel);
+            QString sorfilename = getIFMSSorFileName(sorfile._channel);
+            QString fingername = getIFMSFingerFileName(sorfile._channel);
             qDebug() << "write sor to " << sorfilename << endl;
 
             if(!sorfilename.isEmpty()){
@@ -621,7 +687,8 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
                 QFingerData *p = sorfile.toFingerData();
                 _NewFingers.insert(filename,p);
                 emit this->sigOTDRChanged(_moduleIndex, sorfile._channel);
-                p->toIFMSFingerFile();
+                increaseMeasuredCount(sorfile._channel, 1);
+                p->toIFMSFingerFile(fingername);
             }
             if(ch == 1 ){
                 setOTDRModuleState(STATE_GOTSOR1);
@@ -691,10 +758,12 @@ void QOTDRModule::onOTDRChanged(quint16 module, quint16 channel)
     emit sigOTDRTrap(module, data);
 }
 
-void QOTDRModule::onSigOTDRSetMode(quint16 mode)
+void QOTDRModule::onSigOTDRSetMode(quint16 module, quint16 mode)
 {
     QMutexLocker    locker(&gOTDRModule_mutex);
-    _moduleMode = mode;
+    if(module == _moduleIndex){
+        _moduleMode = mode;
+    }
 }
 
 void QOTDRModule::onSocketError(QAbstractSocket::SocketError  socketError)

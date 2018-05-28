@@ -96,21 +96,21 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(this, SIGNAL(sigModuleSingleMonitor(quint16)), this, SLOT(onSigModuleSingleMonitor(quint16)));
 
 
+    connect(_module1, SIGNAL(sigOTDRSetMode(quint16,quint16)), _module1, SLOT(onSigOTDRSetMode(quint16,quint16)));
+    connect(_module1, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
+    connect(_module1, SIGNAL(sigSendCommand(quint16, QString&)), _module1, SLOT(onSendCommand(quint16, QString&)));
+    connect(_module1, SIGNAL(sigOTDRChanged(quint16, quint16)), _module1, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
     connect(_module1, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
     connect(_module1, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
-    connect(_module1, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
+    connect(_module1, SIGNAL(sigSetMeasuredCount(quint16, quint32)), pstThread, SLOT(onSigSetMeasuredCount(quint16, quint32)));
+
+    connect(_module2, SIGNAL(sigSendCommand(quint16, QString&)), _module2, SLOT(onSendCommand(quint16, QString&)));
+    connect(_module2, SIGNAL(sigOTDRChanged(quint16, quint16)), _module2, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
+    connect(_module2, SIGNAL(sigOTDRSetMode(quint16,quint16)), _module2, SLOT(onSigOTDRSetMode(quint16,quint16)));
     connect(_module2, SIGNAL(sigOTDRChanged(quint16,quint16)), pstThread, SIGNAL(sigOTDRChanged(quint16, quint16)));
     connect(_module2, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
     connect(_module2, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
-
-    connect(_module1, SIGNAL(sigSendCommand(quint16, QString&)), _module1, SLOT(onSendCommand(quint16, QString&)));
-//    connect(_module1, SIGNAL(sigSetProgress(quint16, quint16)), _module1, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
-    connect(_module1, SIGNAL(sigOTDRChanged(quint16, quint16)), _module1, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
-
-    connect(_module2, SIGNAL(sigSendCommand(quint16, QString&)), _module2, SLOT(onSendCommand(quint16, QString&)));
-//    connect(_module2, SIGNAL(sigSetProgress(quint16, quint16)), _module2, SLOT(onSetProgress(quint16, quint16)),Qt::DirectConnection);
-    connect(_module2, SIGNAL(sigOTDRChanged(quint16, quint16)), _module2, SLOT(onOTDRChanged(quint16, quint16)),Qt::DirectConnection);
-
+    connect(_module2, SIGNAL(sigSetMeasuredCount(quint16, quint32)), pstThread, SLOT(onSigSetMeasuredCount(quint16, quint32)));
 
 // FOR DEBUG ONLY
 //    emit sigModuleStartMonitor(0);
@@ -331,24 +331,24 @@ void QAgentApp::onSigModuleStartMonitor(quint16 moduleIndex)
 {
     if(moduleIndex == 0){
         if(_module1){
-            if(_module1->getProgress() != 0){
+            if(_module1->isMeasured() != true){
                 qDebug() << "It is measuring ...." << endl;
                 return;
             }
             _module1->setKeepRunning(1);
-            _module1->onSigOTDRSetMode(0);
+            _module1->onSigOTDRSetMode(0,0);
             _module1->start();
 
         }
     }
     if(moduleIndex == 1){
         if(_module2){
-            if(_module2->getProgress() != 0){
+            if(_module2->isMeasured() != true){
                 qDebug() << "It is measuring ...." << endl;
                 return;
             }
             _module2->setKeepRunning(1);
-            _module2->onSigOTDRSetMode(0);
+            _module2->onSigOTDRSetMode(1,0);
             _module2->start();
         }
     }
@@ -358,7 +358,7 @@ void QAgentApp::onSigModuleStopMonitor(quint16 moduleIndex)
 {
     if(moduleIndex == 0){
         if(_module1){
-            _module1->onSigOTDRSetMode(2);
+            _module1->onSigOTDRSetMode(0, 2);
             _module1->setKeepRunning(0);
             _module1->exit(0);
             _module1->wait();
@@ -366,7 +366,7 @@ void QAgentApp::onSigModuleStopMonitor(quint16 moduleIndex)
     }
     if(moduleIndex == 1){
         if(_module2){
-            _module2->onSigOTDRSetMode(2);
+            _module2->onSigOTDRSetMode(1, 2);
             _module2->setKeepRunning(0);
             _module2->exit(0);
             _module2->wait();
@@ -380,23 +380,23 @@ void QAgentApp::onSigModuleSingleMonitor(quint16 module)
 
     if(module == 0){
         if(_module1){
-            if(_module1->getProgress() != 0){
+            if(_module1->isMeasured()!=true){
                 qDebug() << "It is measuring ...." << endl;
                 return;
             }
-            _module1->onSigOTDRSetMode(1);
+            _module1->onSigOTDRSetMode(0 , 1);
             _module1->setKeepRunning(0);
             _module1->start();
         }
     }
     if(module == 1){
         if(_module2){
-            if(_module2->getProgress() != 0){
+            if(_module2->isMeasured()!=true){
                 qDebug() << "It is measuring ...." << endl;
                 return;
             }
             _module2->setKeepRunning(0);
-            _module2->onSigOTDRSetMode(1);
+            _module2->onSigOTDRSetMode(1 , 1);
             _module2->start();
         }
     }

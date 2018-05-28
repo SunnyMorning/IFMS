@@ -257,7 +257,6 @@ public:
 signals:
 
 public slots:
-    void setModuleMeasuringProgess(quint16 module, quint16 progress);
 
 private:
 

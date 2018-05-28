@@ -148,5 +148,15 @@ void QPST::onSigOTDRTrap(quint16 module, QByteArray &data)
 
 void QPST::onSigSetProgress(quint16 module, quint16 progress)
 {
-    m_product->setModuleMeasuringProgess(module, progress);
+    m_product->m_pstIFMS1000.setModuleMeasuringProgess(module, progress);
+}
+
+void QPST::onSigOTDRSetMode(quint16 module, quint16 mode)
+{
+    m_product->m_pstIFMS1000.setMouleMode(module, mode);
+}
+
+void QPST::onSigSetMeasuredCount(quint16 channel, quint32 count)
+{
+    m_product->m_pstIFMS1000.set_pstIFMS1000MeasureNumber(channel, count);
 }

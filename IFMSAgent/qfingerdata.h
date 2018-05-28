@@ -35,10 +35,8 @@ public:
     QFingerData&  operator=(const QFingerData &other);
     IFMSFinger_t        mIFMSFingerData;
     qint16              mChannel;
-    void                toIFMSFingerFile();
+    void                toIFMSFingerFile(QString filename);
     QByteArray          toByteArray();
-    static QString      getIFMSFingerFileName(qint16 channel);
-    static QString      getIFMSSorFileName(qint16 channel);
 signals:
     void    sigFingerDataChanged(qint16 channel);
 

@@ -104,6 +104,8 @@ public:
     void    initModuleFingerData();
     void    initTcpConnection();
     void    setConnections();
+    static QString      getIFMSFingerFileName(qint16 channel);
+    static QString      getIFMSSorFileName(qint16 channel);
 
     OTDRModuleState getOTDRModuleState();
     void setOTDRModuleState(OTDRModuleState state);
@@ -163,15 +165,14 @@ signals:
 	void sigSetMeasuredCount(quint16  channel, quint32 count);
     void sigOTDRChanged(quint16 module, quint16 channel);
     void sigOTDRTrap(quint16 module, QByteArray &data);
-    void sigOTDRSetMode(quint16 mode);
+    void sigOTDRSetMode(quint16 module, quint16 mode);
 
 public slots:
     void onCatchException(quint16 module, const QString& info);
     void onFileChanged(quint16 module, QString filename);
     void onSendCommand(quint16 module, QString &cmdline);
-//    void onSetProgress(quint16 module, quint16 progress);
     void onOTDRChanged(quint16 module, quint16 channel);
-    void onSigOTDRSetMode(quint16 mode);
+    void onSigOTDRSetMode(quint16 module, quint16 mode);
 
     void onSocketError(QAbstractSocket::SocketError  socketError);
     void onSocketConnected();

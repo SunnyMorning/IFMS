@@ -15,11 +15,9 @@ netsnmp_feature_require(table_dataset)
 netsnmp_feature_require(table_set_multi_add_default_row)
 
 static QMutex PSTProduct_mutex;
-static QObject       *product_agent;
 
 QPSTProduct::QPSTProduct(QObject *parent) : QObject(parent)
 {
-    product_agent =  parent;
     init_pstIFMS1000Data();
 }
 
@@ -39,13 +37,6 @@ long QPSTProduct::get_pstIFMS1000SysLedPW2(QObject *agent){
 long QPSTProduct::get_pstIFMS1000SysLedStatus(QObject *agent){
     QPST *p = (QPST*)agent;
     return p->m_product->m_pstIFMS1000.get_pstIFMS1000SysLedStatus(agent);
-}
-
-void QPSTProduct::setModuleMeasuringProgess(quint16 module, quint16 progress)
-{
-    QPST *p = QPST::getInstance();
-    p->m_product->m_pstIFMS1000.setModuleMeasuringProgess(module, progress);
-
 }
 
 void QPSTProduct::init_pstIFMS1000()
@@ -185,7 +176,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    long ledpw1 = get_pstIFMS1000SysLedPW1(product_agent);
+    long ledpw1 = get_pstIFMS1000SysLedPW1(QPST::getInstance());
 
     switch(reqinfo->mode) {
 
@@ -215,7 +206,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    long ledpw2 = get_pstIFMS1000SysLedPW2(product_agent);
+    long ledpw2 = get_pstIFMS1000SysLedPW2(QPST::getInstance());
     
     switch(reqinfo->mode) {
 
@@ -244,7 +235,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    long ledstatus = get_pstIFMS1000SysLedStatus(product_agent);
+    long ledstatus = get_pstIFMS1000SysLedStatus(QPST::getInstance());
 
     switch(reqinfo->mode) {
 
@@ -1056,6 +1047,77 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
     return SNMP_ERR_NOERROR;
 }
 
+ //    /* Typical data structure for a row entry */
+ //struct pstIFMS1000PortInfoTable_entry {
+ //    /* Index values */
+ //    long pstIFMS1000PortNum;
+
+ //    /* Column values */
+ //    long pstIFMS1000PortNum;
+ //    char pstIFMS1000PortRxPwr[NNN];
+ //    size_t pstIFMS1000PortRxPwr_len;
+ //    char pstIFMS1000PortTxPwr[NNN];
+ //    size_t pstIFMS1000PortTxPwr_len;
+ //    long pstIFMS1000PortWorkMode;
+ //    long old_pstIFMS1000PortWorkMode;
+ //    long pstIFMS1000PortActive;
+ //    long old_pstIFMS1000PortActive;
+ //    long pstIFMS1000PortFiberAppType;
+ //    long old_pstIFMS1000PortFiberAppType;
+ //    long pstIFMS1000PortRunningStatus;
+
+ //    int   valid;
+ //};
+
+ /* create a new row in the table */
+ static netsnmp_tdata_row *
+ pstIFMS1000PortInfoTable_createEntry(netsnmp_tdata *table_data
+                  , long  pstIFMS1000PortNum
+                 ) {
+     struct pstIFMS1000PortInfoTable_entry *entry;
+     netsnmp_tdata_row *row;
+
+     entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PortInfoTable_entry);
+     if (!entry)
+         return NULL;
+
+     row = netsnmp_tdata_create_row();
+     if (!row) {
+         SNMP_FREE(entry);
+         return NULL;
+     }
+     row->data = entry;
+
+     DEBUGMSGT(("pstIFMS1000PortInfoTable:entry:create", "row 0x%x\n", (uintptr_t)row));
+     entry->pstIFMS1000PortNum = pstIFMS1000PortNum;
+     netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                  &(entry->pstIFMS1000PortNum),
+                                  sizeof(entry->pstIFMS1000PortNum));
+     if (table_data)
+         netsnmp_tdata_add_row( table_data, row );
+     return row;
+ }
+
+ /* remove a row from the table */
+ static void
+ pstIFMS1000PortInfoTable_removeEntry(netsnmp_tdata     *table_data,
+                  netsnmp_tdata_row *row) {
+     struct pstIFMS1000PortInfoTable_entry *entry;
+
+     if (!row)
+         return;    /* Nothing to remove */
+
+     DEBUGMSGT(("pstIFMS1000PortInfoTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
+
+     entry = (struct pstIFMS1000PortInfoTable_entry *)row->data;
+     SNMP_FREE( entry );   /* XXX - release any other internal resources */
+
+     if (table_data)
+         netsnmp_tdata_remove_and_delete_row( table_data, row );
+     else
+         netsnmp_tdata_delete_row( row );
+ }
+
 // Table
 /** Initialize the pstIFMS1000PortInfoTable table by defining its contents and how it's structured */
 void
@@ -1095,79 +1157,22 @@ QPSTProduct::initialize_table_pstIFMS1000PortInfoTable(void)
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
-}
+    long i = 0;
+    QPST *pst = QPST::getInstance();
+    netsnmp_tdata_row 	*row;
 
-//    /* Typical data structure for a row entry */
-//struct pstIFMS1000PortInfoTable_entry {
-//    /* Index values */
-//    long pstIFMS1000PortNum;
+    struct pstIFMS1000PortInfoTable_entry		*entry;
+    for(i = 0; i < NUMBER_OF_CHANNES; i++){
 
-//    /* Column values */
-//    long pstIFMS1000PortNum;
-//    char pstIFMS1000PortRxPwr[NNN];
-//    size_t pstIFMS1000PortRxPwr_len;
-//    char pstIFMS1000PortTxPwr[NNN];
-//    size_t pstIFMS1000PortTxPwr_len;
-//    long pstIFMS1000PortWorkMode;
-//    long old_pstIFMS1000PortWorkMode;
-//    long pstIFMS1000PortActive;
-//    long old_pstIFMS1000PortActive;
-//    long pstIFMS1000PortFiberAppType;
-//    long old_pstIFMS1000PortFiberAppType;
-//    long pstIFMS1000PortRunningStatus;
 
-//    int   valid;
-//};
-
-/* create a new row in the table */
-static netsnmp_tdata_row *
-pstIFMS1000PortInfoTable_createEntry(netsnmp_tdata *table_data
-                 , long  pstIFMS1000PortNum
-                ) {
-    struct pstIFMS1000PortInfoTable_entry *entry;
-    netsnmp_tdata_row *row;
-
-    entry = SNMP_MALLOC_TYPEDEF(struct pstIFMS1000PortInfoTable_entry);
-    if (!entry)
-        return NULL;
-
-    row = netsnmp_tdata_create_row();
-    if (!row) {
-        SNMP_FREE(entry);
-        return NULL;
+        row = pstIFMS1000PortInfoTable_createEntry(table_data, i);
+        entry = (struct pstIFMS1000PortInfoTable_entry *)row->data;
+        entry->valid = 1;
+        entry->pstIFMS1000PortActive = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(i);
+        entry->pstIFMS1000PortFiberAppType = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortFiberAppType(i);
     }
-    row->data = entry;
 
-    DEBUGMSGT(("pstIFMS1000PortInfoTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    entry->pstIFMS1000PortNum = pstIFMS1000PortNum;
-    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
-                                 &(entry->pstIFMS1000PortNum),
-                                 sizeof(entry->pstIFMS1000PortNum));
-    if (table_data)
-        netsnmp_tdata_add_row( table_data, row );
-    return row;
 }
-
-/* remove a row from the table */
-static void
-pstIFMS1000PortInfoTable_removeEntry(netsnmp_tdata     *table_data, 
-                 netsnmp_tdata_row *row) {
-    struct pstIFMS1000PortInfoTable_entry *entry;
-
-    if (!row)
-        return;    /* Nothing to remove */
-
-    DEBUGMSGT(("pstIFMS1000PortInfoTable:entry:remove", "row 0x%x\n", (uintptr_t)row));
-
-    entry = (struct pstIFMS1000PortInfoTable_entry *)row->data;
-    SNMP_FREE( entry );   /* XXX - release any other internal resources */
-
-    if (table_data)
-        netsnmp_tdata_remove_and_delete_row( table_data, row );
-    else
-        netsnmp_tdata_delete_row( row );    
-}
-
 
 /** handles requests for the pstIFMS1000PortInfoTable table */
 int
@@ -1239,22 +1244,37 @@ QPSTProduct::pstIFMS1000PortInfoTable_handler(
                                             table_entry->pstIFMS1000PortWorkMode);
                 break;
             case COLUMN_PSTIFMS1000PORTACTIVE:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+
+                long index = table_entry->pstIFMS1000PortNum;
+                QPST *pst = QPST::getInstance();
+                long active = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(index);
+
+
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstIFMS1000PortActive);
+                                            active/*table_entry->pstIFMS1000PortActive*/);
+            }
                 break;
             case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+
+                long index = table_entry->pstIFMS1000PortNum;
+                QPST *pst = QPST::getInstance();
+                long type = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortFiberAppType(index);
+
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstIFMS1000PortFiberAppType);
+                                            type/*table_entry->pstIFMS1000PortFiberAppType*/);
+            }
                 break;
             case COLUMN_PSTIFMS1000PORTRUNNINGSTATUS:
                 if ( !table_entry ) {
@@ -1296,19 +1316,37 @@ QPSTProduct::pstIFMS1000PortInfoTable_handler(
                 break;
             case COLUMN_PSTIFMS1000PORTACTIVE:
                 /* or possibly 'netsnmp_check_vb_int_range' */
+            {
                 ret = netsnmp_check_vb_int( request->requestvb );
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
+
+                long index = table_entry->pstIFMS1000PortNum;
+                long active = *(request->requestvb->val.integer);
+                QPST *pst = QPST::getInstance();
+
+                pst->m_product->m_pstIFMS1000.set_pstIFMS1000PortActive(index,active);
+
+            }
                 break;
             case COLUMN_PSTIFMS1000PORTFIBERAPPTYPE:
                 /* or possibly 'netsnmp_check_vb_int_range' */
+            {
                 ret = netsnmp_check_vb_int( request->requestvb );
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
+                long index = table_entry->pstIFMS1000PortNum;
+                long type = *(request->requestvb->val.integer);
+                QPST *pst = QPST::getInstance();
+
+                pst->m_product->m_pstIFMS1000.set_pstIFMS1000PortFiberAppType(index,type);
+
+
+            }
                 break;
             default:
                 netsnmp_set_request_error( reqinfo, request,
@@ -1688,13 +1726,20 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                                             table_entry->pstIFMS1000MeasureStatus);
                 break;
             case COLUMN_PSTIFMS1000MEASUREACTION:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+
+                long index = table_entry->pstIFMS1000MTPortNum;
+                QPST *pst = QPST::getInstance();
+
+                long  action = pst->m_product->m_pstIFMS1000.getMouleMode(index);
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstIFMS1000MeasureAction);
+                                            action/*table_entry->pstIFMS1000MeasureAction*/);
+            }
                 break;
             case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
                 if ( !table_entry ) {
@@ -1725,8 +1770,8 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
 
                 long index = table_entry->pstIFMS1000MTPortNum;
                 QPST *pst = QPST::getInstance();
-                pstIFMS1000MeasureEntry entry  = pst->m_product->m_pstIFMS1000.MeasureTable[index];
-                long progress = entry.pstIFMS1000MeasureProgressStatus;
+
+                long progress = pst->m_product->m_pstIFMS1000.getModuleMeasuringProgess(index);
 
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
                                             progress);
