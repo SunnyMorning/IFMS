@@ -111,11 +111,11 @@ void QOTDRModule::initModuleData()
     for(i=0;i< CHANNELS_PER_MODULE; i++){
         channel = _moduleIndex*CHANNELS_PER_MODULE+i+1;
         single_finger_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_finger_Single.bin").arg(channel);
-		single_sor_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_Single.bin").arg(channel);
+        single_sor_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_Single.sor").arg(channel);
 		first_finger_name = QAgentApp::getCacheDir() + QString("IFMS_CH%1_finger_First.bin").arg(channel);
-		first_sor_name = QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_First.bin").arg(channel);
+        first_sor_name = QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_First.sor").arg(channel);
         current_finger_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_finger_Current.bin").arg(channel);
-		current_sor_filename =QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_Current.bin").arg(channel);
+        current_sor_filename =QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_Current.sor").arg(channel);
 		
         _PortActives[channel] = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(channel);
 
@@ -179,6 +179,7 @@ void QOTDRModule::setConnections()
 
 void QOTDRModule::run()
 {
+            _progress = 0;
             qDebug() << QThread::currentThreadId() << "\n start Monitoring on module: " << _moduleIndex << " " << _progress << endl;
             qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError");
 
@@ -270,9 +271,14 @@ void QOTDRModule::run()
             {
                 _MeasuredChannels.OTDRModule.channels &= 0xF0;
             }
+            if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE){
+                setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_SINGLE_DONE);
+            }
+            else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
+            {
+                setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_IDLE);
+            }
             setModuleMode(_moduleIndex, OTDR_WORK_MODE_STOP);
-			
-			setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_SINGLE_DONE);
             if(_pTcpSocket!=NULL){
                 _pTcpSocket->close();
                 delete _pTcpSocket;
@@ -503,6 +509,7 @@ void QOTDRModule::setProgress(quint16 channel, quint16 progress)
 void QOTDRModule::setProgress(quint16 progress)
 {
     int i = 0;
+    _progress = progress;
     for(i = 0; i <( _moduleIndex+1)*CHANNELS_PER_MODULE; i++){
             setProgress(i+1, progress);
     }

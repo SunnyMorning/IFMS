@@ -224,6 +224,7 @@ private:
     QTimer                      *_timerTCPKeepAlive;
     quint16                     _moduleMode;
 // TRAP PARAMS
+    int                         _L;
 
 	
 };

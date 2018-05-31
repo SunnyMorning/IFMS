@@ -2082,7 +2082,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 long index = table_entry->pstIFMS1000MTPortNum;
 				QPST *pst = QPST::getInstance();
 				u_char *startPosition = requests->requestvb->val.string;
-				QString cmdline("SPARA 260,10000,2,0");
+                QString cmdline("SPARA 125,3000,5,0");
                 emit pst->sigSendCommandToModule(index/CHANNELS_PER_MODULE, cmdline);
 	        	}
                 break;
