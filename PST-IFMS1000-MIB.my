@@ -62,7 +62,9 @@
 				pstIFMS1000PortFiberAppType
 					Integer32,
 				pstIFMS1000PortRunningStatus
-					Integer32
+					Integer32,   
+				pstIFMS1000MeasureSingleCH
+				 	Integer32
 			 }
 
 		-- 1.3.6.1.4.1.48391.3.5.1.1.1
@@ -144,7 +146,19 @@
 				"Indicates current port's running status.
 				1. Normal
 				2. Abnormal"
-			::= { pstIFMS1000PortInfoEntry 7 }
+			::= { pstIFMS1000PortInfoEntry 7 }       
+			
+			
+		-- 1.3.6.1.4.1.48391.3.5.1.1.8
+		pstIFMS1000MeasureSingleCH OBJECT-TYPE
+			SYNTAX Integer32 (1..2)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Indicates single measurement port.
+				0. not need measure
+				1. need measure"
+			::= { pstIFMS1000PortInfoEntry 8 }
 
 		
 		-- 1.3.6.1.4.1.48391.3.5.2
@@ -221,8 +235,8 @@
 				pstIFMS1000MeasureNumber 
 					OCTET STRING,					
 				pstIFMS1000MeasureNumberSORStoredEachChannel 
-					OCTET STRING					
-																					
+					OCTET STRING
+																										
 			 }    
 			 
 
@@ -378,7 +392,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"End to end loss change, unit dB, Critical alarm, Default value:6dB."
+				"End to end loss change, unit dB, Critical alarm, Default value:5dB."
 			::= { pstIFMS1000MeasureEntry 14 }			
 
 			
@@ -388,7 +402,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"End to end loss change, unit dB, Major alarm, Default value:4dB."
+				"End to end loss change, unit dB, Major alarm, Default value:1dB."
 			::= { pstIFMS1000MeasureEntry 15 }				
 
 			
@@ -398,7 +412,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"End to end loss change, unit dB, Minor alarm, Default value:2dB."
+				"End to end loss change, unit dB, Minor alarm, Default value:0dB."
 			::= { pstIFMS1000MeasureEntry 16 }			
 
 			
@@ -408,7 +422,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"Loss changes of new events, unit dB, Critical alarm, Default value:0.6dB."
+				"Loss changes of new events, unit dB, Critical alarm, Default value:5dB."
 			::= { pstIFMS1000MeasureEntry 17 }			
 
 						
@@ -418,7 +432,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"Loss changes of new events, unit dB, Major alarm, Default value:0.4dB."
+				"Loss changes of new events, unit dB, Major alarm, Default value:2dB."
 			::= { pstIFMS1000MeasureEntry 18 }	
 
 			
@@ -428,7 +442,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"Loss changes of new events, unit dB, Minor alarm, Default value:0.2dB."
+				"Loss changes of new events, unit dB, Minor alarm, Default value:0.5dB."
 			::= { pstIFMS1000MeasureEntry 19 }		
 
 			
@@ -438,7 +452,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"Changes in loss of events, unit dB, Critical alarm, Default value:0.6dB."
+				"Changes in loss of events, unit dB, Critical alarm, Default value:5dB."
 			::= { pstIFMS1000MeasureEntry 20 }			
 
 						
@@ -448,7 +462,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"Changes in loss of events, unit dB, Major alarm, Default value:0.4dB."
+				"Changes in loss of events, unit dB, Major alarm, Default value:2dB."
 			::= { pstIFMS1000MeasureEntry 21 }				   			
 
 
@@ -458,7 +472,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"Changes in loss of events, unit dB, Minor alarm, Default value:0.2dB."
+				"Changes in loss of events, unit dB, Minor alarm, Default value:0.5dB."
 			::= { pstIFMS1000MeasureEntry 22 }	
 
 
@@ -712,6 +726,10 @@
 				pstIFMS1000DtPortNum
 					Integer32,
 				pstIFMS1000DtTotalNum
+					Integer32,
+				pstIFMS1000DtDiffDetail
+					OCTET STRING,  
+				pstIFMS1000DtDiffDetailStatus
 					Integer32
 			 }
 
@@ -731,10 +749,34 @@
 			MAX-ACCESS read-only
 			STATUS current
 			DESCRIPTION
-				"Indicates the diff table's total index count of one port"
-			::= { pstIFMS1000DiffTotalEntry 2 }
+				"Indicates the diff table's total index count of one port"      
+			::= { pstIFMS1000DiffTotalEntry 2 }       
+			
+			
+		-- 1.3.6.1.4.1.48391.3.5.4.1.1.3
+		pstIFMS1000DtDiffDetail OBJECT-TYPE
+			SYNTAX OCTET STRING (SIZE (1..512))
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Indicates the fiber's diff detail of the port.
+					e.g. :  CH1,A,3,5,50.28,40.13,CH1,A,10,5,0.21,5.6				
+				"    
+			::= { pstIFMS1000DiffTotalEntry 3 } 
+			
 
-		
+		-- 1.3.6.1.4.1.48391.3.5.4.1.1.4
+		pstIFMS1000DtDiffDetailStatus OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Indicates the DiffDetail status: 
+				0:not ready, can not be read
+				1:ready, can be read"      
+			::= { pstIFMS1000DiffTotalEntry 4 }  
+			
+					
 		-- 1.3.6.1.4.1.48391.3.5.4.2
 		pstIFMS1000DiffInfoTable OBJECT-TYPE
 			SYNTAX SEQUENCE OF PSTIFMS1000DiffInfoEntry
@@ -886,24 +928,24 @@
 				"Description."
 			::= { pstIFMS1000LedStatus 1 }
 
-		
+	
 		-- 1.3.6.1.4.1.48391.3.5.6.1.1
-		pstIFMS1000SysLedPW1 OBJECT-TYPE
+		pstIFMS1000SysLedFan1 OBJECT-TYPE
 			SYNTAX Integer32
 			MAX-ACCESS read-only
 			STATUS current
 			DESCRIPTION
-				"Description."
+				"The operating state of the fan1:0,fault(RED);1,OK(GREEN)."
 			::= { pstIFMS1000SystemLed 1 }
 
 		
 		-- 1.3.6.1.4.1.48391.3.5.6.1.2
-		pstIFMS1000SysLedPW2 OBJECT-TYPE
+		pstIFMS1000SysLedFan2 OBJECT-TYPE
 			SYNTAX Integer32
 			MAX-ACCESS read-only
 			STATUS current
 			DESCRIPTION
-				"Description."
+				"The operating state of the fan2:0,fault(RED);1,OK(GREEN)."
 			::= { pstIFMS1000SystemLed 2 }
 
 		
@@ -913,7 +955,7 @@
 			MAX-ACCESS read-only
 			STATUS current
 			DESCRIPTION
-				"Description."
+				"The operating state of the System:0,fault(RED);1,OK(GREEN)."
 			::= { pstIFMS1000SystemLed 3 }
 
 		
@@ -962,7 +1004,7 @@
 			MAX-ACCESS read-only
 			STATUS current
 			DESCRIPTION
-				"Description."
+				"The operating state of the CHn:0,fault(RED);1,OK(GREEN)."
 			::= { pstIFMS1000PortLedEntry 2 }
 
 		
