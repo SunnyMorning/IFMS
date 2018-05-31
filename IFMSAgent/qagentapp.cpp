@@ -114,7 +114,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 // FOR DEBUG ONLY
 //    emit sigModuleStartMonitor(0);
 //    emit sigModuleStartMonitor(1);
-    emit command_thread->sigSwitchModule(1);
+    emit command_thread->sigSwitchModule(0);
 //    QString qcmdline = QString("SCAN");
 //    QString qcmdline = QString("GETSOR? 0");
 //    emit command_thread->sigSendCommandToModule(0,qcmdline);

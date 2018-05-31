@@ -317,9 +317,10 @@ void QOTDRModule::setMeasuringStaus(quint16 module, quint32 status)
 			{
                 _MeasuringStatus[channel] = OTDR_MEASURE_STATUS_FAIL;
 			}
-		}
 
-    emit sigOTDRSetMeasuringStatus(channel, _MeasuringStatus[channel]);
+            emit sigOTDRSetMeasuringStatus(channel, _MeasuringStatus[channel]);
+
+		}
 
 }
 
@@ -591,7 +592,7 @@ QString QOTDRModule::getIFMSFingerFileName(quint16 channel)
 			}
 	}
 	else if(mode == OTDR_WORK_MODE_SINGLE)	{
-		filename = _FirstFingers.value(channel, emptyfile);
+        filename = _SingleFingers.value(channel, emptyfile);
 		}
 
     return filename;
@@ -614,7 +615,7 @@ QString QOTDRModule::getIFMSSorFileName(quint16 channel)
 			}
 	}
 	else if(mode == OTDR_WORK_MODE_SINGLE)	{
-		filename = _FirstSORs.value(channel, emptyfile);
+        filename = _SingleSORs.value(channel, emptyfile);
 		}
 
     return filename;
