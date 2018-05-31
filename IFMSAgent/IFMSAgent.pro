@@ -17,8 +17,8 @@ QMAKE_CXXFLAGS += -Wno-deprecated
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-D_DATA_DIR = /usr/share/ifms
-D_CACHE_DIR = /temp/ifms
+D_DATA_DIR = /usr/share/ifms/
+D_CACHE_DIR = /var/www/
 #message(pwd=$(PWD))
 #message("DATADIR="\"$${D_DATA_DIR}\")
 #message("CACHEDIR="\"$${D_CACHE_DIR}\")

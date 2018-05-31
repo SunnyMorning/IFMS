@@ -1814,13 +1814,19 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                                           table_entry->pstIFMS1000MeasureResolution_len);
                 break;
             case COLUMN_PSTIFMS1000MEASURESTATUS:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                long channel = table_entry->pstIFMS1000MTPortNum;
+
+                long s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureStatus(channel);
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstIFMS1000MeasureStatus);
+                                            s/*table_entry->pstIFMS1000MeasureStatus*/);
+            }
                 break;
             case COLUMN_PSTIFMS1000MEASUREACTION:
             {

@@ -759,7 +759,7 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureResolution_len(quint16 channel, 
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureStatus(quint16 channel, int s)
 {
-
+    MeasureTable[channel-1].pstIFMS1000MeasureStatus = (long) (s) ;
 }
 
 
