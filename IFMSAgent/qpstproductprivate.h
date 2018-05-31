@@ -20,9 +20,6 @@
 
 using namespace std;
 
-//static QString  org = QString("IFMS");
-//static QString  app = QString("product");
-
 typedef struct pstIFMS1000PortInfoTable_entry {
     /* Index values */
     long pstIFMS1000PortNum;
@@ -570,23 +567,119 @@ public:
     long get_pstIFMS1000SysLedPW1(QObject *agent);
     long get_pstIFMS1000SysLedPW2(QObject *agent);
     long get_pstIFMS1000SysLedStatus(QObject *agent);
+    
+    QString get_pstIFMS1000PortRxPwr(quint16 channel);          
+    size_t get_pstIFMS1000PortRxPwr_len(quint16 channel);      
+    QString get_pstIFMS1000PortTxPwr(quint16 channel);          
+    size_t get_pstIFMS1000PortTxPwr_len(quint16 channel);     
+    long get_pstIFMS1000PortWorkMode(quint16 channel);           
+    long get_pstIFMS1000PortActive(quint16 channel);             
+    long get_pstIFMS1000PortFiberAppType(quint16 channel);       
+    long get_pstIFMS1000PortRunningStatus(quint16 channel);      
+    
+    void set_pstIFMS1000PortRxPwr(quint16 channel,QString s);          
+    void set_pstIFMS1000PortRxPwr_len(quint16 channel, int s);      
+    void set_pstIFMS1000PortTxPwr(quint16 channel,QString s);          
+    void set_pstIFMS1000PortTxPwr_len(quint16 channel,int s);     
+    void set_pstIFMS1000PortWorkMode(quint16 channel,int s);           
+    void set_pstIFMS1000PortActive(quint16 channel,int s);             
+    void set_pstIFMS1000PortFiberAppType(quint16 channel,int s);       
+    void set_pstIFMS1000PortRunningStatus(quint16 channel,int s);    
+    
+    
+    QString get_pstIFMS1000MeasureStartPosition(quint16 channel);
+    size_t get_pstIFMS1000MeasureStartPosition_len(quint16 channel);
+    QString get_pstIFMS1000MeasureEndPosition(quint16 channel);
+    size_t get_pstIFMS1000MeasureEndPosition_len(quint16 channel);
+     QString get_pstIFMS1000MeasureRefIndex(quint16 channel);
+    size_t get_pstIFMS1000MeasureRefIndex_len(quint16 channel);
+    QString get_pstIFMS1000MeasureResolution(quint16 channel);
+    size_t get_pstIFMS1000MeasureResolution_len(quint16 channel);
+    long get_pstIFMS1000MeasureStatus(quint16 channel);
+    long get_pstIFMS1000MeasureAction(quint16 channel);
+    QString get_pstIFMS1000MeasurePulseWidth(quint16 channel);
+    size_t get_pstIFMS1000MeasurePulseWidth_len(quint16 channel);
+    long get_pstIFMS1000MeasureTime(quint16 channel);
+     long get_pstIFMS1000MeasureProgressStatus(quint16 channel);
+    QString get_pstIFMS1000MeasureTLOS(quint16 channel);
+    size_t get_pstIFMS1000MeasureTLOS_len(quint16 channel);
+    QString get_pstIFMS1000MeasureTREF(quint16 channel);
+    size_t get_pstIFMS1000MeasureTREF_len(quint16 channel);
+    QString get_pstIFMS1000MeasureFiberLengthChangeThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureFiberLengthChangeThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureEndToEndLossCriticalThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureEndToEndLossCriticalThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureEndToEndLossMajorThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureEndToEndLossMajorThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureEndToEndLossMinorThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureEndToEndLossMinorThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureNewLossCriticalThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureNewLossCriticalThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureNewLossMajorThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureNewLossMajorThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureNewLossMinorThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureNewLossMinorThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureOldLossCriticalThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureOldLossCriticalThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureOldLossMajorThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureOldLossMajorThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureOldLossMinorThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureOldLossMinorThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureTempHighThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureTempHighThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureTempLowThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureTempLowThreshold_len(quint16 channel);
+    QString get_pstIFMS1000MeasureNumber(quint16 channel);
+    size_t get_pstIFMS1000MeasureNumber_len(quint16 channel);
+    QString get_pstIFMS1000MeasureNumberSORStoredEachChannel(quint16 channel);
+    size_t get_pstIFMS1000MeasureNumberSORStoredEachChannel_len(quint16 channel);
 
-    void set_pstIFMS1000PortActive(quint16 channel, int active);
-    long get_pstIFMS1000PortActive(quint16 channel);
-
-    void set_pstIFMS1000PortFiberAppType(quint16 channel, int type);
-    long get_pstIFMS1000PortFiberAppType(quint16 channel);
-
-	QString get_pstIFMS1000MeasureStartPosition(long index);
-    void setModuleMeasuringProgess(quint16 module, quint16 progress);
-    long getModuleMeasuringProgess(quint16 channel);
-
-    void set_pstIFMS1000MeasureNumber(quint16 channel, quint32 count);
-    char* get_pstIFMS1000MeasureNumber(quint16 channel);
-
-    void setMouleMode(quint16 module, quint16 mode);
-    long getMouleMode(quint16 channel);
-
+    void  set_pstIFMS1000MeasureStartPosition(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureStartPosition_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureEndPosition(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureEndPosition_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureRefIndex(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureRefIndex_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureResolution(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureResolution_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureStatus(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureAction(quint16 channel, int s);
+    void  set_pstIFMS1000MeasurePulseWidth(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasurePulseWidth_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureTime(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureProgressStatus(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureTLOS(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureTLOS_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureTREF(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureTREF_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureFiberLengthChangeThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureFiberLengthChangeThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureEndToEndLossCriticalThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureEndToEndLossCriticalThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureEndToEndLossMajorThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureEndToEndLossMajorThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureEndToEndLossMinorThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureEndToEndLossMinorThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureNewLossCriticalThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureNewLossCriticalThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureNewLossMajorThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureNewLossMajorThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureNewLossMinorThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureNewLossMinorThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureOldLossCriticalThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureOldLossCriticalThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureOldLossMajorThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureOldLossMajorThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureOldLossMinorThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureOldLossMinorThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureTempHighThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureTempHighThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureTempLowThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureTempLowThreshold_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureNumber(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureNumber_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureNumberSORStoredEachChannel(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureNumberSORStoredEachChannel_len(quint16 channel, int s); 
 
 signals:
 

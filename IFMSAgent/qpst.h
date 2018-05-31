@@ -89,18 +89,17 @@ private:
     int         _keeprunning;
 
 signals:
-    void sigOTDRChanged(quint16 module, quint16 channel);
     void sigOTDRTrap(quint16 module, QByteArray &data);
     void sigSetProgress(quint16 module, quint16 progress);
     void sigSendCommandToModule(quint16 module, QString &cmdline);
 
 
 public slots:
-    void onSigOTDRChanged(quint16 module, quint16 channel);
     void onSigOTDRTrap(quint16 module, QByteArray& data);
     void onSigSetProgress(quint16 module, quint16 progress);
     void onSigOTDRSetMode(quint16 module, quint16 mode);
     void onSigSetMeasuredCount(quint16 channel, quint32 count);
+    void onSigSetMeasuringStatus(quint16 channel, quint32 status);
 	
 };
 

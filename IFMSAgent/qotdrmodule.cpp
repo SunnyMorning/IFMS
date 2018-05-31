@@ -32,6 +32,8 @@ QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QThread(parent)
     	_MeasuredCounts.insert(i,0);
 		_MeasuredSORFiles.insert(i, 0);
 		_MeasuringProgresss.insert(i, 0);
+        _PortActives.insert(i, 0);
+        _MeasuringStatus.insert(i, 0);
 		}
     _moduleMode = OTDR_WORK_MODE_STOP;
 	_pIODevice = NULL;
@@ -86,68 +88,48 @@ qint8 QOTDRModule::getModuleIndex()
     return _moduleIndex;
 }
 
-void QOTDRModule::initModuleFingerData()
+quint16 QOTDRModule::getModuleMode(quint16 module)
 {
-    QString filename;
-    if(getModuleIndex() == 0){
-        filename = getIFMSFingerFileName(1);
-        initFingerBinFile(filename);
-         _OldFingers.insert(filename, new QFingerData(this));
-         _NewFingers.insert(filename, new QFingerData(this));
+    QMutexLocker locker(&gOTDRModule_mutex);
 
-         filename = getIFMSFingerFileName(2);
-         initFingerBinFile(filename);
-          _OldFingers.insert(filename, new QFingerData(this));
-          _NewFingers.insert(filename, new QFingerData(this));
-
-          filename = getIFMSFingerFileName(3);
-          initFingerBinFile(filename);
-           _OldFingers.insert(filename, new QFingerData(this));
-           _NewFingers.insert(filename, new QFingerData(this));
-
-           filename = getIFMSFingerFileName(4);
-           initFingerBinFile(filename);
-            _OldFingers.insert(filename, new QFingerData(this));
-            _NewFingers.insert(filename, new QFingerData(this));
-    }
-
-    if(getModuleIndex() == 1 ){
-        filename = getIFMSFingerFileName(5);
-        initFingerBinFile(filename);
-         _OldFingers.insert(filename, new QFingerData(this));
-         _NewFingers.insert(filename, new QFingerData(this));
-
-         filename = getIFMSFingerFileName(6);
-         initFingerBinFile(filename);
-          _OldFingers.insert(filename, new QFingerData(this));
-          _NewFingers.insert(filename, new QFingerData(this));
-
-          filename = getIFMSFingerFileName(7);
-          initFingerBinFile(filename);
-           _OldFingers.insert(filename, new QFingerData(this));
-           _NewFingers.insert(filename, new QFingerData(this));
-
-           filename = getIFMSFingerFileName(8);
-           initFingerBinFile(filename);
-            _OldFingers.insert(filename, new QFingerData(this));
-            _NewFingers.insert(filename, new QFingerData(this));
-    }
-//        _watcher.addPath(QAgentApp::getCacheDir());
+    return _moduleMode;
 }
 
-void QOTDRModule::initFingerBinFile(QString filename)
+void QOTDRModule::initModuleData()
 {
-    QFile   ch_file(filename);
-    if( !ch_file.open( QIODevice::WriteOnly ) )
-      return;
+    QPST *pst   = QPST::getInstance();
+    int i = 0;
+    int channel = 0;
+	QString		single_finger_filename;
+	QString		single_sor_filename;
+	QString		first_finger_name;
+	QString		first_sor_name;
+	QString		current_finger_filename;
+	QString		current_sor_filename;
+	QString		stored_sor_name;
+	
+    for(i=0;i< CHANNELS_PER_MODULE; i++){
+        channel = _moduleIndex*CHANNELS_PER_MODULE+i+1;
+        single_finger_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_finger_Single.bin").arg(channel);
+		single_sor_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_Single.bin").arg(channel);
+		first_finger_name = QAgentApp::getCacheDir() + QString("IFMS_CH%1_finger_First.bin").arg(channel);
+		first_sor_name = QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_First.bin").arg(channel);
+        current_finger_filename = QAgentApp::getCacheDir() + QString("IFMS_CH%1_finger_Current.bin").arg(channel);
+		current_sor_filename =QAgentApp::getCacheDir() + QString("IFMS_CH%1_SOR_Current.bin").arg(channel);
+		
+        _PortActives[channel] = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(channel);
 
-    QDataStream stream(&ch_file );
-    stream.setVersion( QDataStream::Qt_DefaultCompiledVersion);
-    stream << 0;
-    ch_file.flush();
-    ch_file.close();
-    _fileList.insert(_fileList.count(),filename);
-//    _watcher.addPath(filename);
+        _OldFingers.insert(channel, new QFingerData());
+        _NewFingers.insert(channel, new QFingerData());
+
+		_SingleFingers.insert(channel, single_finger_filename);
+		_SingleSORs.insert(channel, single_sor_filename);
+		_FirstFingers.insert(channel, first_finger_name);
+		_FirstSORs.insert(channel, first_sor_name);
+		_CurrentFingers.insert(channel, current_finger_filename);
+		_CurrentSORs.insert(channel, current_sor_filename);
+    }
+    // _watcher.addPath(QAgentApp::getCacheDir());
 }
 
 void QOTDRModule::initTcpConnection()
@@ -163,7 +145,7 @@ void QOTDRModule::initTcpConnection()
             if(false == _pTcpSocket->waitForConnected(TCP_CONNECT_TIMEOUT)){
                 qDebug() << "Failed to connect to " << host << "in " << TCP_CONNECT_TIMEOUT <<"microseconds\n" << endl;
 
-                _pTcpSocket->abort();
+//                _pTcpSocket->abort();
             }
             else
             {
@@ -214,15 +196,26 @@ void QOTDRModule::run()
 
             initTcpConnection();
 
-            if(_moduleMode == OTDR_WORK_MODE_STOP){
+            if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_STOP){
+				setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_IDLE);
                 return;
             }
+			else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
+			{
+                setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_AUTO_RUNNING);
+			}
+			else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE)
+			{
+                setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_SINGLE_RUNNING);
+			}
+				
+				
             sendScanCommand();
 
             do{
-                qDebug() << "\n["<<QThread::currentThreadId() <<"] Monitoring on module[" << _moduleIndex << "] P:" << _progress << "S:"<< getOTDRModuleState() << endl;
-                if(getOTDRModuleState() == STATE_GOTSOR4){
-                    setOTDRModuleState(STATE_MEASURED);
+                qDebug() << "\n["<<QThread::currentThreadId() <<"] OTDR Module[" << _moduleIndex << "] P:" << _progress << "S:"<< getModuleState() << endl;
+                if(getModuleState() == STATE_GOTSOR4){
+                    setModuleState(STATE_MEASURED);
                 }
                 QThread::msleep(5000);
                 if(isIdling()||isGetSOR()){
@@ -249,14 +242,14 @@ void QOTDRModule::run()
                     sendStateCommand();
                     if(_lastScanTime.addSecs(300) < QDateTime::currentDateTimeUtc())
                     {
-                          setOTDRModuleState(STATE_GETINGSOR);
+                          setModuleState(STATE_GETINGSOR);
                     }
                 }
                 else if(isGettingSOR())
                 {
                     if(_lastGetSorTime.addSecs(60) < QDateTime::currentDateTimeUtc())
                     {
-                          setOTDRModuleState(STATE_MEASURED);
+                          setModuleState(STATE_MEASURED);
                           _MeasuredChannels.OTDRModule.channels = 0;
                     }
                     _progress += 9;
@@ -267,11 +260,19 @@ void QOTDRModule::run()
                 }
 
             }while(((_moduleMode == OTDR_WORK_MODE_SINGLE)&&(isMeasured()== false)) || (_moduleMode == OTDR_WORK_MODE_AUTO)||(getKeepRunning() == 1));
-            setOTDRModuleState(STATE_MEASURED);
+            setModuleState(STATE_MEASURED);
             qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
             setProgress(0);
-            _MeasuredChannels.OTDRModule.channels = 0;
-            emit sigOTDRSetMode(_moduleIndex, OTDR_WORK_MODE_STOP);
+            if(_moduleIndex == 0){
+                _MeasuredChannels.OTDRModule.channels &= 0x0F;
+            }
+            else
+            {
+                _MeasuredChannels.OTDRModule.channels &= 0xF0;
+            }
+            setModuleMode(_moduleIndex, OTDR_WORK_MODE_STOP);
+			
+			setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_SINGLE_DONE);
             if(_pTcpSocket!=NULL){
                 _pTcpSocket->close();
                 delete _pTcpSocket;
@@ -280,17 +281,48 @@ void QOTDRModule::run()
             exit(0);
 }
 
-QOTDRModule::OTDRModuleState QOTDRModule::getOTDRModuleState()
+QOTDRModule::ModuleState QOTDRModule::getModuleState()
 {
     QMutexLocker locker(&gOTDRModule_mutex);
     return _state;
 }
 
-void QOTDRModule::setOTDRModuleState(OTDRModuleState state)
+void QOTDRModule::setModuleState(ModuleState state)
 {
     QMutexLocker locker(&gOTDRModule_mutex);
     _state = state;
 }
+
+void QOTDRModule::setModuleMode(quint16 module, quint16 mode)
+{
+    QMutexLocker    locker(&gOTDRModule_mutex);
+    if(module == _moduleIndex){
+        _moduleMode = mode;
+       emit sigOTDRSetMode(_moduleIndex, mode);
+    }
+}
+
+void QOTDRModule::setMeasuringStaus(quint16 module, quint32 status)
+{
+	quint16  i;
+	quint16 channel;
+    QMutexLocker    locker(&gOTDRModule_mutex);
+	for(i = 0; i < CHANNELS_PER_MODULE; i ++)
+		{
+			channel = _moduleIndex * CHANNELS_PER_MODULE + i + 1;
+			if(isChannelActive(channel)){
+				_MeasuringStatus[channel] = status;
+			}
+			else
+			{
+                _MeasuringStatus[channel] = OTDR_MEASURE_STATUS_FAIL;
+			}
+		}
+
+    emit sigOTDRSetMeasuringStatus(channel, _MeasuringStatus[channel]);
+
+}
+
 
 bool QOTDRModule::setSerialPortParam(QString serialPort, QSerialPort::BaudRate baudrate, QSerialPort::DataBits databits \
                                      ,QSerialPort::StopBits stopbits, QSerialPort::Parity parity, QSerialPort::FlowControl fctrl)
@@ -372,36 +404,36 @@ void QOTDRModule::sendStateCommand()
 {
 // 如果在获取SOR或WAVELET数据的时候不要发任何东西了。
     QString cmdline = QString("STATE?");
-    if(getOTDRModuleState() < STATE_GETINGSOR ){
+    if(getModuleState() < STATE_GETINGSOR ){
         sendCommand(_moduleIndex,cmdline);
     }
 }
 
 void QOTDRModule::sendGetSorCommand()
 {
-if((getOTDRModuleState() == STATE_IDLING)||(getOTDRModuleState() == STATE_GETINGSOR)){
+if((getModuleState() == STATE_IDLING)||(getModuleState() == STATE_GETINGSOR)){
     if(_moduleIndex == 0){
         if(_MeasuredChannels.OTDRModule.I.ch1 == 0){
             QString cmdline = QString("getsor? %1").arg(0);
-            setOTDRModuleState(STATE_GETINGSOR1);
+            setModuleState(STATE_GETINGSOR1);
             sendCommand(_moduleIndex,cmdline);
             _lastGetSorTime = QDateTime::currentDateTimeUtc();
         }
-        if((_MeasuredChannels.OTDRModule.I.ch2 == 0)&&(getOTDRModuleState()==STATE_GOTSOR1)){
+        if((_MeasuredChannels.OTDRModule.I.ch2 == 0)&&(getModuleState()==STATE_GOTSOR1)){
             QString cmdline = QString("getsor? %1").arg(1);
-            setOTDRModuleState(STATE_GETINGSOR2);
+            setModuleState(STATE_GETINGSOR2);
             sendCommand(_moduleIndex,cmdline);
 
         }
-        if((_MeasuredChannels.OTDRModule.I.ch3 == 0)&&(getOTDRModuleState()==STATE_GOTSOR2)){
+        if((_MeasuredChannels.OTDRModule.I.ch3 == 0)&&(getModuleState()==STATE_GOTSOR2)){
             QString cmdline = QString("getsor? %1").arg(2);
-            setOTDRModuleState(STATE_GETINGSOR3);
+            setModuleState(STATE_GETINGSOR3);
             sendCommand(_moduleIndex,cmdline);
 
         }
-        if((_MeasuredChannels.OTDRModule.I.ch4 == 0)&&(getOTDRModuleState()==STATE_GOTSOR3)){
+        if((_MeasuredChannels.OTDRModule.I.ch4 == 0)&&(getModuleState()==STATE_GOTSOR3)){
             QString cmdline = QString("getsor? %1").arg(3);
-            setOTDRModuleState(STATE_GETINGSOR4);
+            setModuleState(STATE_GETINGSOR4);
             sendCommand(_moduleIndex,cmdline);
 
         }
@@ -409,26 +441,26 @@ if((getOTDRModuleState() == STATE_IDLING)||(getOTDRModuleState() == STATE_GETING
     if(_moduleIndex == 1){
         if(_MeasuredChannels.OTDRModule.I.ch5 == 0){
             QString cmdline = QString("getsor? %1").arg(0);
-            setOTDRModuleState(STATE_GETINGSOR1);
+            setModuleState(STATE_GETINGSOR1);
             sendCommand(_moduleIndex,cmdline);
             _lastGetSorTime = QDateTime::currentDateTimeUtc();
 
         }
-        if((_MeasuredChannels.OTDRModule.I.ch6 == 0)&&(getOTDRModuleState() == STATE_GOTSOR1)){
+        if((_MeasuredChannels.OTDRModule.I.ch6 == 0)&&(getModuleState() == STATE_GOTSOR1)){
             QString cmdline = QString("getsor? %1").arg(1);
-            setOTDRModuleState(STATE_GETINGSOR2);
+            setModuleState(STATE_GETINGSOR2);
             sendCommand(_moduleIndex,cmdline);
 
         }
-        if((_MeasuredChannels.OTDRModule.I.ch7 == 0)&&(getOTDRModuleState()== STATE_GOTSOR2)){
+        if((_MeasuredChannels.OTDRModule.I.ch7 == 0)&&(getModuleState()== STATE_GOTSOR2)){
             QString cmdline = QString("getsor? %1").arg(2);
-            setOTDRModuleState(STATE_GETINGSOR3);
+            setModuleState(STATE_GETINGSOR3);
             sendCommand(_moduleIndex,cmdline);
 
         }
-        if((_MeasuredChannels.OTDRModule.I.ch8 == 0)&&(getOTDRModuleState()==STATE_GOTSOR3)){
+        if((_MeasuredChannels.OTDRModule.I.ch8 == 0)&&(getModuleState()==STATE_GOTSOR3)){
             QString cmdline = QString("getsor? %1").arg(3);
-            setOTDRModuleState(STATE_GETINGSOR4);
+            setModuleState(STATE_GETINGSOR4);
             sendCommand(_moduleIndex,cmdline);
 
         }
@@ -441,15 +473,22 @@ void QOTDRModule::sendScanCommand()
     _lastScanTime = QDateTime::currentDateTimeUtc();
 
     QString cmdline = QString("SCAN");
-    if(/*(getOTDRModuleState() == STATE_IDLING)||*/(getOTDRModuleState() == STATE_MEASURED)){
-        setOTDRModuleState(STATE_MEASURING);
+    if(/*(getModuleState() == STATE_IDLING)||*/(getModuleState() == STATE_MEASURED)){
+        setModuleState(STATE_MEASURING);
         sendCommand(_moduleIndex, cmdline);
+    }
+    if(_moduleIndex == 0){
+        _MeasuredChannels.OTDRModule.channels &= 0x0F;
+    }
+    else
+    {
+        _MeasuredChannels.OTDRModule.channels &= 0xF0;
     }
 }
 
 void QOTDRModule::setProgress(quint16 channel, quint16 progress)
 {
-    QMutexLocker    locker(&gOTDRModule_mutex);
+//    QMutexLocker    locker(&gOTDRModule_mutex);
     _MeasuringProgresss[channel] = progress;
 	if(isMeasured()){
         emit this->sigSetProgress(channel,100);
@@ -462,18 +501,15 @@ void QOTDRModule::setProgress(quint16 channel, quint16 progress)
 
 void QOTDRModule::setProgress(quint16 progress)
 {
-    if(isMeasured()){
-        emit this->sigSetProgress(_moduleIndex,100);
-    }
-    else
-    {
-        emit this->sigSetProgress(_moduleIndex,progress);
+    int i = 0;
+    for(i = 0; i <( _moduleIndex+1)*CHANNELS_PER_MODULE; i++){
+            setProgress(i+1, progress);
     }
 }
 
 quint16 QOTDRModule::getProgress(quint16 channel)
 {
-	return _MeasuringProgresss.value(channel,0);
+    return _MeasuringProgresss.value(channel,0);
 }
 
 quint16 QOTDRModule::getProgress()
@@ -483,16 +519,15 @@ quint16 QOTDRModule::getProgress()
 
 void QOTDRModule::increaseMeasuredCount(quint16 channel, quint32 count)
 {
-    QMutexLocker    locker(&gOTDRModule_mutex);
-	QPST *pst = QPST::getInstance();
-//	long	MaxCount = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(channel);
-	quint32  temp = getMeasuredCount(channel);
-	temp += count;
+    QPST *pst = QPST::getInstance();
+
+    quint32  temp = getMeasuredCount(channel);
+    temp += count;
 	_MeasuredCounts[channel]=temp;
-	if(isMeasured()){
-        emit this->sigSetMeasuredCount(channel,temp);
-    }
+
+    emit this->sigSetMeasuredCount(channel,temp);
 }
+
 quint32	QOTDRModule::getMeasuredCount(quint16 channel)
 {
 	return  _MeasuredCounts.value(channel, 0);
@@ -501,8 +536,6 @@ quint32	QOTDRModule::getMeasuredCount(quint16 channel)
 void QOTDRModule::increaseMeasuredSORFiles(quint16 channel, quint32 count)
 {
 		QMutexLocker	locker(&gOTDRModule_mutex);
-	//	QPST *pst = QPST::getInstance();
-	//	long	MaxCount = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(channel);
 		quint32  temp = getMeasuredSORFiles(channel);
 		temp += count;
 		_MeasuredSORFiles[channel]=temp;
@@ -513,12 +546,12 @@ quint32 QOTDRModule::getMeasuredSORFiles(quint16 channel)
 }
 
 
-QByteArray QOTDRModule::generateOTDRTrapData(quint16 module, qint16 channel)
+QByteArray QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 {
     QByteArray  data = QString("Traped on %1").arg(channel).toLatin1();
-    QString     filename = getIFMSFingerFileName(channel);
-    QFingerData    *oldFingerData = _OldFingers.value(filename);
-    QFingerData    *newFingerData = _NewFingers.value(filename);
+
+    QFingerData    *oldFingerData = _OldFingers.value(channel);
+    QFingerData    *newFingerData = _NewFingers.value(channel);
 
 // TODO: 通过比较oldFingerDate和newFingerData生成trap数据包内容。
     return data;
@@ -530,70 +563,222 @@ void QOTDRModule::sendCommand(quint16 module, QString &cmdline)
     sendCommandWithResponse(module ,cmdline, &data);
 }
 
-
-QString QOTDRModule::getIFMSFingerFileName(qint16 channel)
+int QOTDRModule::isChannelActive(quint16 channel)
 {
-    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
-    if(channel == 0){
-            filename = QAgentApp::getCacheDir()+QString(CH1_FINGER_FILE);
+    QPST *pst = QPST::getInstance();
+    if(pst!=NULL){
+        return pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(channel);;
     }
-    if(channel == 1){
-            filename = QAgentApp::getCacheDir()+QString(CH2_FINGER_FILE);
+    else // not active
+    {
+        return 0;
     }
-    if(channel == 2){
-            filename = QAgentApp::getCacheDir()+QString(CH3_FINGER_FILE);
-    }
-    if(channel == 3){
-            filename = QAgentApp::getCacheDir()+QString(CH4_FINGER_FILE);
-    }
-    if(channel == 4){
-            filename = QAgentApp::getCacheDir()+QString(CH5_FINGER_FILE);
-    }
-    if(channel == 5){
-            filename = QAgentApp::getCacheDir()+QString(CH6_FINGER_FILE);
-    }
-    if(channel == 6){
-            filename = QAgentApp::getCacheDir()+QString(CH7_FINGER_FILE);
-    }
-    if(channel == 7){
-            filename = QAgentApp::getCacheDir()+QString(CH8_FINGER_FILE);
-    }
+}
+
+QString QOTDRModule::getIFMSFingerFileName(quint16 channel)
+{
+    QString     filename = QString("");
+	QString		emptyfile = QString("");
+	quint32		count = getMeasuredCount(channel);
+	quint16		mode = getModuleMode(channel);
+	if(mode == OTDR_WORK_MODE_AUTO)	{
+		if(count == 0){
+			filename = _FirstFingers.value(channel, emptyfile);
+			}
+		else
+			{
+			filename = _CurrentFingers.value(channel, emptyfile);
+			}
+	}
+	else if(mode == OTDR_WORK_MODE_SINGLE)	{
+		filename = _FirstFingers.value(channel, emptyfile);
+		}
 
     return filename;
 }
 
 
-QString QOTDRModule::getIFMSSorFileName(qint16 channel)
+QString QOTDRModule::getIFMSSorFileName(quint16 channel)
 {
-    QString     filename = QAgentApp::getCacheDir()+QString("wrong");
-    if(channel == 0){
-            filename = QAgentApp::getCacheDir()+QString(CH1_SOR_FILE);
-    }
-    if(channel == 1){
-            filename = QAgentApp::getCacheDir()+QString(CH2_SOR_FILE);
-    }
-    if(channel == 2){
-            filename = QAgentApp::getCacheDir()+QString(CH3_SOR_FILE);
-    }
-    if(channel == 3){
-            filename = QAgentApp::getCacheDir()+QString(CH4_SOR_FILE);
-    }
-    if(channel == 4){
-            filename = QAgentApp::getCacheDir()+QString(CH5_SOR_FILE);
-    }
-    if(channel == 5){
-            filename = QAgentApp::getCacheDir()+QString(CH6_SOR_FILE);
-    }
-    if(channel == 6){
-            filename = QAgentApp::getCacheDir()+QString(CH7_SOR_FILE);
-    }
-    if(channel == 7){
-            filename = QAgentApp::getCacheDir()+QString(CH8_SOR_FILE);
-    }
+    QString     filename = QString("");
+	QString		emptyfile = QString("");
+	quint32		count = getMeasuredCount(channel);
+	quint16		mode = getModuleMode(channel);
+	if(mode == OTDR_WORK_MODE_AUTO)	{
+		if(count == 0){
+			filename = _FirstSORs.value(channel, emptyfile);
+			}
+		else
+			{
+			filename = _CurrentSORs.value(channel, emptyfile);
+			}
+	}
+	else if(mode == OTDR_WORK_MODE_SINGLE)	{
+		filename = _FirstSORs.value(channel, emptyfile);
+		}
 
     return filename;
+
 }
 
+void QOTDRModule::OTDRChanged(quint16 module, quint16 channel)
+{
+    QAgentApp::message(module, QString("OTDR channel %1 changed!").arg(channel));
+
+    QByteArray  data = generateTrapData(module, channel);
+// TODO: if finger data changed, store the sor to DATA_DIR of NAND Flash 	
+
+// TODO: if inger data not changed, trap normal 
+    emit sigOTDRTrap(module, data);
+}
+
+void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &data)
+{
+    QSorFileBase    sorfile;
+    QString         filename;
+    int cmdcount = 0;
+    quint32  length = data.length();
+
+#ifdef	DUMP_MESSAGE 
+	fprintf(stderr, "<=");
+    quint32  count = length;
+    if(count > 64){
+        count = 64;
+    }
+    quint16 i = 0;
+    for(i = 0; i< count; i++){
+       fprintf(stderr, " %02X", data.at(i));
+       fflush(stderr);
+    }
+    qDebug()<<endl;
+#endif
+
+    if(length < 32){
+        QString         responseString = QString(data);
+        if(responseString.contains("state 0",Qt::CaseInsensitive)){
+            setModuleState(STATE_IDLING);
+        }
+        if(responseString.contains("state 1",Qt::CaseInsensitive)){
+            setModuleState(STATE_MEASURING);
+        }
+    }
+
+    QStringList     qcmdlist = cmdline.split(" ", QString::SkipEmptyParts);
+    cmdcount = qcmdlist.count();
+	
+   if(cmdline.contains("GETSOR?",Qt::CaseInsensitive)){ // 获取SOR文件
+        qDebug() << "getsor? command" << endl;
+        if(cmdcount == 2){
+            QString channel = qcmdlist.at(1);
+            quint16 ch = _moduleIndex*4 + channel.toShort()+1;
+            sorfile._channel = ch;
+//TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
+            quint32  OSRLen = length - 4;
+//          memcpy(&OSRLen, data.mid(1,4).data(), sizeof(OSRLen));
+
+            QByteArray  OSRRawData = data.mid(4);
+			if(isChannelActive(ch)){
+	            QString sorfilename = getIFMSSorFileName(ch);
+	            QString fingername = getIFMSFingerFileName(ch);
+
+	            if(!sorfilename.isEmpty()){
+	                qDebug() << "write sor to " << sorfilename << endl;
+
+	                QFile   file(sorfilename);
+	                if(file.open(QIODevice::WriteOnly)){
+	                    file.write(OSRRawData);
+	                    file.flush();
+	                    file.close();
+	                }
+	                qDebug() << "write finger to " << fingername << endl;
+
+					if(sorfile.parseData(OSRRawData.data(), OSRLen) == true){
+					//		_OldFingers.swap(_NewFingers);
+							QFingerData *p = sorfile.toFingerData();
+                            if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO ){
+									if(getMeasuredCount(ch) == 0){
+										_OldFingers.insert(ch, p);
+									}
+									_NewFingers.insert(ch,p);
+									
+									increaseMeasuredCount(ch, 1);
+								
+									OTDRChanged(_moduleIndex, ch);
+								}
+							p->toIFMSFingerFile(fingername);
+					}
+	            }
+				//TODO: emit measuringstatus
+				/*
+				pstIFMS1000MeasureStatus:
+				0. Idle. The port is idle now. 
+				1. Auto measurement is running. 
+				2. Single OTDR measurement is running. 
+				3. Single OTDR measurement is done. 
+				4. Measurement Failure. 
+				*/
+			}
+            else
+            {
+                qDebug() << "Channel " << ch << "is not active!!" << endl;
+                setMeasuringStaus(ch, OTDR_MEASURE_STATUS_FAIL);
+            }
+
+            if((ch-1)%CHANNELS_PER_MODULE == 0 ){
+                setModuleState(STATE_GOTSOR1);
+            }
+            if((ch-1)%CHANNELS_PER_MODULE == 1 ){
+                setModuleState(STATE_GOTSOR2);
+            }
+            if((ch-1)%CHANNELS_PER_MODULE == 2 ){
+                setModuleState(STATE_GOTSOR3);
+            }
+            if((ch-1)%CHANNELS_PER_MODULE == 3 ){
+                (STATE_GOTSOR4);
+            }
+
+            if(ch == 1){
+                _MeasuredChannels.OTDRModule.I.ch1 = 1;
+            }
+            if(ch == 2){
+                _MeasuredChannels.OTDRModule.I.ch2 = 1;
+            }
+            if(ch == 3){
+                _MeasuredChannels.OTDRModule.I.ch3 = 1;
+            }
+            if(ch == 4){
+                _MeasuredChannels.OTDRModule.I.ch4 = 1;
+            }
+            if(ch == 5){
+                _MeasuredChannels.OTDRModule.I.ch5 = 1;
+            }
+            if(ch == 6){
+                _MeasuredChannels.OTDRModule.I.ch6 = 1;
+            }
+            if(ch == 7){
+                _MeasuredChannels.OTDRModule.I.ch7 = 1;
+            }
+            if(ch == 8){
+                _MeasuredChannels.OTDRModule.I.ch8 = 1;
+            }
+			
+			if(_moduleIndex == 0){
+				if(_MeasuredChannels.OTDRModule.channels == 0xF0){
+			
+				 setModuleState(STATE_MEASURED);
+				_MeasuredChannels.OTDRModule.channels = 0;
+				}
+			}
+			if(_moduleIndex == 1){
+				if(_MeasuredChannels.OTDRModule.channels == 0x0F){
+				setModuleState(STATE_MEASURED);
+				_MeasuredChannels.OTDRModule.channels = 0;
+				}
+			}
+        }
+   }
+
+}
 
 //=============================SLOTS====================================================
 
@@ -609,161 +794,15 @@ void QOTDRModule::onSendCommand(quint16 module, QString &cmdline)
         qDebug() << "It's busy now, please try later..." << endl;
     }
 }
-//
-//
-//void QOTDRModule::onSetProgress(quint16 module, quint16 progress)
-//{
-//
-//}
 
 void QOTDRModule::onCatchException(quint16 module, const QString& info)
 {
 
 }
 
-void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &data)
-{
-// TODO: 获取到sorfile之后转变成fingerdata[channel]
-//    QString  command = cmdline;
-
-    QSorFileBase    sorfile;
-    QString         filename;
-    int cmdcount = 0;
-
-    fprintf(stderr, "<=");
-    quint32  length = data.length();
-    quint32  count = length;
-    if(count > 64){
-        count = 64;
-    }
-    quint16 i = 0;
-    for(i = 0; i< count; i++){
-       fprintf(stderr, " %02X", data.at(i));
-       fflush(stderr);
-    }
-    qDebug()<<endl;
-
-    if(length < 32){
-        QString         responseString = QString(data);
-        if(responseString.contains("state 0",Qt::CaseInsensitive)){
-            setOTDRModuleState(STATE_IDLING);
-        }
-        if(responseString.contains("state 1",Qt::CaseInsensitive)){
-            setOTDRModuleState(STATE_MEASURING);
-        }
-    }
-
-    QStringList     qcmdlist = cmdline.split(" ", QString::SkipEmptyParts);
-
-    cmdcount = qcmdlist.count();
-   if(cmdline.contains("GETSOR?",Qt::CaseInsensitive)){ // 获取SOR文件
-        qDebug() << "getsor? command" << endl;
-        if(cmdcount == 2){
-            QString channel = qcmdlist.at(1);
-            qint16 ch = channel.toShort();
-            sorfile._channel = _moduleIndex*4+ch;
-            filename = getIFMSFingerFileName(sorfile._channel);
-//TODO: 从串口获取的sor头四个字节是长度信息，需要摘除之后再处理
-            quint32  OSRLen = length - 4;
-//            memcpy(&OSRLen, data.mid(1,4).data(), sizeof(OSRLen));
-
-            QByteArray  OSRRawData = data.mid(4);
-
-            QString sorfilename = getIFMSSorFileName(sorfile._channel);
-            QString fingername = getIFMSFingerFileName(sorfile._channel);
-            qDebug() << "write sor to " << sorfilename << endl;
-
-            if(!sorfilename.isEmpty()){
-                QFile   file(sorfilename);
-                if(file.open(QIODevice::WriteOnly)){
-                    file.write(OSRRawData);
-                    file.flush();
-                    file.close();
-                }
-            }
-
-            if(sorfile.parseData(OSRRawData.data(), OSRLen) == true){
-                _OldFingers.swap(_NewFingers);
-                QFingerData *p = sorfile.toFingerData();
-                _NewFingers.insert(filename,p);
-                emit this->sigOTDRChanged(_moduleIndex, sorfile._channel);
-                increaseMeasuredCount(sorfile._channel, 1);
-                p->toIFMSFingerFile(fingername);
-            }
-            if(ch == 1 ){
-                setOTDRModuleState(STATE_GOTSOR1);
-            }
-            if(ch == 2 ){
-                setOTDRModuleState(STATE_GOTSOR2);
-            }
-            if(ch == 3 ){
-                setOTDRModuleState(STATE_GOTSOR3);
-            }
-            if(ch == 4 ){
-                setOTDRModuleState(STATE_GOTSOR4);
-            }
-        }
-   }
-
-}
-
 void QOTDRModule::onFileChanged(quint16 module, QString filename)
 {
 
-}
-
-void QOTDRModule::onOTDRChanged(quint16 module, quint16 channel)
-{
-    QAgentApp::message(module, QString("OTDR channel %1 changed!").arg(channel));
-
-    if(channel == 1){
-        _MeasuredChannels.OTDRModule.I.ch1 = 1;
-    }
-    if(channel == 2){
-        _MeasuredChannels.OTDRModule.I.ch2 = 1;
-    }
-    if(channel == 3){
-        _MeasuredChannels.OTDRModule.I.ch3 = 1;
-    }
-    if(channel == 4){
-        _MeasuredChannels.OTDRModule.I.ch4 = 1;
-    }
-    if(channel == 5){
-        _MeasuredChannels.OTDRModule.I.ch5 = 1;
-    }
-    if(channel == 6){
-        _MeasuredChannels.OTDRModule.I.ch6 = 1;
-    }
-    if(channel == 7){
-        _MeasuredChannels.OTDRModule.I.ch7 = 1;
-    }
-    if(channel == 8){
-        _MeasuredChannels.OTDRModule.I.ch8 = 1;
-    }
-    if(_moduleIndex == 0){
-        if(_MeasuredChannels.OTDRModule.channels == 0xF0){
-
-         setOTDRModuleState(STATE_MEASURED);
-        _MeasuredChannels.OTDRModule.channels = 0;
-        }
-    }
-    if(_moduleIndex == 1){
-        if(_MeasuredChannels.OTDRModule.channels == 0x0F){
-        setOTDRModuleState(STATE_MEASURED);
-        _MeasuredChannels.OTDRModule.channels = 0;
-        }
-    }
-
-    QByteArray  data = generateOTDRTrapData(module, channel);
-    emit sigOTDRTrap(module, data);
-}
-
-void QOTDRModule::onSigOTDRSetMode(quint16 module, quint16 mode)
-{
-    QMutexLocker    locker(&gOTDRModule_mutex);
-    if(module == _moduleIndex){
-        _moduleMode = mode;
-    }
 }
 
 void QOTDRModule::onSocketError(QAbstractSocket::SocketError  socketError)
@@ -789,8 +828,8 @@ void QOTDRModule::onSocketDisconnected()
 
 void QOTDRModule::onTcpSocketAutoConnect()
 {
-    if((_tcpState != STATE_TCP_CONNECTED)&&(_tcpState != STATE_TCP_CONNECTING)){
-//        qDebug() << "auto connect to module" << _moduleIndex << " with state " << _tcpState << "." << endl;
+//    if((_tcpState != STATE_TCP_CONNECTED)&&(_tcpState != STATE_TCP_CONNECTING)){
+        qDebug() << "auto connect to module" << _moduleIndex << " with state " << _tcpState << "." << endl;
         initTcpConnection();
-    }
+//    }
 }

@@ -16,10 +16,16 @@ QMAKE_CXXFLAGS += -Wno-deprecated
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+
 D_DATA_DIR = /usr/share/ifms
+D_CACHE_DIR = /temp/ifms
 #message(pwd=$(PWD))
 #message("DATADIR="\"$${D_DATA_DIR}\")
-DEFINES += D_RES_DIR=\\\"$${D_DATA_DIR}\\\"
+#message("CACHEDIR="\"$${D_CACHE_DIR}\")
+
+DEFINES += D_DATA_DIR=\\\"$${D_DATA_DIR}\\\"
+DEFINES += D_CACHE_DIR=\\\"$${D_CACHE_DIR}\\\"
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.

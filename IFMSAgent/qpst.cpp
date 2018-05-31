@@ -43,7 +43,7 @@ int QPST::getKeepRunning(){
 
 void QPST::initConnections()
 {
-    connect(this, SIGNAL(sigOTDRChanged(quint16,quint16)), this, SLOT(onSigOTDRChanged(quint16,quint16)), Qt::DirectConnection);
+//    connect(this, SIGNAL(sigOTDRChanged(quint16,quint16)), this, SLOT(onSigOTDRChanged(quint16,quint16)), Qt::DirectConnection);
     connect(this, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), this, SLOT(onSigOTDRTrap(quint16,QByteArray&)), Qt::DirectConnection);
     connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
 }
@@ -132,10 +132,10 @@ QPST::send_pstIFMS1000MeasureEvent_trap( void )
 }
 
 
-void QPST::onSigOTDRChanged(quint16 module, quint16 channel)
-{
+//void QPST::onSigOTDRChanged(quint16 module, quint16 channel)
+//{
 
-}
+//}
 
 void QPST::onSigOTDRTrap(quint16 module, QByteArray &data)
 {
@@ -146,17 +146,28 @@ void QPST::onSigOTDRTrap(quint16 module, QByteArray &data)
     qDebug() << "["<<QThread::currentThreadId() << "] onSigOTDRTrap" << endl;
 }
 
-void QPST::onSigSetProgress(quint16 module, quint16 progress)
+void QPST::onSigSetProgress(quint16 channel, quint16 progress)
 {
-    m_product->m_pstIFMS1000.setModuleMeasuringProgess(module, progress);
+    m_product->m_pstIFMS1000.set_pstIFMS1000MeasureProgressStatus(channel, progress);
 }
 
 void QPST::onSigOTDRSetMode(quint16 module, quint16 mode)
 {
-    m_product->m_pstIFMS1000.setMouleMode(module, mode);
+    int i = 0;
+    quint16 channel = 1;
+    for(i=0;i<CHANNELS_PER_MODULE;i++){
+        channel = module*CHANNELS_PER_MODULE + i +1;
+        m_product->m_pstIFMS1000.set_pstIFMS1000MeasureAction(channel, mode);
+    }
 }
 
 void QPST::onSigSetMeasuredCount(quint16 channel, quint32 count)
 {
-    m_product->m_pstIFMS1000.set_pstIFMS1000MeasureNumber(channel, count);
+    QString s = QString("%1").arg(count);
+    m_product->m_pstIFMS1000.set_pstIFMS1000MeasureNumber(channel, s);
+}
+
+void QPST::onSigSetMeasuringStatus(quint16 channel, quint32 status)
+{
+    m_product->m_pstIFMS1000.set_pstIFMS1000MeasureStatus(channel, status);
 }

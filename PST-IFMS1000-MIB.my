@@ -256,7 +256,7 @@
 			MAX-ACCESS read-write
 			STATUS current
 			DESCRIPTION
-				"The total length in the measurement.(5,25?¨º,50,125,160,260)(km)"
+				"The total length in the measurement.(5,25,50,125,160,260)(km)"
 			::= { pstIFMS1000MeasureEntry 3 }
 
 		

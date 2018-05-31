@@ -45,7 +45,7 @@ class QSorFileBase : public QObject
 public:
     explicit QSorFileBase(int channel=1, QObject *parent = nullptr);
 
-    qint16      _channel;
+    quint16      _channel;
 
     struct  MapBlock
     {

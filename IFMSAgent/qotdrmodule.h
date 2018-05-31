@@ -34,16 +34,23 @@
 #define  TCP_CONNECT_TIMEOUT	10000
 #define  KEEP_ALIVE_TIMEOUT     30000
 
-#define  OTDR_WORK_MODE_AUTO    0
-#define  OTDR_WORK_MODE_SINGLE  1
+#define  OTDR_WORK_MODE_UNKNOWN	0
+#define  OTDR_WORK_MODE_AUTO    1
 #define  OTDR_WORK_MODE_STOP    2
+#define  OTDR_WORK_MODE_SINGLE  3
+
+#define  OTDR_MEASURE_STATUS_IDLE    			0
+#define  OTDR_MEASURE_STATUS_AUTO_RUNNING    	1
+#define  OTDR_MEASURE_STATUS_SINGLE_RUNNING		2
+#define  OTDR_MEASURE_STATUS_SINGLE_DONE  		3
+#define  OTDR_MEASURE_STATUS_FAIL				4
 
 class QOTDRModule : public QThread
 {
     Q_OBJECT
 public:
     // 模块的状态
-    enum OTDRModuleState
+    enum ModuleState
     {
         STATE_IDLING = 0,                   // 空闲状态
         STATE_MEASURING = 1,                // 测量状态
@@ -70,7 +77,7 @@ public:
     };
 
     // OTDR模块的错误类别
-    enum OTDRError
+    enum ModuleError
     {
         ERR0    = 0,                        // Normal Response
         ERR20   = 20,                       // command or query in format is illegal
@@ -98,17 +105,21 @@ public:
     int     _keeprunning;
     void    setKeepRunning(int running);
     int     getKeepRunning();
+
     void    setModuleIndex(qint8 index);
     qint8   getModuleIndex();
-    void    initFingerBinFile(QString filename);
-    void    initModuleFingerData();
+
+    quint16 getModuleMode(quint16 channel);
+
+    void    initModuleData();
     void    initTcpConnection();
     void    setConnections();
-    static QString      getIFMSFingerFileName(qint16 channel);
-    static QString      getIFMSSorFileName(qint16 channel);
+    int     isChannelActive(quint16 channel);
+    QString      getIFMSFingerFileName(quint16 channel);
+    QString      getIFMSSorFileName(quint16 channel);
 
-    OTDRModuleState getOTDRModuleState();
-    void setOTDRModuleState(OTDRModuleState state);
+    ModuleState getModuleState();
+    void setModuleState(ModuleState state);
 
     bool setSerialPortParam(QString serialPort, QSerialPort::BaudRate baudrate = QSerialPort::Baud115200 \
                                          , QSerialPort::DataBits databits = QSerialPort::Data8 \
@@ -116,7 +127,7 @@ public:
                                          , QSerialPort::Parity parity = QSerialPort::NoParity \
                                          , QSerialPort::FlowControl fctrl = QSerialPort::NoFlowControl);
 
-    QByteArray generateOTDRTrapData(quint16 module, qint16 channel);
+    QByteArray generateTrapData(quint16 module, quint16 channel);
 
     void sendCommandWithResponse(quint16 module, QString cmdline, QByteArray *data);
     void recvResponse(quint16 module, QString &cmdline, QByteArray &data);
@@ -127,23 +138,23 @@ public:
     void sendGetSorCommand();
 
     bool isIdling(){
-        return (getOTDRModuleState() == STATE_IDLING);
+        return (getModuleState() == STATE_IDLING);
     }
 
     bool isMeasured(){
-        return ((getOTDRModuleState() == STATE_MEASURED) ||(getOTDRModuleState() == STATE_GOTSOR4));
+        return ((getModuleState() == STATE_MEASURED) ||(getModuleState() == STATE_GOTSOR4));
     }
 
     bool isMeasuring(){
-        return (getOTDRModuleState() == STATE_MEASURING);
+        return (getModuleState() == STATE_MEASURING);
     }
 
     bool isGetSOR(){
-        return (getOTDRModuleState() == STATE_GETINGSOR);
+        return (getModuleState() == STATE_GETINGSOR);
     }
 
     bool isGettingSOR(){
-        return ((getOTDRModuleState()>= STATE_GETINGSOR)&&(getOTDRModuleState()< STATE_GOTSOR4));
+        return ((getModuleState()>= STATE_GETINGSOR)&&(getModuleState()< STATE_GOTSOR4));
     }
 
     void setProgress(quint16 channel, quint16 progress);
@@ -154,6 +165,9 @@ public:
 	quint32	getMeasuredCount(quint16 channel);
 	void increaseMeasuredSORFiles(quint16 channel, quint32 count);
 	quint32	getMeasuredSORFiles(quint16 channel);
+    void OTDRChanged(quint16 module, quint16 channel);
+    void setModuleMode(quint16 module, quint16 mode);
+    void setMeasuringStaus(quint16 channel, quint32 status);
 
     void run();
 
@@ -163,17 +177,14 @@ signals:
     void sigSendCommand(quint16 module, QString &cmdline);
     void sigSetProgress(quint16 module, quint16 progress);
 	void sigSetMeasuredCount(quint16  channel, quint32 count);
-    void sigOTDRChanged(quint16 module, quint16 channel);
     void sigOTDRTrap(quint16 module, QByteArray &data);
     void sigOTDRSetMode(quint16 module, quint16 mode);
+    void sigOTDRSetMeasuringStatus(quint16 channel, quint32 status);
 
 public slots:
     void onCatchException(quint16 module, const QString& info);
     void onFileChanged(quint16 module, QString filename);
     void onSendCommand(quint16 module, QString &cmdline);
-    void onOTDRChanged(quint16 module, quint16 channel);
-    void onSigOTDRSetMode(quint16 module, quint16 mode);
-
     void onSocketError(QAbstractSocket::SocketError  socketError);
     void onSocketConnected();
     void onSocketDisconnected();
@@ -184,23 +195,34 @@ private:
     QSerialPort         *_pSerialPort;
     QTcpSocket          *_pTcpSocket;
     QIODevice           *_pIODevice;
-    OTDRModuleState     _state;
+    ModuleState     	_state;
     TCPConnectionState  _tcpState;
     QDateTime           _lastScanTime;
     QDateTime           _lastGetSorTime;
-    QFileSystemWatcher  _watcher;
-    QStringList         _fileList;
+//    QFileSystemWatcher  _watcher;
+//    QStringList         _fileList;
     IFMSChannels_t      _MeasuredChannels;
 
-    QMap<QString, QFingerData*>  _OldFingers;
-    QMap<QString, QFingerData*>  _NewFingers;
-	QMap<quint16, quint32> _MeasuredCounts;
-	QMap<quint16, quint32> _MeasuredSORFiles;
-	QMap<quint16, quint32> _MeasuringProgresss;
-	quint16			_progress;
+    QMap<quint16, QFingerData*>  _OldFingers;
+    QMap<quint16, QFingerData*>  _NewFingers;
+    QMap<quint16, quint16>      _PortActives;
+    QMap<quint16, quint32>      _MeasuringStatus;
+    QMap<quint16, quint32>      _MeasuredCounts;
+    QMap<quint16, quint32>      _MeasuredSORFiles;
+    QMap<quint16, quint32>      _MeasuringProgresss;
+    QMap<quint16, QString>      _SingleSORs;				//  Single SOR of Manual - IFMS_CHx_SOR_Single.bin
+    QMap<quint16, QString>      _SingleFingers; 			//  Single finger of Manual - IFMS_CHx_finger_Single.bin
+    QMap<quint16, QString>      _CurrentSORs;			//  Current SOR of Auto - IFMS_CHx_SOR_Current.bin
+    QMap<quint16, QString>      _CurrentFingers;			//  Current finger of Auto - IFMS_CHx_finger_Current.bin
+    QMap<quint16, QString>      _FirstSORs;				//  First SOR of Auto - IFMS_CHx_SOR_First.bin
+    QMap<quint16, QString>      _FirstFingers;			//  First finger of Auto - IFMS_CHx_finger_First.bin
+    
+    QMap<quint16, QString>      _StoredSORs;				//  Save to Flash - IFMS_CHx_SOR_n.bin
 
-    QTimer              *_timerTCPKeepAlive;
-    quint16             _moduleMode;
+    quint16                     _progress;
+
+    QTimer                      *_timerTCPKeepAlive;
+    quint16                     _moduleMode;
 	
 };
 

@@ -44,19 +44,19 @@ void QPSTProduct::init_pstIFMS1000()
     const oid pstIFMS1000SysLedPW1_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,1 };
     const oid pstIFMS1000SysLedPW2_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,2 };
     const oid pstIFMS1000SysLedStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,6,1,3 };
-    const oid pstIFMS1000BootMode_oid[] = { 1,3,6,1,4,1,48391,3,5,11,1 };
-    const oid pstIFMS1000SwitchModuleNum_oid[] = { 1,3,6,1,4,1,48391,3,5,17,1 };
-    const oid pstIFMS1000SwitchInterval_oid[] = { 1,3,6,1,4,1,48391,3,5,17,2 };
-    const oid pstIFMS1000SwitchCurrentPort_oid[] = { 1,3,6,1,4,1,48391,3,5,17,3 };
-    const oid pstIFMS1000ExtSwitchAttType_oid[] = { 1,3,6,1,4,1,48391,3,5,18,1 };
-    const oid pstIFMS1000ExtSwitchAttachPort_oid[] = { 1,3,6,1,4,1,48391,3,5,18,2 };
-    const oid pstIFMS1000ExtSwitchConnType_oid[] = { 1,3,6,1,4,1,48391,3,5,18,3 };
-    const oid pstIFMS1000ExtSwitchIpAddr_oid[] = { 1,3,6,1,4,1,48391,3,5,18,4 };
-    const oid pstIFMS1000ExtSwitchIpPort_oid[] = { 1,3,6,1,4,1,48391,3,5,18,5 };
-    const oid pstIFMS1000ExtSwitchUartBaud_oid[] = { 1,3,6,1,4,1,48391,3,5,18,6 };
-    const oid pstIFMS1000ExtSwitchTotalSwitchNum_oid[] = { 1,3,6,1,4,1,48391,3,5,18,7 };
-    const oid pstIFMS1000ExtSwitchCurrentNum_oid[] = { 1,3,6,1,4,1,48391,3,5,18,8 };
-    const oid pstIFMS1000ExtSwitchStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,18,9 };
+//    const oid pstIFMS1000BootMode_oid[] = { 1,3,6,1,4,1,48391,3,5,11,1 };
+//    const oid pstIFMS1000SwitchModuleNum_oid[] = { 1,3,6,1,4,1,48391,3,5,17,1 };
+//    const oid pstIFMS1000SwitchInterval_oid[] = { 1,3,6,1,4,1,48391,3,5,17,2 };
+//    const oid pstIFMS1000SwitchCurrentPort_oid[] = { 1,3,6,1,4,1,48391,3,5,17,3 };
+//    const oid pstIFMS1000ExtSwitchAttType_oid[] = { 1,3,6,1,4,1,48391,3,5,18,1 };
+//    const oid pstIFMS1000ExtSwitchAttachPort_oid[] = { 1,3,6,1,4,1,48391,3,5,18,2 };
+//    const oid pstIFMS1000ExtSwitchConnType_oid[] = { 1,3,6,1,4,1,48391,3,5,18,3 };
+//    const oid pstIFMS1000ExtSwitchIpAddr_oid[] = { 1,3,6,1,4,1,48391,3,5,18,4 };
+//    const oid pstIFMS1000ExtSwitchIpPort_oid[] = { 1,3,6,1,4,1,48391,3,5,18,5 };
+//    const oid pstIFMS1000ExtSwitchUartBaud_oid[] = { 1,3,6,1,4,1,48391,3,5,18,6 };
+//    const oid pstIFMS1000ExtSwitchTotalSwitchNum_oid[] = { 1,3,6,1,4,1,48391,3,5,18,7 };
+//    const oid pstIFMS1000ExtSwitchCurrentNum_oid[] = { 1,3,6,1,4,1,48391,3,5,18,8 };
+//    const oid pstIFMS1000ExtSwitchStatus_oid[] = { 1,3,6,1,4,1,48391,3,5,18,9 };
 
   DEBUGMSGTL(("pstIFMS1000", "Initializing\n"));
 
@@ -75,93 +75,93 @@ void QPSTProduct::init_pstIFMS1000()
                                pstIFMS1000SysLedStatus_oid, OID_LENGTH(pstIFMS1000SysLedStatus_oid),
                                HANDLER_CAN_RONLY
         ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000BootMode", handle_pstIFMS1000BootMode,
-                               pstIFMS1000BootMode_oid, OID_LENGTH(pstIFMS1000BootMode_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000SwitchModuleNum", handle_pstIFMS1000SwitchModuleNum,
-                               pstIFMS1000SwitchModuleNum_oid, OID_LENGTH(pstIFMS1000SwitchModuleNum_oid),
-                               HANDLER_CAN_RONLY
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000SwitchInterval", handle_pstIFMS1000SwitchInterval,
-                               pstIFMS1000SwitchInterval_oid, OID_LENGTH(pstIFMS1000SwitchInterval_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000SwitchCurrentPort", handle_pstIFMS1000SwitchCurrentPort,
-                               pstIFMS1000SwitchCurrentPort_oid, OID_LENGTH(pstIFMS1000SwitchCurrentPort_oid),
-                               HANDLER_CAN_RONLY
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchAttType", handle_pstIFMS1000ExtSwitchAttType,
-                               pstIFMS1000ExtSwitchAttType_oid, OID_LENGTH(pstIFMS1000ExtSwitchAttType_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchAttachPort", handle_pstIFMS1000ExtSwitchAttachPort,
-                               pstIFMS1000ExtSwitchAttachPort_oid, OID_LENGTH(pstIFMS1000ExtSwitchAttachPort_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchConnType", handle_pstIFMS1000ExtSwitchConnType,
-                               pstIFMS1000ExtSwitchConnType_oid, OID_LENGTH(pstIFMS1000ExtSwitchConnType_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchIpAddr", handle_pstIFMS1000ExtSwitchIpAddr,
-                               pstIFMS1000ExtSwitchIpAddr_oid, OID_LENGTH(pstIFMS1000ExtSwitchIpAddr_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchIpPort", handle_pstIFMS1000ExtSwitchIpPort,
-                               pstIFMS1000ExtSwitchIpPort_oid, OID_LENGTH(pstIFMS1000ExtSwitchIpPort_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchUartBaud", handle_pstIFMS1000ExtSwitchUartBaud,
-                               pstIFMS1000ExtSwitchUartBaud_oid, OID_LENGTH(pstIFMS1000ExtSwitchUartBaud_oid),
-                               HANDLER_CAN_RWRITE
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchTotalSwitchNum", handle_pstIFMS1000ExtSwitchTotalSwitchNum,
-                               pstIFMS1000ExtSwitchTotalSwitchNum_oid, OID_LENGTH(pstIFMS1000ExtSwitchTotalSwitchNum_oid),
-                               HANDLER_CAN_RONLY
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchCurrentNum", handle_pstIFMS1000ExtSwitchCurrentNum,
-                               pstIFMS1000ExtSwitchCurrentNum_oid, OID_LENGTH(pstIFMS1000ExtSwitchCurrentNum_oid),
-                               HANDLER_CAN_RONLY
-        ));
-    netsnmp_register_scalar(
-        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchStatus", handle_pstIFMS1000ExtSwitchStatus,
-                               pstIFMS1000ExtSwitchStatus_oid, OID_LENGTH(pstIFMS1000ExtSwitchStatus_oid),
-                               HANDLER_CAN_RONLY
-        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000BootMode", handle_pstIFMS1000BootMode,
+//                               pstIFMS1000BootMode_oid, OID_LENGTH(pstIFMS1000BootMode_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000SwitchModuleNum", handle_pstIFMS1000SwitchModuleNum,
+//                               pstIFMS1000SwitchModuleNum_oid, OID_LENGTH(pstIFMS1000SwitchModuleNum_oid),
+//                               HANDLER_CAN_RONLY
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000SwitchInterval", handle_pstIFMS1000SwitchInterval,
+//                               pstIFMS1000SwitchInterval_oid, OID_LENGTH(pstIFMS1000SwitchInterval_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000SwitchCurrentPort", handle_pstIFMS1000SwitchCurrentPort,
+//                               pstIFMS1000SwitchCurrentPort_oid, OID_LENGTH(pstIFMS1000SwitchCurrentPort_oid),
+//                               HANDLER_CAN_RONLY
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchAttType", handle_pstIFMS1000ExtSwitchAttType,
+//                               pstIFMS1000ExtSwitchAttType_oid, OID_LENGTH(pstIFMS1000ExtSwitchAttType_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchAttachPort", handle_pstIFMS1000ExtSwitchAttachPort,
+//                               pstIFMS1000ExtSwitchAttachPort_oid, OID_LENGTH(pstIFMS1000ExtSwitchAttachPort_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchConnType", handle_pstIFMS1000ExtSwitchConnType,
+//                               pstIFMS1000ExtSwitchConnType_oid, OID_LENGTH(pstIFMS1000ExtSwitchConnType_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchIpAddr", handle_pstIFMS1000ExtSwitchIpAddr,
+//                               pstIFMS1000ExtSwitchIpAddr_oid, OID_LENGTH(pstIFMS1000ExtSwitchIpAddr_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchIpPort", handle_pstIFMS1000ExtSwitchIpPort,
+//                               pstIFMS1000ExtSwitchIpPort_oid, OID_LENGTH(pstIFMS1000ExtSwitchIpPort_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchUartBaud", handle_pstIFMS1000ExtSwitchUartBaud,
+//                               pstIFMS1000ExtSwitchUartBaud_oid, OID_LENGTH(pstIFMS1000ExtSwitchUartBaud_oid),
+//                               HANDLER_CAN_RWRITE
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchTotalSwitchNum", handle_pstIFMS1000ExtSwitchTotalSwitchNum,
+//                               pstIFMS1000ExtSwitchTotalSwitchNum_oid, OID_LENGTH(pstIFMS1000ExtSwitchTotalSwitchNum_oid),
+//                               HANDLER_CAN_RONLY
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchCurrentNum", handle_pstIFMS1000ExtSwitchCurrentNum,
+//                               pstIFMS1000ExtSwitchCurrentNum_oid, OID_LENGTH(pstIFMS1000ExtSwitchCurrentNum_oid),
+//                               HANDLER_CAN_RONLY
+//        ));
+//    netsnmp_register_scalar(
+//        netsnmp_create_handler_registration("pstIFMS1000ExtSwitchStatus", handle_pstIFMS1000ExtSwitchStatus,
+//                               pstIFMS1000ExtSwitchStatus_oid, OID_LENGTH(pstIFMS1000ExtSwitchStatus_oid),
+//                               HANDLER_CAN_RONLY
+//        ));
         
 
   /* here we initialize all the tables we're planning on supporting */
     initialize_table_pstIFMS1000PortInfoTable();
     initialize_table_pstIFMS1000MeasureTable();
     initialize_table_pstIFMS1000FingerTable();
-    initialize_table_pstIFMS1000DiffTotalTable();
-    initialize_table_pstIFMS1000DiffInfoTable();
-    initialize_table_pstIFMS1000PortLedTable();
-    initialize_table_pstIFMS1000DiagnoseTable();
-    initialize_table_pstIFMS1000DebugRegTable();
-    initialize_table_pstIFMS1000DebugDACTable();
-    initialize_table_pstIFMS1000DebugE2promTable();
-    initialize_table_pstIFMS1000ExtendAlarmTable();
-    initialize_table_pstIFMS1000ExpertExtendTable();
-    initialize_table_pstIFMS1000PonConfTable();
-    initialize_table_pstIFMS1000ParamsV32TotalNumTable();
-    initialize_table_pstIFMS1000ParamsV32NameTable();
-    initialize_table_pstIFMS1000ParamsV32ValTable();
-    initialize_table_pstIFMS1000ParamsS32TotalNumTable();
-    initialize_table_pstIFMS1000ParamsS32NameTable();
-    initialize_table_pstIFMS1000ParamsS32ValTable();
+//    initialize_table_pstIFMS1000DiffTotalTable();
+//    initialize_table_pstIFMS1000DiffInfoTable();
+//    initialize_table_pstIFMS1000PortLedTable();
+//    initialize_table_pstIFMS1000DiagnoseTable();
+//    initialize_table_pstIFMS1000DebugRegTable();
+//    initialize_table_pstIFMS1000DebugDACTable();
+//    initialize_table_pstIFMS1000DebugE2promTable();
+//    initialize_table_pstIFMS1000ExtendAlarmTable();
+//    initialize_table_pstIFMS1000ExpertExtendTable();
+//    initialize_table_pstIFMS1000PonConfTable();
+//    initialize_table_pstIFMS1000ParamsV32TotalNumTable();
+//    initialize_table_pstIFMS1000ParamsV32NameTable();
+//    initialize_table_pstIFMS1000ParamsV32ValTable();
+//    initialize_table_pstIFMS1000ParamsS32TotalNumTable();
+//    initialize_table_pstIFMS1000ParamsS32NameTable();
+//    initialize_table_pstIFMS1000ParamsS32ValTable();
 }
 
 // SCALAR
@@ -254,6 +254,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     return SNMP_ERR_NOERROR;
 }
+#if 0
  int QPSTProduct::handle_pstIFMS1000BootMode(netsnmp_mib_handler *handler,
                           netsnmp_handler_registration *reginfo,
                           netsnmp_agent_request_info   *reqinfo,
@@ -1046,7 +1047,7 @@ int QPSTProduct::handle_pstIFMS1000SysLedPW1(netsnmp_mib_handler *handler,
 
     return SNMP_ERR_NOERROR;
 }
-
+#endif
  //    /* Typical data structure for a row entry */
  //struct pstIFMS1000PortInfoTable_entry {
  //    /* Index values */
@@ -1162,14 +1163,22 @@ QPSTProduct::initialize_table_pstIFMS1000PortInfoTable(void)
     netsnmp_tdata_row 	*row;
 
     struct pstIFMS1000PortInfoTable_entry		*entry;
+    QString s;
     for(i = 0; i < NUMBER_OF_CHANNES; i++){
-
-
-        row = pstIFMS1000PortInfoTable_createEntry(table_data, i);
+        row = pstIFMS1000PortInfoTable_createEntry(table_data, i+1);
         entry = (struct pstIFMS1000PortInfoTable_entry *)row->data;
         entry->valid = 1;
-        entry->pstIFMS1000PortActive = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(i);
-        entry->pstIFMS1000PortFiberAppType = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortFiberAppType(i);
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortRxPwr(i+1);
+        strcpy(entry->pstIFMS1000PortRxPwr, s.toLatin1().data());
+        entry->pstIFMS1000PortRxPwr_len		= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortTxPwr(i+1);
+        strcpy(entry->pstIFMS1000PortTxPwr, s.toLatin1().data());
+        entry->pstIFMS1000PortTxPwr_len		= s.length();
+        entry->pstIFMS1000PortWorkMode		= pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortWorkMode(i+1);
+        entry->pstIFMS1000PortActive 		= pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortActive(i+1);
+        entry->pstIFMS1000PortFiberAppType 	= pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortFiberAppType(i+1);
+        entry->pstIFMS1000PortRunningStatus	= pst->m_product->m_pstIFMS1000.get_pstIFMS1000PortRunningStatus(i+1);
     }
 
 }
@@ -1614,14 +1623,102 @@ QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
 	netsnmp_tdata_row 	*row;
 
     struct pstIFMS1000MeasureTable_entry		*entry;
+    QString s;
 	for(i = 0; i < NUMBER_OF_CHANNES; i++){
+		row = pstIFMS1000MeasureTable_createEntry(table_data, i+1);
+		entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
+		
+			/* Column values */
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureStartPosition(i+1);
+        strcpy(entry->pstIFMS1000MeasureStartPosition, s.toLatin1().data());
+        entry->pstIFMS1000MeasureStartPosition_len	= s.length();
 
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(i+1);
+        strcpy(entry->pstIFMS1000MeasureEndPosition, s.toLatin1().data());
+        entry->pstIFMS1000MeasureEndPosition_len	= s.length();
 
-		row = pstIFMS1000MeasureTable_createEntry(table_data, i);
-        entry = (struct pstIFMS1000MeasureTable_entry *)row->data;
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureRefIndex(i+1);
+        strcpy(entry->pstIFMS1000MeasureRefIndex, s.toLatin1().data());
+        entry->pstIFMS1000MeasureRefIndex_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(i+1);
+        strcpy(entry->pstIFMS1000MeasureResolution, s.toLatin1().data());
+        entry->pstIFMS1000MeasureResolution_len	= s.length();
+
+        entry->pstIFMS1000MeasureStatus = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureStatus(i+1);
+        entry->pstIFMS1000MeasureAction = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureAction(i+1);
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(i+1);
+        strcpy(entry->pstIFMS1000MeasurePulseWidth, s.toLatin1().data());
+        entry->pstIFMS1000MeasurePulseWidth_len	= s.length();
+        entry->pstIFMS1000MeasureTime = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTime(i+1);
+        entry->pstIFMS1000MeasureProgressStatus = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureProgressStatus(i+1);
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTLOS(i+1);
+        strcpy(entry->pstIFMS1000MeasureTLOS, s.toLatin1().data());
+        entry->pstIFMS1000MeasureTLOS_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTREF(i+1);
+        strcpy(entry->pstIFMS1000MeasureTREF, s.toLatin1().data());
+        entry->pstIFMS1000MeasureTREF_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureFiberLengthChangeThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureFiberLengthChangeThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossCriticalThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureEndToEndLossCriticalThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMajorThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureEndToEndLossMajorThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureEndToEndLossMajorThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMinorThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureEndToEndLossMinorThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureEndToEndLossMinorThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossCriticalThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureNewLossCriticalThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureNewLossCriticalThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossMajorThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureNewLossMajorThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureNewLossMajorThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossMinorThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureNewLossMinorThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureNewLossMinorThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossCriticalThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureOldLossCriticalThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureOldLossCriticalThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossMajorThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureOldLossMajorThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureOldLossMajorThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossMinorThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureOldLossMinorThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureOldLossMinorThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTempHighThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureTempHighThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureTempHighThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTempLowThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureTempLowThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureTempLowThreshold_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumber(i+1);
+        strcpy(entry->pstIFMS1000MeasureNumber, s.toLatin1().data());
+        entry->pstIFMS1000MeasureNumber_len	= s.length();
+
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(i+1);
+        strcpy(entry->pstIFMS1000MeasureNumberSORStoredEachChannel, s.toLatin1().data());
+        entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len	= s.length();
+		
 		entry->valid = 1;
-		entry->pstIFMS1000MeasureAction = 2;
-		entry->pstIFMS1000MeasureProgressStatus = 0;
 	}
 
 }
@@ -1736,7 +1833,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 long index = table_entry->pstIFMS1000MTPortNum;
                 QPST *pst = QPST::getInstance();
 
-                long  action = pst->m_product->m_pstIFMS1000.getMouleMode(index);
+                long  action = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureAction(index);
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
                                             action/*table_entry->pstIFMS1000MeasureAction*/);
             }
@@ -1771,7 +1868,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 long index = table_entry->pstIFMS1000MTPortNum;
                 QPST *pst = QPST::getInstance();
 
-                long progress = pst->m_product->m_pstIFMS1000.getModuleMeasuringProgess(index);
+                long progress = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureProgressStatus(index);
 
                 snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
                                             progress);
@@ -1918,14 +2015,23 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                                           table_entry->pstIFMS1000MeasureTempLowThreshold_len);
                 break;
             case COLUMN_PSTIFMS1000MEASURENUMBER:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                long index = table_entry->pstIFMS1000MTPortNum;
+                QPST *pst = QPST::getInstance();
+
+                QString s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumber(index);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstIFMS1000MeasureNumber,
-                                          table_entry->pstIFMS1000MeasureNumber_len);
+                                          s.toLatin1().data(),
+                                          s.length()
+                                          /*table_entry->pstIFMS1000MeasureNumber,
+                                          table_entry->pstIFMS1000MeasureNumber_len*/);
+            }
                 break;
             case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
                 if ( !table_entry ) {
@@ -3202,7 +3308,7 @@ QPSTProduct::pstIFMS1000FingerTable_handler(
     }
     return SNMP_ERR_NOERROR;
 }
-
+#if 0
 /** Initialize the pstIFMS1000DiffTotalTable table by defining its contents and how it's structured */
 void
 QPSTProduct::initialize_table_pstIFMS1000DiffTotalTable(void)
@@ -8218,3 +8324,4 @@ QPSTProduct::pstIFMS1000ParamsS32ValTable_handler(
     }
     return SNMP_ERR_NOERROR;
 }
+#endif
