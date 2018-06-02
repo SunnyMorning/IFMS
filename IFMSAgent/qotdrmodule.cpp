@@ -3,6 +3,7 @@
 #include <QMutexLocker>
 #include <QMutex>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QDataStream>
 #include <QIODevice>
@@ -12,6 +13,7 @@
 #include <QChar>
 #include <QByteArray>
 
+#include <math.h>
 #include <iostream>
 #include "qotdrmodule.h"
 #include "qagentapp.h"
@@ -28,12 +30,14 @@ QOTDRModule::QOTDRModule(QObject *parent, qint8 index) : QThread(parent)
     _moduleIndex = index;
     _keeprunning = 1;
     _progress = 0;
-	for(quint16 i =0; i<= 8; i++){
+
+    for(quint16 i =0; i<= 8; i++){
     	_MeasuredCounts.insert(i,0);
 		_MeasuredSORFiles.insert(i, 0);
 		_MeasuringProgresss.insert(i, 0);
         _PortActives.insert(i, 0);
         _MeasuringStatus.insert(i, 0);
+        _SORsChanged.insert(i,false);
 		}
     _moduleMode = OTDR_WORK_MODE_STOP;
 	_pIODevice = NULL;
@@ -553,15 +557,271 @@ quint32 QOTDRModule::getMeasuredSORFiles(quint16 channel)
 	return  _MeasuredSORFiles.value(channel, 0);
 }
 
-
-QByteArray QOTDRModule::generateTrapData(quint16 module, quint16 channel)
+bool  QOTDRModule::storeCurrentSOR(quint16 channel)
 {
-    QByteArray  data = QString("Traped on %1").arg(channel).toLatin1();
+	bool 	ret = false;
+		QString  srcFile = _CurrentSORs.value(channel);
+        QString	 dstFile = QAgentApp::getDataDir() +QString("IFMS_CH%1_%2.sor").arg(channel).arg(getMeasuredCount(channel));
 
+		ret = QFile::exists(srcFile);
+		if(ret == false){
+			return ret;
+		}
+		else
+		{
+			QDir *createfile = new QDir;
+			bool isExist = createfile->exists(dstFile);
+			if(isExist){
+				createfile->remove(dstFile);
+			}
+
+			ret = QFile::copy(srcFile, dstFile);
+			if(ret == false)
+			{
+				return ret;
+			}
+			else
+			{
+				increaseMeasuredSORFiles(channel, 1);
+				return true;
+			}
+		}
+
+	return ret;
+}
+
+
+QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
+{
+    QStringList  data;
+	QString		 trap = QString("");
+    quint16		oldEventNums;
+    quint16		newEventNums;
+    float oldTotalLength;
+    float newTotalLength;
+    float point1EndtoEndLoss;
+    float oldEndtoEndLoss;
+	float newEndtoEndLoss;
+    float oldEventPosition;
+    float newEventPosition;
+    float oldEventLoss;
+    float newEventLoss;
+
+    float pstIFMS1000MeasureFiberLengthChangeThreshold;
+    float pstIFMS1000MeasureEndToEndLossCriticalThreshold;
+    float pstIFMS1000MeasureEndToEndLossMajorThreshold;
+    float pstIFMS1000MeasureEndToEndLossMinorThreshold;
+    float pstIFMS1000MeasureNewLossCriticalThreshold;
+    float pstIFMS1000MeasureNewLossMajorThreshold;
+    float pstIFMS1000MeasureNewLossMinorThreshold;
+    float pstIFMS1000MeasureOldLossCriticalThreshold;
+    float pstIFMS1000MeasureOldLossMajorThreshold;
+    float pstIFMS1000MeasureOldLossMinorThreshold;
     QFingerData    *oldFingerData = _OldFingers.value(channel);
     QFingerData    *newFingerData = _NewFingers.value(channel);
+	if((oldFingerData == NULL) || (newFingerData == NULL))
+	{
+		data.append(trap);
+		return data;
+	}
+	QPST		   *pst = QPST::getInstance();
 
-// TODO: 通过比较oldFingerDate和newFingerData生成trap数据包内容。
+    float pstIFMS1000MeasureRefIndex = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureRefIndex(channel).toFloat();
+
+    pstIFMS1000MeasureFiberLengthChangeThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureFiberLengthChangeThreshold(channel).toFloat();
+    pstIFMS1000MeasureEndToEndLossCriticalThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossCriticalThreshold(channel).toFloat();
+    pstIFMS1000MeasureEndToEndLossMajorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMajorThreshold(channel).toFloat();
+    pstIFMS1000MeasureEndToEndLossMinorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMinorThreshold(channel).toFloat();
+    pstIFMS1000MeasureNewLossCriticalThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossCriticalThreshold(channel).toFloat();
+    pstIFMS1000MeasureNewLossMajorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossMajorThreshold(channel).toFloat();
+    pstIFMS1000MeasureNewLossMinorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossMinorThreshold(channel).toFloat();
+    pstIFMS1000MeasureOldLossCriticalThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossCriticalThreshold(channel).toFloat();
+    pstIFMS1000MeasureOldLossMajorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossMajorThreshold(channel).toFloat();
+    pstIFMS1000MeasureOldLossMinorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossMinorThreshold(channel).toFloat();
+    oldTotalLength = oldFingerData->getLength() *( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
+    newTotalLength = newFingerData->getLength() *( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
+
+	oldEventNums = oldFingerData->mIFMSFingerData.NumberOfEvents;
+	newEventNums = newFingerData->mIFMSFingerData.NumberOfEvents;
+	
+    if (qAbs(oldTotalLength - newTotalLength) > pstIFMS1000MeasureFiberLengthChangeThreshold)
+	{
+		// TODO: 光纤长度变化
+		trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+											OTDR_TRAP_SOURCE_LENGTH).arg(\
+											getMeasuredCount(channel)).arg(\
+                                            oldTotalLength).arg(\
+                                            newTotalLength).arg(0);
+		data.append(trap);
+        _SORsChanged[channel] = true;
+	}
+	else  // 光纤长度变化没有超过阈值
+	{
+		// TODO: 比较端到端损耗
+        oldEndtoEndLoss = (float)oldFingerData->mIFMSFingerData.EndtoEndLoss/1000;
+        newEndtoEndLoss = (float)newFingerData->mIFMSFingerData.EndtoEndLoss/1000;
+        point1EndtoEndLoss = newTotalLength/10;
+		if(qAbs(oldEndtoEndLoss - newEndtoEndLoss ) >= qMin(5.0f , point1EndtoEndLoss))
+		{
+			trap = QString("CH%1,B,%2,%3,%4,%5,%6").arg(channel).arg(\
+											OTDR_TRAP_SOURCE_EEMAIN).arg(\
+											getMeasuredCount(channel)).arg(\
+											oldEndtoEndLoss).arg(\
+											newEndtoEndLoss).arg(0);
+			data.append(trap);
+            _SORsChanged[channel] = true;
+
+        }
+		else if((qAbs(oldEndtoEndLoss - newEndtoEndLoss) >= 1.0f)&&(qAbs(oldEndtoEndLoss - newEndtoEndLoss) < qMin(5.0f , point1EndtoEndLoss)))
+		{
+			trap = QString("CH%1,C,%2,%3,%4,%5,%6").arg(channel).arg(\
+											OTDR_TRAP_SOURCE_EEMINOR).arg(\
+											getMeasuredCount(channel)).arg(\
+											oldEndtoEndLoss).arg(\
+											newEndtoEndLoss).arg(0);
+			data.append(trap);
+            _SORsChanged[channel] = true;
+
+        }
+		
+		// TODO: 事件消失, 新增, 变化
+		int i = 0;
+		int j = 0;
+        int k = 0;
+        for(i=0; i < oldEventNums-1; i++){
+			oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType = EVENT_TYPE_OLD;
+			oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_DISAPPEAR;
+
+            for(j=k; j< newEventNums-1; j++)
+				{
+				newFingerData->mIFMSFingerData.vIFMSEvents[j].EventType = EVENT_TYPE_NEW;
+                oldEventPosition = (float)oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventPosition * ( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
+                newEventPosition = (float)newFingerData->mIFMSFingerData.vIFMSEvents[j].EventPosition * ( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
+
+                oldEventLoss = (float)oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventLoss/1000;
+                newEventLoss = (float)newFingerData->mIFMSFingerData.vIFMSEvents[j].EventLoss/1000;
+
+                if(qAbs(newEventPosition - oldEventPosition ) < 0.1f)
+					{
+						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType &= (~EVENT_TYPE_DISAPPEAR);     // 旧的没有消失
+						newFingerData->mIFMSFingerData.vIFMSEvents[j].EventType &= (~EVENT_TYPE_NEW); // 新的不是新增
+						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_LITTLE; // 旧的有变化，暂时未知，比较增益
+
+                        if(qAbs(newEventLoss - oldEventLoss) >= 5.0f)
+						{
+							// 变化，紧急
+						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_CRITICAL;
+						trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+														OTDR_TRAP_SOURCE_ECHANGECRITICAL).arg(\
+														getMeasuredCount(channel)).arg(\
+                                                        oldEventPosition).arg(\
+                                                        oldEventLoss).arg(\
+                                                        newEventLoss);
+						data.append(trap);
+                        _SORsChanged[channel] = true;
+
+                        }
+                        else if(qAbs(newEventLoss - oldEventLoss) >= 2.0f)
+						{
+							// 变化，主要
+						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_MAIN;
+						trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+														OTDR_TRAP_SOURCE_ECHANGEMAIN).arg(\
+														getMeasuredCount(channel)).arg(\
+                                                        oldEventPosition).arg(\
+                                                        oldEventLoss).arg(\
+                                                        newEventLoss);
+						data.append(trap);
+                        _SORsChanged[channel] = true;
+
+                        }
+                        else if(qAbs(newEventLoss - oldEventLoss) >= 0.5f)
+						{
+							// 变化，次要
+						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_MINOR;
+						trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+														OTDR_TRAP_SOURCE_ECHANGEMINOR).arg(\
+														getMeasuredCount(channel)).arg(\
+                                                        oldEventPosition).arg(\
+                                                        oldEventLoss).arg(\
+                                                        newEventLoss);
+						data.append(trap);
+                        _SORsChanged[channel] = true;
+
+                        }
+                        k++;
+                        break;
+					}
+
+				}
+		}
+		// 检查消失的
+
+        for(i=0;i<oldEventNums-1;i++)
+		{
+            oldEventPosition = (float)oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventPosition * ( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
+            if(oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType == (EVENT_TYPE_OLD | EVENT_TYPE_DISAPPEAR))
+			{
+                trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+												OTDR_TRAP_SOURCE_EDISAPPER).arg(\
+												getMeasuredCount(channel)).arg(\
+                                                oldEventPosition).arg(0).arg(0);
+				data.append(trap);
+                _SORsChanged[channel] = true;
+
+            }
+		}
+		// 检查新增的
+        for(i=0;i<newEventNums-1;i++)
+		{
+            newEventPosition = (float)newFingerData->mIFMSFingerData.vIFMSEvents[i].EventPosition * ( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
+            newEventLoss = (float)newFingerData->mIFMSFingerData.vIFMSEvents[i].EventLoss/1000;
+            if(newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType == EVENT_TYPE_NEW)
+			{
+                if(newEventLoss >= 5.0f )
+					{
+					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_CRITICAL;
+					trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+													OTDR_TRAP_SOURCE_ENEWCRITICAL).arg(\
+													getMeasuredCount(channel)).arg(\
+                                                    newEventPosition).arg(\
+                                                    newEventLoss).arg(0);
+					data.append(trap);
+                    _SORsChanged[channel] = true;
+
+					}
+                else if(newEventLoss >= 2.0f )
+					{
+					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_MAIN;
+					trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+													OTDR_TRAP_SOURCE_ENEWMAIN).arg(\
+													getMeasuredCount(channel)).arg(\
+                                                    newEventPosition).arg(\
+                                                    newEventLoss).arg(0);
+					data.append(trap);
+                    _SORsChanged[channel] = true;
+
+                    }
+                else if(newEventLoss >= 0.5f )
+					{
+					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_MINOR;
+					trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+													OTDR_TRAP_SOURCE_ENEWMINOR).arg(\
+													getMeasuredCount(channel)).arg(\
+                                                    newEventPosition).arg(\
+                                                    newEventLoss).arg(0);
+					data.append(trap);
+                    _SORsChanged[channel] = true;
+
+                    }
+			}
+		}
+		
+	}
+    if(_SORsChanged.value(channel) == false){
+        trap = QString("CH%1,E,%2,%3,0,0,0").arg(channel).arg(OTDR_TRAP_SOURCE_NORMAL).arg(getMeasuredCount(channel));
+        data.append(trap);
+    }
     return data;
 }
 
@@ -631,13 +891,26 @@ QString QOTDRModule::getIFMSSorFileName(quint16 channel)
 
 void QOTDRModule::OTDRChanged(quint16 module, quint16 channel)
 {
+    QString trap;
+    bool    flag;
+    int i;
+    quint32     MaxStoredSORNumber;
     QAgentApp::message(module, QString("OTDR channel %1 changed!").arg(channel));
+    QPST *pst = QPST::getInstance();
+    flag =  _SORsChanged.value(channel);
 
-    QByteArray  data = generateTrapData(module, channel);
-// TODO: if finger data changed, store the sor to DATA_DIR of NAND Flash 	
+    MaxStoredSORNumber = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(channel).toInt();
 
-// TODO: if inger data not changed, trap normal 
-    emit sigOTDRTrap(module, data);
+    QStringList  data = generateTrapData(module, channel);
+    if((flag == true)&&(getMeasuredSORFiles(channel)< MaxStoredSORNumber)){
+        storeCurrentSOR(channel);
+        _SORsChanged[channel] = false;
+    }
+
+    for(i=0;i<data.size();i++){
+        trap = data.at(i);
+        emit sigOTDRTrap(module, trap);
+    }
 }
 
 void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &data)
@@ -705,13 +978,14 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
 							QFingerData *p = sorfile.toFingerData();
                             if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO ){
 									if(getMeasuredCount(ch) == 0){
+                                        // TODO: verify the sor data
 										_OldFingers.insert(ch, p);
 									}
 									_NewFingers.insert(ch,p);
-									
-									increaseMeasuredCount(ch, 1);
-								
-									OTDRChanged(_moduleIndex, ch);
+                                    if(getMeasuredCount(ch) > 0){
+                                       OTDRChanged(_moduleIndex, ch);
+                                    }
+                                    increaseMeasuredCount(ch, 1);
 								}
 							p->toIFMSFingerFile(fingername);
 					}

@@ -43,20 +43,19 @@ int QPST::getKeepRunning(){
 
 void QPST::initConnections()
 {
-//    connect(this, SIGNAL(sigOTDRChanged(quint16,quint16)), this, SLOT(onSigOTDRChanged(quint16,quint16)), Qt::DirectConnection);
-    connect(this, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), this, SLOT(onSigOTDRTrap(quint16,QByteArray&)), Qt::DirectConnection);
-    connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
+   connect(this, SIGNAL(sigOTDRTrap(quint16,QString&)), this, SLOT(onSigOTDRTrap(quint16,QString&)));
+   connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
 }
 void QPST::sendCommandToOTDRModule(quint16 channel, QString cmdline)
 {
-	quint16 module = channel/4;
+    quint16 module = (channel-1)/CHANNELS_PER_MODULE;
     emit this->sigSendCommandToModule(module, cmdline);
 }
 
 
 // Trap
 int
-QPST::send_pstIFMS1000MeasureEvent_trap( void )
+QPST::send_pstIFMS1000MeasureEvent_trap(QString data)
 {
 
      static long modstatus = 0;
@@ -107,9 +106,9 @@ QPST::send_pstIFMS1000MeasureEvent_trap( void )
      */
     snmp_varlist_add_variable(&var_list,
         pstIFMS1000MeasureEvent_oid, OID_LENGTH(pstIFMS1000MeasureEvent_oid),
-        ASN_INTEGER,
+        ASN_OCTET_STR,
         /* Set an appropriate value for pstIFMS1000MeasureStatus */
-        &modstatus, sizeof(modstatus));
+        data.toLatin1().data(), data.length());
 
     /*
      * Add any extra (optional) objects here
@@ -137,11 +136,11 @@ QPST::send_pstIFMS1000MeasureEvent_trap( void )
 
 //}
 
-void QPST::onSigOTDRTrap(quint16 module, QByteArray &data)
+void QPST::onSigOTDRTrap(quint16 module, QString &data)
 {
 // TODO: send trap to nms
 
-    QPST::send_pstIFMS1000MeasureEvent_trap();
+    QPST::send_pstIFMS1000MeasureEvent_trap(data);
 
     qDebug() << "["<<QThread::currentThreadId() << "] onSigOTDRTrap" << endl;
 }

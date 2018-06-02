@@ -19,6 +19,7 @@
 
 #include    "qfingerdata.h"
 
+#define  DUMP_MESSAGE 1
 #define  WAIT_WRITE_TIMEOUT     1000
 #define  WAIT_READ_TIMEOUT      4000
 
@@ -44,6 +45,37 @@
 #define  OTDR_MEASURE_STATUS_SINGLE_RUNNING		2
 #define  OTDR_MEASURE_STATUS_SINGLE_DONE  		3
 #define  OTDR_MEASURE_STATUS_FAIL				4
+
+#define  OTDR_TRAP_SOURCE_NORMAL				1
+#define  OTDR_TRAP_SOURCE_CONNECTION			2
+#define  OTDR_TRAP_SOURCE_LENGTH				3
+#define  OTDR_TRAP_SOURCE_RESERVE0				4
+#define  OTDR_TRAP_SOURCE_EEMAIN				5
+#define  OTDR_TRAP_SOURCE_EEMINOR				6
+#define  OTDR_TRAP_SOURCE_RESERVE1				7
+#define  OTDR_TRAP_SOURCE_RESERVE2				8
+#define  OTDR_TRAP_SOURCE_EDISAPPER				9
+#define  OTDR_TRAP_SOURCE_ENEWCRITICAL			10
+#define  OTDR_TRAP_SOURCE_ENEWMAIN				11
+#define  OTDR_TRAP_SOURCE_ENEWMINOR				12
+#define  OTDR_TRAP_SOURCE_RESERVE3				13
+#define  OTDR_TRAP_SOURCE_RESERVE4				14
+#define  OTDR_TRAP_SOURCE_ECHANGECRITICAL		15
+#define  OTDR_TRAP_SOURCE_ECHANGEMAIN			16
+#define  OTDR_TRAP_SOURCE_ECHANGEMINOR			17
+#define  OTDR_TRAP_SOURCE_RESERVE5				18
+#define  OTDR_TRAP_SOURCE_POWER1				19	 	// STA
+#define  OTDR_TRAP_SOURCE_POWER2				20
+#define  OTDR_TRAP_SOURCE_POWER3				21
+#define  OTDR_TRAP_SOURCE_POWER4				22
+#define  OTDR_TRAP_SOURCE_POWER5				23
+#define  OTDR_TRAP_SOURCE_POWER6				24
+#define  OTDR_TRAP_SOURCE_POWER7				25
+#define  OTDR_TRAP_SOURCE_POWER8				26
+#define  OTDR_TRAP_SOURCE_RESERVE6				27
+#define  OTDR_TRAP_SOURCE_RESERVE7				28
+#define  OTDR_TRAP_SOURCE_TEMPERATURE			29		// STA
+#define  OTDR_TRAP_SOURCE_FAN					30		// FAN
 
 class QOTDRModule : public QThread
 {
@@ -117,7 +149,7 @@ public:
     int     isChannelActive(quint16 channel);
     QString      getIFMSFingerFileName(quint16 channel);
     QString      getIFMSSorFileName(quint16 channel);
-
+	bool  		 storeCurrentSOR(quint16 channel);
     ModuleState getModuleState();
     void setModuleState(ModuleState state);
 
@@ -127,7 +159,7 @@ public:
                                          , QSerialPort::Parity parity = QSerialPort::NoParity \
                                          , QSerialPort::FlowControl fctrl = QSerialPort::NoFlowControl);
 
-    QByteArray generateTrapData(quint16 module, quint16 channel);
+    QStringList generateTrapData(quint16 module, quint16 channel);
 
     void sendCommandWithResponse(quint16 module, QString cmdline, QByteArray *data);
     void recvResponse(quint16 module, QString &cmdline, QByteArray &data);
@@ -177,7 +209,7 @@ signals:
     void sigSendCommand(quint16 module, QString &cmdline);
     void sigSetProgress(quint16 module, quint16 progress);
 	void sigSetMeasuredCount(quint16  channel, quint32 count);
-    void sigOTDRTrap(quint16 module, QByteArray &data);
+    void sigOTDRTrap(quint16 module, QString &data);
     void sigOTDRSetMode(quint16 module, quint16 mode);
     void sigOTDRSetMeasuringStatus(quint16 channel, quint32 status);
 
@@ -224,9 +256,19 @@ private:
     QTimer                      *_timerTCPKeepAlive;
     quint16                     _moduleMode;
 // TRAP PARAMS
-    int                         _L;
-
-	
+    float pstIFMS1000MeasureFiberLengthChangeThreshold;
+    float pstIFMS1000MeasureEndToEndLossCriticalThreshold;
+    float pstIFMS1000MeasureEndToEndLossMajorThreshold;
+    float pstIFMS1000MeasureEndToEndLossMinorThreshold;
+    float pstIFMS1000MeasureNewLossCriticalThreshold;
+    float pstIFMS1000MeasureNewLossMajorThreshold;
+    float pstIFMS1000MeasureNewLossMinorThreshold;
+    float pstIFMS1000MeasureOldLossCriticalThreshold;
+    float pstIFMS1000MeasureOldLossMajorThreshold;
+    float pstIFMS1000MeasureOldLossMinorThreshold;
+//    double pstIFMS1000MeasureTempHighThreshold;
+//    double pstIFMS1000MeasureTempLowThreshold;
+    QMap<quint16, bool>     _SORsChanged;
 };
 
 #endif // QOTDRMODULE_H

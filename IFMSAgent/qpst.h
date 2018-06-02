@@ -45,13 +45,13 @@ public:
 	void sendCommandToOTDRModule(quint16 channel, QString cmdline);
 
     // Trap
-    static int send_pstIFMS1000MeasureEvent_trap(void);
+    static int send_pstIFMS1000MeasureEvent_trap(QString data);
 
     void run(){
         qDebug() << "["<<QThread::currentThreadId() <<"] qpst running" << endl;
         char peername[256];
         char community[256];
-        strcpy(peername,"192.168.1.200:1622");
+        strcpy(peername,"192.168.1.3:1622");
         strcpy(community,"public");
 
 
@@ -89,13 +89,13 @@ private:
     int         _keeprunning;
 
 signals:
-    void sigOTDRTrap(quint16 module, QByteArray &data);
+    void sigOTDRTrap(quint16 module, QString &data);
     void sigSetProgress(quint16 module, quint16 progress);
     void sigSendCommandToModule(quint16 module, QString &cmdline);
 
 
 public slots:
-    void onSigOTDRTrap(quint16 module, QByteArray& data);
+    void onSigOTDRTrap(quint16 module, QString& data);
     void onSigSetProgress(quint16 module, quint16 progress);
     void onSigOTDRSetMode(quint16 module, quint16 mode);
     void onSigSetMeasuredCount(quint16 channel, quint32 count);

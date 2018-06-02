@@ -89,6 +89,7 @@ QFingerData *QSorFileBase::toFingerData()
    temp->mIFMSFingerData.Channel = _channel;
    temp->mIFMSFingerData.GroupIndex = m_fixedParas.groupIndex;
    temp->mIFMSFingerData.NumberOfEvents = m_keyEvent.keyEventNum;
+   temp->mIFMSFingerData.EndtoEndLoss = m_keyEvent.eteLoss;
 
    IFMSEvent_t  ifmsEvent;
    for(i=0; i< m_keyEvent.keyEventNum; i++){
@@ -97,8 +98,9 @@ QFingerData *QSorFileBase::toFingerData()
         ifmsEvent.EventCode0 = m_keyEvent.vEvent.at(i).code.at(0);
         ifmsEvent.EventLoss = m_keyEvent.vEvent.at(i).eventLoss;
         ifmsEvent.EventReflectance = m_keyEvent.vEvent.at(i).reflectance;
-        ifmsEvent.EventNo = i;
-        ifmsEvent.EventPosition = m_keyEvent.vEvent.at(i).propagationTime *( C_LIGHT_SPEED/ (m_fixedParas.groupIndex * pow(10.0,8)));
+        ifmsEvent.EventNo = i+1;
+		ifmsEvent.EventType = EVENT_TYPE_INIT;
+        ifmsEvent.EventPosition = m_keyEvent.vEvent.at(i).propagationTime;
 
         temp->mIFMSFingerData.vIFMSEvents.push_back(ifmsEvent);
    }

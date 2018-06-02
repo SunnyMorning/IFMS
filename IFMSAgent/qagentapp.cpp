@@ -100,21 +100,21 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(_module1, SIGNAL(sigSendCommand(quint16, QString&)), _module1, SLOT(onSendCommand(quint16, QString&)));
     connect(_module1, SIGNAL(sigOTDRSetMode(quint16,quint16)), pstThread, SLOT(onSigOTDRSetMode(quint16,quint16)));
     connect(_module1, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
-    connect(_module1, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
+    connect(_module1, SIGNAL(sigOTDRTrap(quint16,QString&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QString&)));
     connect(_module1, SIGNAL(sigSetMeasuredCount(quint16, quint32)), pstThread, SLOT(onSigSetMeasuredCount(quint16, quint32)));
     connect(_module1, SIGNAL(sigOTDRSetMeasuringStatus(quint16,quint32)), pstThread, SLOT(onSigSetMeasuringStatus(quint16,quint32)));
 
     connect(_module2, SIGNAL(sigSendCommand(quint16, QString&)), _module2, SLOT(onSendCommand(quint16, QString&)));
     connect(_module2, SIGNAL(sigOTDRSetMode(quint16,quint16)), pstThread, SLOT(onSigOTDRSetMode(quint16,quint16)));
     connect(_module2, SIGNAL(sigSetProgress(quint16,quint16)),pstThread, SIGNAL(sigSetProgress(quint16,quint16)));
-    connect(_module2, SIGNAL(sigOTDRTrap(quint16,QByteArray&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QByteArray&)));
+    connect(_module2, SIGNAL(sigOTDRTrap(quint16,QString&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QString&)));
     connect(_module2, SIGNAL(sigSetMeasuredCount(quint16, quint32)), pstThread, SLOT(onSigSetMeasuredCount(quint16, quint32)));
     connect(_module2, SIGNAL(sigOTDRSetMeasuringStatus(quint16,quint32)), pstThread, SLOT(onSigSetMeasuringStatus(quint16,quint32)));
 
 // FOR DEBUG ONLY
 //    emit sigModuleStartMonitor(0);
 //    emit sigModuleStartMonitor(1);
-    emit command_thread->sigSwitchModule(0);
+//    emit command_thread->sigSwitchModule(0);
 //    QString qcmdline = QString("SCAN");
 //    QString qcmdline = QString("GETSOR? 0");
 //    emit command_thread->sigSendCommandToModule(0,qcmdline);

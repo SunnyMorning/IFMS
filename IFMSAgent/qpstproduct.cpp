@@ -2124,7 +2124,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 }
                 long action = *(requests->requestvb->val.integer);
                 long index = table_entry->pstIFMS1000MTPortNum;
-                if(index < 4){
+                if(index <= 4){
                     if(action == 1) // start
                     {
                         emit QAgentApp::getInstance()->sigModuleStartMonitor(0);
@@ -2138,7 +2138,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                         emit QAgentApp::getInstance()->sigModuleStopMonitor(0);
                     }
                 }
-                else if(4<= index)
+                else if(4< index)
                 {
                     if(action == 1) // start
                     {

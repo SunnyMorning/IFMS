@@ -38,6 +38,7 @@ QByteArray  QFingerData::toByteArray()
         data.append((const char*)(&mIFMSFingerData.vIFMSEvents.at(i)), sizeof(IFMSEvent_t));
     }
 
+    data.append((const char*)(&mIFMSFingerData.EndtoEndLoss), sizeof(mIFMSFingerData.EndtoEndLoss));
     return data;
 }
 
@@ -53,3 +54,15 @@ void QFingerData::toIFMSFingerFile(QString filename)
         }
     }
 }
+
+float QFingerData::getLength(void)
+{
+    float	f = 1.0f;
+	if(	mIFMSFingerData.NumberOfEvents > 0){
+
+		f = mIFMSFingerData.vIFMSEvents.back().EventPosition;
+	}
+
+	return f;
+}
+
