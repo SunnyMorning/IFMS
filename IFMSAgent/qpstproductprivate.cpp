@@ -1123,13 +1123,13 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureReserved2_len(quint16 channel, i
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureNumber(quint16 channel, QString s)
 {
-// Read only 
+    strcpy(MeasureTable[channel-1].pstIFMS1000MeasureNumber, s.toLatin1().data());
 }
 
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureNumber_len(quint16 channel, int s)
 {
-// Read only
+
 }
 
 

@@ -977,16 +977,17 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
 					//		_OldFingers.swap(_NewFingers);
 							QFingerData *p = sorfile.toFingerData();
                             if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO ){
-									if(getMeasuredCount(ch) == 0){
+                                    increaseMeasuredCount(ch, 1);
+                                    if(getMeasuredCount(ch) == 1){
                                         // TODO: verify the sor data
 										_OldFingers.insert(ch, p);
                                         storeCurrentSOR(ch);
 									}
 									_NewFingers.insert(ch,p);
-                                    if(getMeasuredCount(ch) > 0){
+                                    if(getMeasuredCount(ch) > 1){
                                        OTDRChanged(_moduleIndex, ch);
                                     }
-                                    increaseMeasuredCount(ch, 1);
+//                                    increaseMeasuredCount(ch, 1);
 								}
 							p->toIFMSFingerFile(fingername);
 					}
