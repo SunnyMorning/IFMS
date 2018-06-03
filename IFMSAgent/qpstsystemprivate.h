@@ -17,7 +17,7 @@
 #define NUMBER_OF_POWERS			8
 #define NUMBER_OF_TRAPTARGETS		2
 #define NNN							32
-
+#define SYSTEM_SETTINGS_GROUP		"SYSTEM"
 using namespace std;
 
 typedef struct  _pstSystemBasicManagement
@@ -47,8 +47,9 @@ typedef struct pstSystemTrapTargetTable_entry {
     size_t pstSystemTrapTargetName_len;
 
     /* Column values */
-    in_addr_t pstSystemTrapTargetIpAddr;
-    in_addr_t old_pstSystemTrapTargetIpAddr;
+    char pstSystemTrapTargetIpAddr[NNN];
+    size_t pstSystemTrapTargetIpAddr_len;
+    char old_pstSystemTrapTargetIpAddr[NNN];
     char pstSystemTrapTargetCommunity[NNN];
     size_t pstSystemTrapTargetCommunity_len;
     char old_pstSystemTrapTargetCommunity[NNN];
@@ -159,13 +160,13 @@ signals:
 
 public slots:
     QString get_devName();
-    void    set_devName(QString name);
+    void    set_devName(QString s);
     QString get_devIpAddr();
-    void    set_devIpAddr(QString ip);
+    void    set_devIpAddr(QString s);
     QString get_devGateway();
-    void    set_devGateway(QString gw);
+    void    set_devGateway(QString s);
     QString get_devNetMask();
-    void    set_devNetMask(QString msk);
+    void    set_devNetMask(QString s);
     long    get_saveCurrentConfiguration();
     void    set_saveCurrentConfiguration(long cfg);
     long    get_reset2Factory();
@@ -179,15 +180,15 @@ public slots:
 
     QString get_pstSystemTrapTargetCommunity(int index);
 
-    void 	set_pstSystemTrapTargetCommunity(int index, QString community);
+    void 	set_pstSystemTrapTargetCommunity(int index, QString s);
 
 
     long	get_pstSystemTrapTargetCommunity_len(int index);
 
 
-    long 	get_pstSystemTrapTargetIpAddr(int index);
+    QString 	get_pstSystemTrapTargetIpAddr(int index);
 
-    void	set_pstSystemTrapTargetIpAddr(int index, QString ip);
+    void	set_pstSystemTrapTargetIpAddr(int index, QString s);
 
 
     long 	get_pstSystemTrapTargetTrapVersion(int index);

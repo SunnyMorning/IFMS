@@ -608,9 +608,9 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
     float newEventLoss;
 
     float pstIFMS1000MeasureFiberLengthChangeThreshold;
-    float pstIFMS1000MeasureEndToEndLossCriticalThreshold;
-    float pstIFMS1000MeasureEndToEndLossMajorThreshold;
-    float pstIFMS1000MeasureEndToEndLossMinorThreshold;
+    float pstIFMS1000MeasureEndToEndLossHighThreshold;
+    float pstIFMS1000MeasureEndToEndLossMiddleThreshold;
+    float pstIFMS1000MeasureEndToEndLossLowThreshold;
     float pstIFMS1000MeasureNewLossCriticalThreshold;
     float pstIFMS1000MeasureNewLossMajorThreshold;
     float pstIFMS1000MeasureNewLossMinorThreshold;
@@ -629,9 +629,9 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
     float pstIFMS1000MeasureRefIndex = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureRefIndex(channel).toFloat();
 
     pstIFMS1000MeasureFiberLengthChangeThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureFiberLengthChangeThreshold(channel).toFloat();
-    pstIFMS1000MeasureEndToEndLossCriticalThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossCriticalThreshold(channel).toFloat();
-    pstIFMS1000MeasureEndToEndLossMajorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMajorThreshold(channel).toFloat();
-    pstIFMS1000MeasureEndToEndLossMinorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMinorThreshold(channel).toFloat();
+    pstIFMS1000MeasureEndToEndLossHighThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossHighThreshold(channel).toFloat();
+    pstIFMS1000MeasureEndToEndLossMiddleThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossMiddleThreshold(channel).toFloat();
+    pstIFMS1000MeasureEndToEndLossLowThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndToEndLossLowThreshold(channel).toFloat();
     pstIFMS1000MeasureNewLossCriticalThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossCriticalThreshold(channel).toFloat();
     pstIFMS1000MeasureNewLossMajorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossMajorThreshold(channel).toFloat();
     pstIFMS1000MeasureNewLossMinorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNewLossMinorThreshold(channel).toFloat();
@@ -725,7 +725,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 						{
 							// 变化，主要
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_MAIN;
-						trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+                        trap = QString("CH%1,B,%2,%3,%4,%5,%6").arg(channel).arg(\
 														OTDR_TRAP_SOURCE_ECHANGEMAIN).arg(\
 														getMeasuredCount(channel)).arg(\
                                                         oldEventPosition).arg(\
@@ -739,7 +739,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 						{
 							// 变化，次要
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_MINOR;
-						trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+                        trap = QString("CH%1,C,%2,%3,%4,%5,%6").arg(channel).arg(\
 														OTDR_TRAP_SOURCE_ECHANGEMINOR).arg(\
 														getMeasuredCount(channel)).arg(\
                                                         oldEventPosition).arg(\
@@ -762,7 +762,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
             oldEventPosition = (float)oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventPosition * ( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
             if(oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType == (EVENT_TYPE_OLD | EVENT_TYPE_DISAPPEAR))
 			{
-                trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+                trap = QString("CH%1,D,%2,%3,%4,%5,%6").arg(channel).arg(\
 												OTDR_TRAP_SOURCE_EDISAPPER).arg(\
 												getMeasuredCount(channel)).arg(\
                                                 oldEventPosition).arg(0).arg(0);
@@ -793,7 +793,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                 else if(newEventLoss >= 2.0f )
 					{
 					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_MAIN;
-					trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+                    trap = QString("CH%1,B,%2,%3,%4,%5,%6").arg(channel).arg(\
 													OTDR_TRAP_SOURCE_ENEWMAIN).arg(\
 													getMeasuredCount(channel)).arg(\
                                                     newEventPosition).arg(\
@@ -805,7 +805,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                 else if(newEventLoss >= 0.5f )
 					{
 					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_MINOR;
-					trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
+                    trap = QString("CH%1,C,%2,%3,%4,%5,%6").arg(channel).arg(\
 													OTDR_TRAP_SOURCE_ENEWMINOR).arg(\
 													getMeasuredCount(channel)).arg(\
                                                     newEventPosition).arg(\
@@ -980,6 +980,7 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
 									if(getMeasuredCount(ch) == 0){
                                         // TODO: verify the sor data
 										_OldFingers.insert(ch, p);
+                                        storeCurrentSOR(ch);
 									}
 									_NewFingers.insert(ch,p);
                                     if(getMeasuredCount(ch) > 0){

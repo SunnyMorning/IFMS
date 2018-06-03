@@ -76,6 +76,9 @@
 #define  OTDR_TRAP_SOURCE_RESERVE7				28
 #define  OTDR_TRAP_SOURCE_TEMPERATURE			29		// STA
 #define  OTDR_TRAP_SOURCE_FAN					30		// FAN
+#define  OTDR_TRAP_SOURCE_WSORL					31		// WRONG LENGTH (1~400km) 
+#define  OTDR_TRAP_SOURCE_WSOREE				32		// WRONG ENDtoEND(0~80db)
+#define  OTDR_TRAP_SOURCE_WSOREVENT				33		// WRONG EVENT (0~10db) 
 
 class QOTDRModule : public QThread
 {
@@ -257,9 +260,9 @@ private:
     quint16                     _moduleMode;
 // TRAP PARAMS
     float pstIFMS1000MeasureFiberLengthChangeThreshold;
-    float pstIFMS1000MeasureEndToEndLossCriticalThreshold;
-    float pstIFMS1000MeasureEndToEndLossMajorThreshold;
-    float pstIFMS1000MeasureEndToEndLossMinorThreshold;
+    float pstIFMS1000MeasureEndToEndLossHighThreshold;
+    float pstIFMS1000MeasureEndToEndLossMiddleThreshold;
+    float pstIFMS1000MeasureEndToEndLossLowThreshold;
     float pstIFMS1000MeasureNewLossCriticalThreshold;
     float pstIFMS1000MeasureNewLossMajorThreshold;
     float pstIFMS1000MeasureNewLossMinorThreshold;

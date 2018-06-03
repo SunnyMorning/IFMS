@@ -45,7 +45,63 @@ void QPST::initConnections()
 {
    connect(this, SIGNAL(sigOTDRTrap(quint16,QString&)), this, SLOT(onSigOTDRTrap(quint16,QString&)));
    connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
+//   connect(this, SIGNAL(sigTrapTargetsChanged()), this, SLOT(onTrapTargetsChanged()));
 }
+
+void QPST::TrapTargetsChanged()
+{
+    emit this->sigTrapTargetsChanged();
+}
+
+void QPST::onTrapTargetsChanged()
+{
+    char peername[256];
+    char community[256];
+    QMutexLocker locker(&gPST_mutex);//加互斥锁。
+
+    QString targetIP;
+    QString targetCommunity;
+
+//    snmpd_free_trapsinks();
+
+    for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
+    {
+        targetIP = m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+        if(targetIP != QString("0.0.0.0")){
+            strcpy(peername, targetIP.toLatin1().data());
+            targetCommunity = m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
+            strcpy(community, targetCommunity.toLatin1().data());
+            create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
+        }
+    }
+
+}
+
+void QPST::run()
+{
+        qDebug() << "["<<QThread::currentThreadId() <<"] qpst running" << endl;
+
+        netsnmp_enable_subagent();
+        netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_X_SOCKET,AGENTX_MASTER_SOCKET);
+
+        snmp_disable_log();
+
+        init_agent(SUB_AGENT);
+        init_snmp(SUB_AGENT);
+
+        m_product->init_pstIFMS1000();
+        m_system->init_pstSystem();
+
+        onTrapTargetsChanged();
+
+        do{
+            agent_check_and_process(1);
+        }while(getKeepRunning() == 1);
+
+        snmp_shutdown(SUB_AGENT);
+        shutdown_agent();
+}
+
 void QPST::sendCommandToOTDRModule(quint16 channel, QString cmdline)
 {
     quint16 module = (channel-1)/CHANNELS_PER_MODULE;

@@ -1,5 +1,10 @@
-#include "qpstsystemprivate.h"
+#include <QHostAddress>
+#include <QHostInfo>
+#include <QNetworkInterface>
+#include <QProcess>
+#include <QList>
 
+#include "qpstsystemprivate.h"
 #include "qagentapp.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -122,28 +127,56 @@ void QPSTSystemPrivate::init_pstData()
 
 QString QPSTSystemPrivate::get_devName()
 {
-    QString devName;
-    _ss.beginGroup("pstSystemBasicManagement");
-    devName = _ss.value("devName","IFMS1000").toString();
+    QString  s;
+
+    _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
+//    _ss.beginReadArray("devName");
+//    _ss.setArrayIndex(channel-1);
+    s = _ss.value("devName", "IFMS1000").toString();
+//    _ss.endArray();
     _ss.endGroup();
-    return devName;
+
+    return s;
 }
 
-void    QPSTSystemPrivate::set_devName(QString name)
+void    QPSTSystemPrivate::set_devName(QString s)
 {
-    _ss.beginGroup("pstSystemBasicManagement");
-    _ss.setValue("devName", name);
+    _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
+//        _ss.beginWriteArray("pstIFMS1000PortRxPwr");
+//            _ss.setArrayIndex(channel-1);
+            _ss.setValue("devName", s);
+//        _ss.endArray();
     _ss.endGroup();
+    _ss.sync();
 }
 
 QString QPSTSystemPrivate::get_devIpAddr()
 {
+    QString  s;
+    QNetworkInterface a = QNetworkInterface::interfaceFromName("eth1");
 
+    QList<QHostAddress> list = a.allAddresses();
+    foreach(QHostAddress add, list){
+        if((add.protocol() == QAbstractSocket::IPv4Protocol)
+                &&(add != QHostAddress::LocalHost)){
+        s = add.toString();
+        }
+    }
+    if(s.isEmpty()){
+        s = QString("192.168.1.100");
+    }
+
+    return s;
 }
 
-void    QPSTSystemPrivate::set_devIpAddr(QString ip)
+void    QPSTSystemPrivate::set_devIpAddr(QString s)
 {
-
+//    QNetworkInterface a = QNetworkInterface::interfaceFromName("eth1");
+//    QList<QHostAddress> list = a.allAddresses();
+//    if(list.size() > 0){
+//        QHostAddress h = list.at(0);
+//        h.setAddress(s);
+//    }
 }
 
 QString QPSTSystemPrivate::get_devGateway()
@@ -151,7 +184,7 @@ QString QPSTSystemPrivate::get_devGateway()
 
 }
 
-void    QPSTSystemPrivate::set_devGateway(QString gw)
+void    QPSTSystemPrivate::set_devGateway(QString s)
 {
 
 }
@@ -161,7 +194,7 @@ QString QPSTSystemPrivate::get_devNetMask()
 
 }
 
-void    QPSTSystemPrivate::set_devNetMask(QString msk)
+void    QPSTSystemPrivate::set_devNetMask(QString s)
 {
 
 }
@@ -198,11 +231,11 @@ void    QPSTSystemPrivate::set_reboot(long rb)
 
 QString	QPSTSystemPrivate::get_pstSystemTrapTargetName(int index)
 {
-	QString  targetName;
-	int size = _ss.beginReadArray("pstSystemTrapTargetTable");
-	_ss.setArrayIndex(index);
-    targetName = _ss.value("pstSystemTrapTargetName", "0").toString();
-	return targetName;
+    QString  targetName = QString("%1").arg(index);
+//	int size = _ss.beginReadArray("pstSystemTrapTargetTable");
+//	_ss.setArrayIndex(index);
+//    targetName = _ss.value("pstSystemTrapTargetName", "0").toString();
+    return targetName;
 }
 
 long	QPSTSystemPrivate::get_pstSystemTrapTargetName_len(int index)
@@ -212,16 +245,27 @@ long	QPSTSystemPrivate::get_pstSystemTrapTargetName_len(int index)
 
 QString QPSTSystemPrivate::get_pstSystemTrapTargetCommunity(int index)
 {
-    QString  TargetCommunity;
-    int size = _ss.beginReadArray("pstSystemTrapTargetTable");
+    QString  s;
+
+    _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
+    _ss.beginReadArray("pstSystemTrapTargetCommunity");
     _ss.setArrayIndex(index);
-    TargetCommunity = _ss.value("pstSystemTrapTargetCommunity", "public").toString();
-    return TargetCommunity;
+    s = _ss.value("pstSystemTrapTargetCommunity", "public").toString();
+    _ss.endArray();
+    _ss.endGroup();
+
+    return s;
 }
 
-void 	QPSTSystemPrivate::set_pstSystemTrapTargetCommunity(int index, QString community)
+void 	QPSTSystemPrivate::set_pstSystemTrapTargetCommunity(int index, QString s)
 {
-	
+    _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
+        _ss.beginWriteArray("pstSystemTrapTargetCommunity");
+            _ss.setArrayIndex(index);
+            _ss.setValue("pstSystemTrapTargetCommunity", s);
+        _ss.endArray();
+    _ss.endGroup();
+    _ss.sync();
 }
 
 long	QPSTSystemPrivate::get_pstSystemTrapTargetCommunity_len(int index)
@@ -229,13 +273,34 @@ long	QPSTSystemPrivate::get_pstSystemTrapTargetCommunity_len(int index)
 
 }
 
-long 	QPSTSystemPrivate::get_pstSystemTrapTargetIpAddr(int index)
+QString 	QPSTSystemPrivate::get_pstSystemTrapTargetIpAddr(int index)
 {
+//    struct sockaddr_in sa;
+    QString  s;
+
+    _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
+    _ss.beginReadArray("pstSystemTrapTargetIpAddr");
+    _ss.setArrayIndex(index);
+    s = _ss.value("pstSystemTrapTargetIpAddr", "192.168.1.44").toString();
+    _ss.endArray();
+    _ss.endGroup();
+
+//    inet_pton(AF_INET, s.toLatin1().data(), &(sa.sin_addr));
+//    in_addr_t   it = sa.sin_addr.s_addr;
+
+//    return it;
+    return s;
 }
 
-void	QPSTSystemPrivate::set_pstSystemTrapTargetIpAddr(int index, QString ip)
+void	QPSTSystemPrivate::set_pstSystemTrapTargetIpAddr(int index, QString s)
 {
-
+    _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
+        _ss.beginWriteArray("pstSystemTrapTargetIpAddr");
+            _ss.setArrayIndex(index);
+            _ss.setValue("pstSystemTrapTargetIpAddr", s);
+        _ss.endArray();
+    _ss.endGroup();
+    _ss.sync();
 }
 
 long 	QPSTSystemPrivate::get_pstSystemTrapTargetTrapVersion(int index)

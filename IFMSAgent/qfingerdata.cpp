@@ -35,7 +35,7 @@ QByteArray  QFingerData::toByteArray()
     data.append((const char*)(&mIFMSFingerData.NumberOfEvents), sizeof(mIFMSFingerData.NumberOfEvents));
 
     for(i=0;i < mIFMSFingerData.vIFMSEvents.size(); i++){
-        data.append((const char*)(&mIFMSFingerData.vIFMSEvents.at(i)), sizeof(IFMSEvent_t));
+        data.append((const char*)(&mIFMSFingerData.vIFMSEvents.at(i)), sizeof(IFMSEvent_t)-2);
     }
 
     data.append((const char*)(&mIFMSFingerData.EndtoEndLoss), sizeof(mIFMSFingerData.EndtoEndLoss));

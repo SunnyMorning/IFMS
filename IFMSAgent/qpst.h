@@ -43,41 +43,13 @@ public:
     int  getKeepRunning();
 
 	void sendCommandToOTDRModule(quint16 channel, QString cmdline);
+    void TrapTargetsChanged();
+
 
     // Trap
     static int send_pstIFMS1000MeasureEvent_trap(QString data);
 
-    void run(){
-        qDebug() << "["<<QThread::currentThreadId() <<"] qpst running" << endl;
-        char peername[256];
-        char community[256];
-        strcpy(peername,"192.168.1.3:1622");
-        strcpy(community,"public");
-
-
-        netsnmp_enable_subagent();
-        netsnmp_ds_set_string(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_X_SOCKET,AGENTX_MASTER_SOCKET);
-
-        snmp_disable_log();
-
-        init_agent(SUB_AGENT);
-
-        m_product->init_pstIFMS1000();
-        m_system->init_pstSystem();
-
-        init_snmp(SUB_AGENT);
-
-        create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
-//        _sinks.insert()
-
-        do{
-            agent_check_and_process(1);
-        }while(getKeepRunning() == 1);
-
-        snmp_shutdown(SUB_AGENT);
-        shutdown_agent();
-    }
-
+    void run();
 private:
     QPST(QObject *agent = NULL);
     QPST(const QPST &);//禁止拷贝构造函数。
@@ -92,6 +64,7 @@ signals:
     void sigOTDRTrap(quint16 module, QString &data);
     void sigSetProgress(quint16 module, quint16 progress);
     void sigSendCommandToModule(quint16 module, QString &cmdline);
+    void sigTrapTargetsChanged(void);
 
 
 public slots:
@@ -100,7 +73,7 @@ public slots:
     void onSigOTDRSetMode(quint16 module, quint16 mode);
     void onSigSetMeasuredCount(quint16 channel, quint32 count);
     void onSigSetMeasuringStatus(quint16 channel, quint32 status);
-	
+    void onTrapTargetsChanged(void);
 };
 
 #endif // QPST_H
