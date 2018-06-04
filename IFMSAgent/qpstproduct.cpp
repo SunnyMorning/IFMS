@@ -1930,14 +1930,16 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     continue;
                 }
                 long index = table_entry->pstIFMS1000MTPortNum;
-                QPST *pst = QPST::getInstance();
+				if(0 < index  <= NUMBER_OF_CHANNES){
+	                QPST *pst = QPST::getInstance();
 
-                QString  s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTLOS(index);
-                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-										s.toLatin1().data(),
-										s.length()/*table_entry->pstIFMS1000MeasureTLOS,
-                                          table_entry->pstIFMS1000MeasureTLOS_len*/);
-                }
+	                QString  s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTLOS(index);
+	                snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
+											s.toLatin1().data(),
+											s.length()/*table_entry->pstIFMS1000MeasureTLOS,
+	                                          table_entry->pstIFMS1000MeasureTLOS_len*/);
+	                }
+            	}
 				break;
             case COLUMN_PSTIFMS1000MEASURETREF:
             	{
@@ -2248,19 +2250,24 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                char * cs =  (char*)requests->requestvb->val.string;
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    QPST *pst = QPST::getInstance();
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        char * cs =  (char*)requests->requestvb->val.string;
 
-				QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(index);
-				QString om = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(index);
-                QString ores = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(index);
-                QString ns = QString("%1").arg(cs);
-				if(os != ns)
-				{
-                    QString cmdline = QString("SPARA %1,%2,%3,0").arg(os,om,ores);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureEndPosition(index, ns);
-				}
+                        QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(index);
+                        QString om = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(index);
+                        QString ores = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(index);
+                        QString ns = QString("%1").arg(cs);
+                        if(os != ns)
+                        {
+                            QString cmdline = QString("SPARA %1,%2,%3,0").arg(ns,om,ores);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureEndPosition(index, ns);
+                        }
+                    }
+                }
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASUREREFINDEX:
@@ -2273,18 +2280,22 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                char * cs =  (char*)requests->requestvb->val.string;
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    QPST *pst = QPST::getInstance();
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        char * cs =  (char*)requests->requestvb->val.string;
 
-				QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureRefIndex(index);
-                QString ns = QString("%1").arg(cs);
-				if(os != ns)
-				{
-                    QString cmdline = QString("UIOR %1").arg(cs);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureRefIndex(index, ns);
-				}
-				
+                        QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureRefIndex(index);
+                        QString ns = QString("%1").arg(cs);
+                        if(os != ns)
+                        {
+                            QString cmdline = QString("UIOR %1").arg(cs);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureRefIndex(index, ns);
+                        }
+						}
+                    }
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASURERESOLUTION:
@@ -2297,19 +2308,24 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                char * cs =  (char*)requests->requestvb->val.string;
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    QPST *pst = QPST::getInstance();
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        char * cs =  (char*)requests->requestvb->val.string;
 
-				QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(index);
-				QString om = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(index);
-                QString ores = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(index);
-                QString ns = QString("%1").arg(cs);
-                if(ores != ns)
-				{
-                    QString cmdline = QString("SPARA %1,%2,%3,0").arg(os,om,ores);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureResolution(index, ns);
-				}
+                        QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(index);
+                        QString om = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(index);
+                        QString ores = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(index);
+                        QString nres = QString("%1").arg(cs);
+                        if(ores != nres)
+                        {
+                            QString cmdline = QString("SPARA %1,%2,%3,0").arg(os,om,nres);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureResolution(index, nres);
+                        }
+						}
+                    }
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASUREACTION:
@@ -2366,19 +2382,24 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 }
 				
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                char * cs =  (char*)requests->requestvb->val.string;
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    QPST *pst = QPST::getInstance();
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        char * cs =  (char*)requests->requestvb->val.string;
 
-				QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(index);
-				QString om = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(index);
-                QString ores = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(index);
-                QString ns = QString("%1").arg(cs);
-				if(om != ns)
-				{
-                    QString cmdline = QString("SPARA %1,%2,%3,0").arg(os,om,ores);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasurePulseWidth(index, ns);
-				}
+                        QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEndPosition(index);
+                        QString om = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasurePulseWidth(index);
+                        QString ores = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureResolution(index);
+                        QString nm = QString("%1").arg(cs);
+                        if(om != nm)
+                        {
+                            QString cmdline = QString("SPARA %1,%2,%3,0").arg(os,nm,ores);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasurePulseWidth(index, nm);
+                        }
+                    }
+					}
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASURETIME:
@@ -2389,18 +2410,22 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
                 }
+				 QPST *pst = QPST::getInstance();
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                int ns = (int)(*requests->requestvb->val.integer);
-				long os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTime(index);
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        int ns = (int)(*requests->requestvb->val.integer);
+                        long os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTime(index);
 
-				if(os != ns)
-				{
-                    QString cmdline = QString("ACQT %1").arg(ns);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-                    pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureTime(index, ns);
-				}
-
+                        if(os != ns)
+                        {
+                            QString cmdline = QString("ACQT %1").arg(ns);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureTime(index, ns);
+                        }
+					}
+                }
 				}
                 break;
             case COLUMN_PSTIFMS1000MEASURETLOS:
@@ -2413,17 +2438,22 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                char * cs =  (char*)requests->requestvb->val.string;
-                QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTLOS(index);
-                QString ns = QString("%1").arg(cs);
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    QPST *pst = QPST::getInstance();
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        char * cs =  (char*)requests->requestvb->val.string;
+                        QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTLOS(index);
+                        QString ns = QString("%1").arg(cs);
 
-				if(os != ns)
-				{
-                    QString cmdline = QString("TLOS %1").arg(cs);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureTLOS(index, ns);
-				}
+                        if(os != ns)
+                        {
+                            QString cmdline = QString("TLOS %1 %2").arg((index -1)%CHANNELS_PER_MODULE).arg(cs);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureTLOS(index, ns);
+                        }
+                    }
+					}
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASURETREF:
@@ -2436,17 +2466,22 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 long index = table_entry->pstIFMS1000MTPortNum;
-				QPST *pst = QPST::getInstance();
-                char * cs =  (char*)requests->requestvb->val.string;
-                QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTREF(index);
-                QString ns = QString("%1").arg(cs);
+                if( 0 < index <= NUMBER_OF_CHANNES){
+                    QPST *pst = QPST::getInstance();
+                    bool  measuring = pst->m_product->m_pstIFMS1000.is_pstIFMS1000Measuring(index);
+                    if(measuring == false){
+                        char * cs =  (char*)requests->requestvb->val.string;
+                        QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureTREF(index);
+                        QString ns = QString("%1").arg(cs);
 
-				if(os != ns)
-				{
-                    QString cmdline = QString("TREF %1").arg(cs);
-					emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureTREF(index, ns);
-				}
+                        if(os != ns)
+                        {
+                            QString cmdline = QString("TREF %1 %2").arg((index -1)%CHANNELS_PER_MODULE).arg(cs);
+                            emit pst->sigSendCommandToModule((index-1)/CHANNELS_PER_MODULE, cmdline);
+                            pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureTREF(index, ns);
+                        }
+                    }
+					}
 	        	}
                 break;
             case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
@@ -2737,496 +2772,496 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
         break;
 
     case MODE_SET_ACTION:
-        for (request=requests; request; request=request->next) {
-            if (request->processed)
-                continue;
+//        for (request=requests; request; request=request->next) {
+//            if (request->processed)
+//                continue;
 
-            table_entry = (struct pstIFMS1000MeasureTable_entry *)
-                              netsnmp_tdata_extract_entry(request);
-            table_info  =     netsnmp_extract_table_info( request);
+//            table_entry = (struct pstIFMS1000MeasureTable_entry *)
+//                              netsnmp_tdata_extract_entry(request);
+//            table_info  =     netsnmp_extract_table_info( request);
     
-            switch (table_info->colnum) {
-            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
-                memcpy( table_entry->old_pstIFMS1000MeasureStartPosition,
-                        table_entry->pstIFMS1000MeasureStartPosition,
-                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
-                table_entry->old_pstIFMS1000MeasureStartPosition_len =
-                        table_entry->pstIFMS1000MeasureStartPosition_len;
-                memset( table_entry->pstIFMS1000MeasureStartPosition, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
-                memcpy( table_entry->pstIFMS1000MeasureStartPosition,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureStartPosition_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
-                memcpy( table_entry->old_pstIFMS1000MeasureEndPosition,
-                        table_entry->pstIFMS1000MeasureEndPosition,
-                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
-                table_entry->old_pstIFMS1000MeasureEndPosition_len =
-                        table_entry->pstIFMS1000MeasureEndPosition_len;
-                memset( table_entry->pstIFMS1000MeasureEndPosition, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
-                memcpy( table_entry->pstIFMS1000MeasureEndPosition,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureEndPosition_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
-                memcpy( table_entry->old_pstIFMS1000MeasureRefIndex,
-                        table_entry->pstIFMS1000MeasureRefIndex,
-                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
-                table_entry->old_pstIFMS1000MeasureRefIndex_len =
-                        table_entry->pstIFMS1000MeasureRefIndex_len;
-                memset( table_entry->pstIFMS1000MeasureRefIndex, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
-                memcpy( table_entry->pstIFMS1000MeasureRefIndex,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureRefIndex_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
-                memcpy( table_entry->old_pstIFMS1000MeasureResolution,
-                        table_entry->pstIFMS1000MeasureResolution,
-                        sizeof(table_entry->pstIFMS1000MeasureResolution));
-                table_entry->old_pstIFMS1000MeasureResolution_len =
-                        table_entry->pstIFMS1000MeasureResolution_len;
-                memset( table_entry->pstIFMS1000MeasureResolution, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureResolution));
-                memcpy( table_entry->pstIFMS1000MeasureResolution,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureResolution_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREACTION:
-                table_entry->old_pstIFMS1000MeasureAction = table_entry->pstIFMS1000MeasureAction;
-                table_entry->pstIFMS1000MeasureAction     = *request->requestvb->val.integer;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
-                memcpy( table_entry->old_pstIFMS1000MeasurePulseWidth,
-                        table_entry->pstIFMS1000MeasurePulseWidth,
-                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
-                table_entry->old_pstIFMS1000MeasurePulseWidth_len =
-                        table_entry->pstIFMS1000MeasurePulseWidth_len;
-                memset( table_entry->pstIFMS1000MeasurePulseWidth, 0,
-                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
-                memcpy( table_entry->pstIFMS1000MeasurePulseWidth,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasurePulseWidth_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURETIME:
-                table_entry->old_pstIFMS1000MeasureTime = table_entry->pstIFMS1000MeasureTime;
-                table_entry->pstIFMS1000MeasureTime     = *request->requestvb->val.integer;
-                break;
-            case COLUMN_PSTIFMS1000MEASURETLOS:
-                memcpy( table_entry->old_pstIFMS1000MeasureTLOS,
-                        table_entry->pstIFMS1000MeasureTLOS,
-                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
-                table_entry->old_pstIFMS1000MeasureTLOS_len =
-                        table_entry->pstIFMS1000MeasureTLOS_len;
-                memset( table_entry->pstIFMS1000MeasureTLOS, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
-                memcpy( table_entry->pstIFMS1000MeasureTLOS,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureTLOS_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURETREF:
-                memcpy( table_entry->old_pstIFMS1000MeasureTREF,
-                        table_entry->pstIFMS1000MeasureTREF,
-                        sizeof(table_entry->pstIFMS1000MeasureTREF));
-                table_entry->old_pstIFMS1000MeasureTREF_len =
-                        table_entry->pstIFMS1000MeasureTREF_len;
-                memset( table_entry->pstIFMS1000MeasureTREF, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureTREF));
-                memcpy( table_entry->pstIFMS1000MeasureTREF,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureTREF_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold,
-                        table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
-                table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold_len =
-                        table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSHIGHTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold,
-                        table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
-                table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold_len =
-                        table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMIDDLETHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold,
-                        table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
-                table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold_len =
-                        table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSLOWTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold,
-                        table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
-                table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold_len =
-                        table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold,
-                        table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
-                table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold_len =
-                        table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold,
-                        table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
-                table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold_len =
-                        table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureNewLossMajorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold,
-                        table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
-                table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold_len =
-                        table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureNewLossMinorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold,
-                        table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
-                table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold_len =
-                        table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold,
-                        table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
-                table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold_len =
-                        table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureOldLossMajorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
-                memcpy( table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold,
-                        table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
-                table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len =
-                        table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureOldLossMinorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
-                memcpy( table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESERVED1:
-//                memcpy( table_entry->old_pstIFMS1000MeasureTempHighThreshold,
-//                        table_entry->pstIFMS1000MeasureTempHighThreshold,
-//                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
-//                table_entry->old_pstIFMS1000MeasureTempHighThreshold_len =
-//                        table_entry->pstIFMS1000MeasureTempHighThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureReserved1, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureReserved1));
-                memcpy( table_entry->pstIFMS1000MeasureReserved1,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureReserved1_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESERVED2:
-//                memcpy( table_entry->old_pstIFMS1000MeasureTempLowThreshold,
-//                        table_entry->pstIFMS1000MeasureTempLowThreshold,
-//                        sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
-//                table_entry->old_pstIFMS1000MeasureTempLowThreshold_len =
-//                        table_entry->pstIFMS1000MeasureTempLowThreshold_len;
-                memset( table_entry->pstIFMS1000MeasureReserved2, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureReserved2));
-                memcpy( table_entry->pstIFMS1000MeasureReserved2,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureReserved2_len =
-                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
-                memcpy( table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel,
-                        table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
-                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
-                table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel_len =
-                        table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len;
-                memset( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
-                memcpy( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
-                        request->requestvb->val.string,
-                        request->requestvb->val_len);
-                table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len =
-                        request->requestvb->val_len;
-                break;
-            }
-        }
+//            switch (table_info->colnum) {
+//            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+//                memcpy( table_entry->old_pstIFMS1000MeasureStartPosition,
+//                        table_entry->pstIFMS1000MeasureStartPosition,
+//                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+//                table_entry->old_pstIFMS1000MeasureStartPosition_len =
+//                        table_entry->pstIFMS1000MeasureStartPosition_len;
+//                memset( table_entry->pstIFMS1000MeasureStartPosition, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+//                memcpy( table_entry->pstIFMS1000MeasureStartPosition,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureStartPosition_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+//                memcpy( table_entry->old_pstIFMS1000MeasureEndPosition,
+//                        table_entry->pstIFMS1000MeasureEndPosition,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+//                table_entry->old_pstIFMS1000MeasureEndPosition_len =
+//                        table_entry->pstIFMS1000MeasureEndPosition_len;
+//                memset( table_entry->pstIFMS1000MeasureEndPosition, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+//                memcpy( table_entry->pstIFMS1000MeasureEndPosition,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureEndPosition_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+//                memcpy( table_entry->old_pstIFMS1000MeasureRefIndex,
+//                        table_entry->pstIFMS1000MeasureRefIndex,
+//                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+//                table_entry->old_pstIFMS1000MeasureRefIndex_len =
+//                        table_entry->pstIFMS1000MeasureRefIndex_len;
+//                memset( table_entry->pstIFMS1000MeasureRefIndex, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+//                memcpy( table_entry->pstIFMS1000MeasureRefIndex,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureRefIndex_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+//                memcpy( table_entry->old_pstIFMS1000MeasureResolution,
+//                        table_entry->pstIFMS1000MeasureResolution,
+//                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+//                table_entry->old_pstIFMS1000MeasureResolution_len =
+//                        table_entry->pstIFMS1000MeasureResolution_len;
+//                memset( table_entry->pstIFMS1000MeasureResolution, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+//                memcpy( table_entry->pstIFMS1000MeasureResolution,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureResolution_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREACTION:
+//                table_entry->old_pstIFMS1000MeasureAction = table_entry->pstIFMS1000MeasureAction;
+//                table_entry->pstIFMS1000MeasureAction     = *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
+//                memcpy( table_entry->old_pstIFMS1000MeasurePulseWidth,
+//                        table_entry->pstIFMS1000MeasurePulseWidth,
+//                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+//                table_entry->old_pstIFMS1000MeasurePulseWidth_len =
+//                        table_entry->pstIFMS1000MeasurePulseWidth_len;
+//                memset( table_entry->pstIFMS1000MeasurePulseWidth, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+//                memcpy( table_entry->pstIFMS1000MeasurePulseWidth,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasurePulseWidth_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURETIME:
+//                table_entry->old_pstIFMS1000MeasureTime = table_entry->pstIFMS1000MeasureTime;
+//                table_entry->pstIFMS1000MeasureTime     = *request->requestvb->val.integer;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURETLOS:
+//                memcpy( table_entry->old_pstIFMS1000MeasureTLOS,
+//                        table_entry->pstIFMS1000MeasureTLOS,
+//                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+//                table_entry->old_pstIFMS1000MeasureTLOS_len =
+//                        table_entry->pstIFMS1000MeasureTLOS_len;
+//                memset( table_entry->pstIFMS1000MeasureTLOS, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+//                memcpy( table_entry->pstIFMS1000MeasureTLOS,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureTLOS_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURETREF:
+//                memcpy( table_entry->old_pstIFMS1000MeasureTREF,
+//                        table_entry->pstIFMS1000MeasureTREF,
+//                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+//                table_entry->old_pstIFMS1000MeasureTREF_len =
+//                        table_entry->pstIFMS1000MeasureTREF_len;
+//                memset( table_entry->pstIFMS1000MeasureTREF, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+//                memcpy( table_entry->pstIFMS1000MeasureTREF,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureTREF_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold,
+//                        table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+//                table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold_len =
+//                        table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSHIGHTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold,
+//                        table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
+//                table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold_len =
+//                        table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMIDDLETHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold,
+//                        table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
+//                table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold_len =
+//                        table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSLOWTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold,
+//                        table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
+//                table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold_len =
+//                        table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold,
+//                        table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+//                table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold_len =
+//                        table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold,
+//                        table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+//                table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold_len =
+//                        table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureNewLossMajorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold,
+//                        table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+//                table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold_len =
+//                        table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureNewLossMinorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold,
+//                        table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+//                table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold_len =
+//                        table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold,
+//                        table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+//                table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold_len =
+//                        table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureOldLossMajorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
+//                memcpy( table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold,
+//                        table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+//                table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len =
+//                        table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureOldLossMinorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURERESERVED1:
+////                memcpy( table_entry->old_pstIFMS1000MeasureTempHighThreshold,
+////                        table_entry->pstIFMS1000MeasureTempHighThreshold,
+////                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
+////                table_entry->old_pstIFMS1000MeasureTempHighThreshold_len =
+////                        table_entry->pstIFMS1000MeasureTempHighThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureReserved1, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureReserved1));
+//                memcpy( table_entry->pstIFMS1000MeasureReserved1,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureReserved1_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURERESERVED2:
+////                memcpy( table_entry->old_pstIFMS1000MeasureTempLowThreshold,
+////                        table_entry->pstIFMS1000MeasureTempLowThreshold,
+////                        sizeof(table_entry->pstIFMS1000MeasureTempLowThreshold));
+////                table_entry->old_pstIFMS1000MeasureTempLowThreshold_len =
+////                        table_entry->pstIFMS1000MeasureTempLowThreshold_len;
+//                memset( table_entry->pstIFMS1000MeasureReserved2, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureReserved2));
+//                memcpy( table_entry->pstIFMS1000MeasureReserved2,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureReserved2_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
+//                memcpy( table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel,
+//                        table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+//                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+//                table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel_len =
+//                        table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len;
+//                memset( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+//                memcpy( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len =
+//                        request->requestvb->val_len;
+//                break;
+//            }
+//        }
         break;
 
     case MODE_SET_UNDO:
-        for (request=requests; request; request=request->next) {
-            if (request->processed)
-                continue;
+//        for (request=requests; request; request=request->next) {
+//            if (request->processed)
+//                continue;
 
-            table_entry = (struct pstIFMS1000MeasureTable_entry *)
-                              netsnmp_tdata_extract_entry(request);
-            table_row   =     netsnmp_tdata_extract_row(  request);
-            table_data  =     netsnmp_tdata_extract_table(request);
-            table_info  =     netsnmp_extract_table_info( request);
+//            table_entry = (struct pstIFMS1000MeasureTable_entry *)
+//                              netsnmp_tdata_extract_entry(request);
+//            table_row   =     netsnmp_tdata_extract_row(  request);
+//            table_data  =     netsnmp_tdata_extract_table(request);
+//            table_info  =     netsnmp_extract_table_info( request);
     
-            switch (table_info->colnum) {
-            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
-                memcpy( table_entry->pstIFMS1000MeasureStartPosition,
-                        table_entry->old_pstIFMS1000MeasureStartPosition,
-                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
-                memset( table_entry->old_pstIFMS1000MeasureStartPosition, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
-                table_entry->pstIFMS1000MeasureStartPosition_len =
-                        table_entry->old_pstIFMS1000MeasureStartPosition_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
-                memcpy( table_entry->pstIFMS1000MeasureEndPosition,
-                        table_entry->old_pstIFMS1000MeasureEndPosition,
-                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
-                memset( table_entry->old_pstIFMS1000MeasureEndPosition, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
-                table_entry->pstIFMS1000MeasureEndPosition_len =
-                        table_entry->old_pstIFMS1000MeasureEndPosition_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
-                memcpy( table_entry->pstIFMS1000MeasureRefIndex,
-                        table_entry->old_pstIFMS1000MeasureRefIndex,
-                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
-                memset( table_entry->old_pstIFMS1000MeasureRefIndex, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
-                table_entry->pstIFMS1000MeasureRefIndex_len =
-                        table_entry->old_pstIFMS1000MeasureRefIndex_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
-                memcpy( table_entry->pstIFMS1000MeasureResolution,
-                        table_entry->old_pstIFMS1000MeasureResolution,
-                        sizeof(table_entry->pstIFMS1000MeasureResolution));
-                memset( table_entry->old_pstIFMS1000MeasureResolution, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureResolution));
-                table_entry->pstIFMS1000MeasureResolution_len =
-                        table_entry->old_pstIFMS1000MeasureResolution_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREACTION:
-                table_entry->pstIFMS1000MeasureAction     = table_entry->old_pstIFMS1000MeasureAction;
-                table_entry->old_pstIFMS1000MeasureAction = 0;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
-                memcpy( table_entry->pstIFMS1000MeasurePulseWidth,
-                        table_entry->old_pstIFMS1000MeasurePulseWidth,
-                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
-                memset( table_entry->old_pstIFMS1000MeasurePulseWidth, 0,
-                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
-                table_entry->pstIFMS1000MeasurePulseWidth_len =
-                        table_entry->old_pstIFMS1000MeasurePulseWidth_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURETIME:
-                table_entry->pstIFMS1000MeasureTime     = table_entry->old_pstIFMS1000MeasureTime;
-                table_entry->old_pstIFMS1000MeasureTime = 0;
-                break;
-            case COLUMN_PSTIFMS1000MEASURETLOS:
-                memcpy( table_entry->pstIFMS1000MeasureTLOS,
-                        table_entry->old_pstIFMS1000MeasureTLOS,
-                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
-                memset( table_entry->old_pstIFMS1000MeasureTLOS, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
-                table_entry->pstIFMS1000MeasureTLOS_len =
-                        table_entry->old_pstIFMS1000MeasureTLOS_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURETREF:
-                memcpy( table_entry->pstIFMS1000MeasureTREF,
-                        table_entry->old_pstIFMS1000MeasureTREF,
-                        sizeof(table_entry->pstIFMS1000MeasureTREF));
-                memset( table_entry->old_pstIFMS1000MeasureTREF, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureTREF));
-                table_entry->pstIFMS1000MeasureTREF_len =
-                        table_entry->old_pstIFMS1000MeasureTREF_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
-                        table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
-                table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSHIGHTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold,
-                        table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
-                table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMIDDLETHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold,
-                        table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
-                table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSLOWTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold,
-                        table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
-                table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
-                        table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
-                table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
-                        table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
-                table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
-                        table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
-                table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
-                        table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
-                table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
-                        table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
-                table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
-                memcpy( table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
-                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
-                memset( table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
-                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
-                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len;
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESERVED1:
+//            switch (table_info->colnum) {
+//            case COLUMN_PSTIFMS1000MEASURESTARTPOSITION:
+//                memcpy( table_entry->pstIFMS1000MeasureStartPosition,
+//                        table_entry->old_pstIFMS1000MeasureStartPosition,
+//                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+//                memset( table_entry->old_pstIFMS1000MeasureStartPosition, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureStartPosition));
+//                table_entry->pstIFMS1000MeasureStartPosition_len =
+//                        table_entry->old_pstIFMS1000MeasureStartPosition_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDPOSITION:
+//                memcpy( table_entry->pstIFMS1000MeasureEndPosition,
+//                        table_entry->old_pstIFMS1000MeasureEndPosition,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+//                memset( table_entry->old_pstIFMS1000MeasureEndPosition, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndPosition));
+//                table_entry->pstIFMS1000MeasureEndPosition_len =
+//                        table_entry->old_pstIFMS1000MeasureEndPosition_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREREFINDEX:
+//                memcpy( table_entry->pstIFMS1000MeasureRefIndex,
+//                        table_entry->old_pstIFMS1000MeasureRefIndex,
+//                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+//                memset( table_entry->old_pstIFMS1000MeasureRefIndex, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureRefIndex));
+//                table_entry->pstIFMS1000MeasureRefIndex_len =
+//                        table_entry->old_pstIFMS1000MeasureRefIndex_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURERESOLUTION:
+//                memcpy( table_entry->pstIFMS1000MeasureResolution,
+//                        table_entry->old_pstIFMS1000MeasureResolution,
+//                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+//                memset( table_entry->old_pstIFMS1000MeasureResolution, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureResolution));
+//                table_entry->pstIFMS1000MeasureResolution_len =
+//                        table_entry->old_pstIFMS1000MeasureResolution_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREACTION:
+//                table_entry->pstIFMS1000MeasureAction     = table_entry->old_pstIFMS1000MeasureAction;
+//                table_entry->old_pstIFMS1000MeasureAction = 0;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREPULSEWIDTH:
+//                memcpy( table_entry->pstIFMS1000MeasurePulseWidth,
+//                        table_entry->old_pstIFMS1000MeasurePulseWidth,
+//                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+//                memset( table_entry->old_pstIFMS1000MeasurePulseWidth, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasurePulseWidth));
+//                table_entry->pstIFMS1000MeasurePulseWidth_len =
+//                        table_entry->old_pstIFMS1000MeasurePulseWidth_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURETIME:
+//                table_entry->pstIFMS1000MeasureTime     = table_entry->old_pstIFMS1000MeasureTime;
+//                table_entry->old_pstIFMS1000MeasureTime = 0;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURETLOS:
+//                memcpy( table_entry->pstIFMS1000MeasureTLOS,
+//                        table_entry->old_pstIFMS1000MeasureTLOS,
+//                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+//                memset( table_entry->old_pstIFMS1000MeasureTLOS, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureTLOS));
+//                table_entry->pstIFMS1000MeasureTLOS_len =
+//                        table_entry->old_pstIFMS1000MeasureTLOS_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURETREF:
+//                memcpy( table_entry->pstIFMS1000MeasureTREF,
+//                        table_entry->old_pstIFMS1000MeasureTREF,
+//                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+//                memset( table_entry->old_pstIFMS1000MeasureTREF, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureTREF));
+//                table_entry->pstIFMS1000MeasureTREF_len =
+//                        table_entry->old_pstIFMS1000MeasureTREF_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREFIBERLENGTHCHANGETHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold,
+//                        table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold));
+//                table_entry->pstIFMS1000MeasureFiberLengthChangeThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureFiberLengthChangeThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSHIGHTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold,
+//                        table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold));
+//                table_entry->pstIFMS1000MeasureEndToEndLossHighThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureEndToEndLossHighThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSMIDDLETHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold,
+//                        table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold));
+//                table_entry->pstIFMS1000MeasureEndToEndLossMiddleThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureEndToEndLossMiddleThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREENDTOENDLOSSLOWTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold,
+//                        table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold));
+//                table_entry->pstIFMS1000MeasureEndToEndLossLowThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureEndToEndLossLowThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENEWLOSSCRITICALTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureNewLossCriticalThreshold,
+//                        table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossCriticalThreshold));
+//                table_entry->pstIFMS1000MeasureNewLossCriticalThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureNewLossCriticalThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENEWLOSSMAJORTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureNewLossMajorThreshold,
+//                        table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMajorThreshold));
+//                table_entry->pstIFMS1000MeasureNewLossMajorThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureNewLossMajorThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENEWLOSSMINORTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureNewLossMinorThreshold,
+//                        table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNewLossMinorThreshold));
+//                table_entry->pstIFMS1000MeasureNewLossMinorThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureNewLossMinorThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREOLDLOSSCRITICALTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureOldLossCriticalThreshold,
+//                        table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossCriticalThreshold));
+//                table_entry->pstIFMS1000MeasureOldLossCriticalThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureOldLossCriticalThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMAJORTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureOldLossMajorThreshold,
+//                        table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMajorThreshold));
+//                table_entry->pstIFMS1000MeasureOldLossMajorThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureOldLossMajorThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASUREOLDLOSSMINORTHRESHOLD:
+//                memcpy( table_entry->pstIFMS1000MeasureOldLossMinorThreshold,
+//                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+//                memset( table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureOldLossMinorThreshold));
+//                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
+//                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len;
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURERESERVED1:
 
-                break;
-            case COLUMN_PSTIFMS1000MEASURERESERVED2:
-                break;
-            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
-                memcpy( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
-                        table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel,
-                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
-                memset( table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel, 0,
-                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
-                table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len =
-                        table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel_len;
-                break;
-            }
-        }
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURERESERVED2:
+//                break;
+//            case COLUMN_PSTIFMS1000MEASURENUMBERSORSTOREDEACHCHANNEL:
+//                memcpy( table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel,
+//                        table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel,
+//                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+//                memset( table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel));
+//                table_entry->pstIFMS1000MeasureNumberSORStoredEachChannel_len =
+//                        table_entry->old_pstIFMS1000MeasureNumberSORStoredEachChannel_len;
+//                break;
+//            }
+//        }
         break;
 
     case MODE_SET_COMMIT:

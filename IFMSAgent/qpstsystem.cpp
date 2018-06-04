@@ -738,10 +738,16 @@ int
          */
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
+			{
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
             }
+			
+            const char *pstr = "reboot";
+            system(pstr);
+
+			}
             break;
 
         case MODE_SET_RESERVE2:
@@ -763,9 +769,6 @@ int
             if (0/* XXX: error? */) {
                 netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
             }
-
-            const char *pstr = "reboot";
-            system(pstr);
         }
             break;
 

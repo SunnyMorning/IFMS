@@ -2,6 +2,7 @@
 
 #include <QProcess>
 
+//#define  DEBUG_TRAP  1
 
 static QMutex gPST_mutex;
 
@@ -53,30 +54,32 @@ void QPST::initConnections()
 
 void QPST::TrapTargetsChanged()
 {
-    emit this->sigTrapTargetsChanged();
+//    emit this->sigTrapTargetsChanged();
 }
 
 void QPST::onTrapTargetsChanged()
 {
-//    char peername[256];
-//    char community[256];
+#ifdef DEBUG_TRAP
+    char peername[256];
+    char community[256];
 //    QMutexLocker locker(&gPST_mutex);//加互斥锁。
 
-//    QString targetIP;
-//    QString targetCommunity;
+    QString targetIP;
+    QString targetCommunity;
 
-////    snmpd_free_trapsinks();
+//    snmpd_free_trapsinks();
 
-//    for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
-//    {
-//        targetIP = m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
-//        if(targetIP != QString("0.0.0.0")){
-//            strcpy(peername, targetIP.toLatin1().data());
-//            targetCommunity = m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
-//            strcpy(community, targetCommunity.toLatin1().data());
-//            create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
-//        }
-//    }
+    for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
+    {
+        targetIP = m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+        if(targetIP != QString("0.0.0.0")){
+            strcpy(peername, targetIP.toLatin1().data());
+            targetCommunity = m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
+            strcpy(community, targetCommunity.toLatin1().data());
+            create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
+        }
+    }
+#endif
     qDebug() << "onTrapTargetsChanged!" << endl;
 }
 
@@ -95,7 +98,7 @@ void QPST::run()
         m_product->init_pstIFMS1000();
         m_system->init_pstSystem();
 
-//        onTrapTargetsChanged();
+        onTrapTargetsChanged();
 
         do{
             agent_check_and_process(1);
@@ -116,7 +119,7 @@ void QPST::sendCommandToOTDRModule(quint16 channel, QString cmdline)
 int
 QPST::send_pstIFMS1000MeasureEvent_trap(QString data)
 {
-#if 0
+#ifdef DEBUG_TRAP
      static long modstatus = 0;
 //     netsnmp_session     _session;
 //    netsnmp_session     *_ss;

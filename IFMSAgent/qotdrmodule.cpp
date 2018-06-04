@@ -201,20 +201,6 @@ void QOTDRModule::run()
 
             initTcpConnection();
 
-            if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_STOP){
-				setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_IDLE);
-                return;
-            }
-			else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
-			{
-                setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_AUTO_RUNNING);
-			}
-			else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE)
-			{
-                setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_SINGLE_RUNNING);
-			}
-				
-				
             sendScanCommand();
 
             do{
@@ -222,6 +208,20 @@ void QOTDRModule::run()
                 if(getModuleState() == STATE_GOTSOR4){
                     setModuleState(STATE_MEASURED);
                 }
+
+                if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_STOP){
+                    setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_IDLE);
+                    return;
+                }
+                else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
+                {
+                    setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_AUTO_RUNNING);
+                }
+                else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE)
+                {
+                    setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_SINGLE_RUNNING);
+                }
+
                 QThread::msleep(5000);
                 if(isIdling()||isGetSOR()){
 
@@ -364,13 +364,13 @@ void QOTDRModule::sendCommandWithResponse(quint16 module, QString cmdline, QByte
     cmdData.append(0x0A);
     cmdData.append(0x20);
 
-    fprintf(stderr, "=>");
-    quint16 i = 0;
-    for(i = 0; i< cmdData.length(); i++){
-       fprintf(stderr, " %02X", cmdData.at(i));
-       fflush(stderr);
-    }
-    qDebug()<<endl;
+//    fprintf(stderr, "=>");
+//    quint16 i = 0;
+//    for(i = 0; i< cmdData.length(); i++){
+//       fprintf(stderr, " %02X", cmdData.at(i));
+//       fflush(stderr);
+//    }
+    qDebug()<< "=>" << cmdline << endl;
 
 
 
@@ -559,9 +559,16 @@ quint32 QOTDRModule::getMeasuredSORFiles(quint16 channel)
 
 bool  QOTDRModule::storeCurrentSOR(quint16 channel)
 {
-	bool 	ret = false;
-		QString  srcFile = _CurrentSORs.value(channel);
-        QString	 dstFile = QAgentApp::getDataDir() +QString("IFMS_CH%1_%2.sor").arg(channel).arg(getMeasuredCount(channel));
+        bool 	ret = false;
+        QString srcFile;
+        if(getMeasuredCount(channel) <= 1){
+            srcFile = _FirstSORs.value(channel);
+        }
+        else
+        {
+            srcFile = _CurrentSORs.value(channel);
+        }
+        QString	 dstFile = QAgentApp::getCacheDir() +QString("IFMS_CH%1_%2.sor").arg(channel).arg(getMeasuredCount(channel));
 
 		ret = QFile::exists(srcFile);
 		if(ret == false){
@@ -643,8 +650,10 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 
 	oldEventNums = oldFingerData->mIFMSFingerData.NumberOfEvents;
 	newEventNums = newFingerData->mIFMSFingerData.NumberOfEvents;
+
+    float delta = qAbs(newTotalLength - oldTotalLength);
 	
-    if (qAbs(oldTotalLength - newTotalLength) > pstIFMS1000MeasureFiberLengthChangeThreshold)
+    if ( delta >= pstIFMS1000MeasureFiberLengthChangeThreshold/1000)
 	{
 		// TODO: 光纤长度变化
 		trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
@@ -655,13 +664,13 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 		data.append(trap);
         _SORsChanged[channel] = true;
 	}
-	else  // 光纤长度变化没有超过阈值
+//	else  // 光纤长度变化没有超过阈值
 	{
 		// TODO: 比较端到端损耗
         oldEndtoEndLoss = (float)oldFingerData->mIFMSFingerData.EndtoEndLoss/1000;
         newEndtoEndLoss = (float)newFingerData->mIFMSFingerData.EndtoEndLoss/1000;
         point1EndtoEndLoss = newTotalLength/10;
-		if(qAbs(oldEndtoEndLoss - newEndtoEndLoss ) >= qMin(5.0f , point1EndtoEndLoss))
+        if(qAbs(oldEndtoEndLoss - newEndtoEndLoss ) >= qMin(pstIFMS1000MeasureEndToEndLossHighThreshold , point1EndtoEndLoss))
 		{
 			trap = QString("CH%1,B,%2,%3,%4,%5,%6").arg(channel).arg(\
 											OTDR_TRAP_SOURCE_EEMAIN).arg(\
@@ -672,7 +681,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
             _SORsChanged[channel] = true;
 
         }
-		else if((qAbs(oldEndtoEndLoss - newEndtoEndLoss) >= 1.0f)&&(qAbs(oldEndtoEndLoss - newEndtoEndLoss) < qMin(5.0f , point1EndtoEndLoss)))
+        else if((qAbs(oldEndtoEndLoss - newEndtoEndLoss) >= pstIFMS1000MeasureEndToEndLossMiddleThreshold)&&(qAbs(oldEndtoEndLoss - newEndtoEndLoss) < qMin(pstIFMS1000MeasureEndToEndLossHighThreshold , point1EndtoEndLoss)))
 		{
 			trap = QString("CH%1,C,%2,%3,%4,%5,%6").arg(channel).arg(\
 											OTDR_TRAP_SOURCE_EEMINOR).arg(\
@@ -707,7 +716,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 						newFingerData->mIFMSFingerData.vIFMSEvents[j].EventType &= (~EVENT_TYPE_NEW); // 新的不是新增
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_LITTLE; // 旧的有变化，暂时未知，比较增益
 
-                        if(qAbs(newEventLoss - oldEventLoss) >= 5.0f)
+                        if(qAbs(newEventLoss - oldEventLoss) >= pstIFMS1000MeasureOldLossCriticalThreshold)
 						{
 							// 变化，紧急
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_CRITICAL;
@@ -721,7 +730,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                         _SORsChanged[channel] = true;
 
                         }
-                        else if(qAbs(newEventLoss - oldEventLoss) >= 2.0f)
+                        else if(qAbs(newEventLoss - oldEventLoss) >= pstIFMS1000MeasureOldLossMajorThreshold)
 						{
 							// 变化，主要
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_MAIN;
@@ -735,7 +744,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                         _SORsChanged[channel] = true;
 
                         }
-                        else if(qAbs(newEventLoss - oldEventLoss) >= 0.5f)
+                        else if(qAbs(newEventLoss - oldEventLoss) >= pstIFMS1000MeasureOldLossMinorThreshold)
 						{
 							// 变化，次要
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_CHANGE_MINOR;
@@ -749,8 +758,8 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                         _SORsChanged[channel] = true;
 
                         }
-                        k++;
-                        break;
+//                        k++;
+//                        break;
 					}
 
 				}
@@ -778,7 +787,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
             newEventLoss = (float)newFingerData->mIFMSFingerData.vIFMSEvents[i].EventLoss/1000;
             if(newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType == EVENT_TYPE_NEW)
 			{
-                if(newEventLoss >= 5.0f )
+                if(newEventLoss >= pstIFMS1000MeasureNewLossCriticalThreshold )
 					{
 					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_CRITICAL;
 					trap = QString("CH%1,A,%2,%3,%4,%5,%6").arg(channel).arg(\
@@ -790,7 +799,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                     _SORsChanged[channel] = true;
 
 					}
-                else if(newEventLoss >= 2.0f )
+                else if(newEventLoss >= pstIFMS1000MeasureNewLossMajorThreshold )
 					{
 					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_MAIN;
                     trap = QString("CH%1,B,%2,%3,%4,%5,%6").arg(channel).arg(\
@@ -802,7 +811,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                     _SORsChanged[channel] = true;
 
                     }
-                else if(newEventLoss >= 0.5f )
+                else if(newEventLoss >= pstIFMS1000MeasureNewLossMinorThreshold )
 					{
 					newFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_NEW_MINOR;
                     trap = QString("CH%1,C,%2,%3,%4,%5,%6").arg(channel).arg(\
@@ -897,11 +906,11 @@ void QOTDRModule::OTDRChanged(quint16 module, quint16 channel)
     quint32     MaxStoredSORNumber;
     QAgentApp::message(module, QString("OTDR channel %1 changed!").arg(channel));
     QPST *pst = QPST::getInstance();
-    flag =  _SORsChanged.value(channel);
-
     MaxStoredSORNumber = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureNumberSORStoredEachChannel(channel).toInt();
 
     QStringList  data = generateTrapData(module, channel);
+    flag =  _SORsChanged.value(channel);
+
     if((flag == true)&&(getMeasuredSORFiles(channel)< MaxStoredSORNumber)){
         storeCurrentSOR(channel);
         _SORsChanged[channel] = false;

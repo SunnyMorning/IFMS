@@ -768,10 +768,13 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureStartPosition_len(quint16 channe
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureEndPosition(quint16 channel, QString s)
 {
+	quint16 module_index = (channel-1)/CHANNELS_PER_MODULE;
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
         _ss.beginWriteArray("pstIFMS1000MeasureEndPosition");
-            _ss.setArrayIndex(channel-1);
+		for(int i=0;i<CHANNELS_PER_MODULE;i++){
+            _ss.setArrayIndex(module_index*CHANNELS_PER_MODULE+i);
             _ss.setValue("pstIFMS1000MeasureEndPosition", s);
+			}
         _ss.endArray();
     _ss.endGroup();
     _ss.sync();
@@ -786,10 +789,13 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureEndPosition_len(quint16 channel,
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureRefIndex(quint16 channel, QString s)
 {
+	quint16 module_index = (channel-1)/CHANNELS_PER_MODULE;
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
         _ss.beginWriteArray("pstIFMS1000MeasureRefIndex");
-            _ss.setArrayIndex(channel-1);
+		for(int i=0;i<CHANNELS_PER_MODULE;i++){
+            _ss.setArrayIndex(module_index*CHANNELS_PER_MODULE+i);
             _ss.setValue("pstIFMS1000MeasureRefIndex", s);
+			}
         _ss.endArray();
     _ss.endGroup();
     _ss.sync();
@@ -804,10 +810,13 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureRefIndex_len(quint16 channel, in
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureResolution(quint16 channel, QString s)
 {
+	quint16 module_index = (channel-1)/CHANNELS_PER_MODULE;
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
         _ss.beginWriteArray("pstIFMS1000MeasureResolution");
-            _ss.setArrayIndex(channel-1);
+		for(int i=0;i<CHANNELS_PER_MODULE;i++){
+            _ss.setArrayIndex(module_index*CHANNELS_PER_MODULE+i);
             _ss.setValue("pstIFMS1000MeasureResolution", s);
+			}
         _ss.endArray();
     _ss.endGroup();
     _ss.sync();
@@ -828,16 +837,22 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureStatus(quint16 channel, int s)
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureAction(quint16 channel, int s)
 {
-    MeasureTable[channel-1].pstIFMS1000MeasureAction = (long) (s) ;
+    quint16 module_index = (channel-1)/CHANNELS_PER_MODULE;
+    for(int i = 0; i< CHANNELS_PER_MODULE; i++){
+        MeasureTable[module_index*CHANNELS_PER_MODULE + i].pstIFMS1000MeasureAction = (long) (s) ;
+    }
 }
 
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasurePulseWidth(quint16 channel, QString s)
 {
+	quint16 module_index = (channel-1)/CHANNELS_PER_MODULE;
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
         _ss.beginWriteArray("pstIFMS1000MeasurePulseWidth");
-            _ss.setArrayIndex(channel-1);
+		for(int i=0;i<CHANNELS_PER_MODULE;i++){
+            _ss.setArrayIndex(module_index*CHANNELS_PER_MODULE+i);
             _ss.setValue("pstIFMS1000MeasurePulseWidth", s);
+			}
         _ss.endArray();
     _ss.endGroup();
     _ss.sync();
@@ -852,10 +867,13 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasurePulseWidth_len(quint16 channel, 
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureTime(quint16 channel, int s)
 {
+	quint16 module_index = (channel-1)/CHANNELS_PER_MODULE;
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
         _ss.beginWriteArray("pstIFMS1000MeasureTime");
-            _ss.setArrayIndex(channel-1);
+		for(int i=0;i<CHANNELS_PER_MODULE;i++){
+            _ss.setArrayIndex(module_index*CHANNELS_PER_MODULE+i);
             _ss.setValue("pstIFMS1000MeasureTime", s);
+			}
         _ss.endArray();
     _ss.endGroup();
     _ss.sync();
@@ -1129,7 +1147,7 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureNumber(quint16 channel, QString 
 
 void  QPSTProductPrivate::set_pstIFMS1000MeasureNumber_len(quint16 channel, int s)
 {
-
+// Read only
 }
 
 
@@ -1148,4 +1166,19 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureNumberSORStoredEachChannel(quint
 void  QPSTProductPrivate::set_pstIFMS1000MeasureNumberSORStoredEachChannel_len(quint16 channel, int s)
 {
     MeasureTable[channel-1].pstIFMS1000MeasureNumberSORStoredEachChannel_len = (long) (s) ;
+}
+
+bool  QPSTProductPrivate::is_pstIFMS1000Measuring(quint16 channel)
+{
+    bool ret = true;
+    long  action = get_pstIFMS1000MeasureAction(channel);
+    if((action == OTDR_WORK_MODE_AUTO) || (action == OTDR_WORK_MODE_SINGLE))
+    {
+        ret = true;
+    }
+    else
+    {
+        ret = false;
+    }
+    return ret;
 }

@@ -277,11 +277,11 @@ QString 	QPSTSystemPrivate::get_pstSystemTrapTargetIpAddr(int index)
 {
 //    struct sockaddr_in sa;
     QString  s;
-
+    QString  ip = QString("192.168.1.%1").arg(index+43);
     _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
     _ss.beginReadArray("pstSystemTrapTargetIpAddr");
     _ss.setArrayIndex(index);
-    s = _ss.value("pstSystemTrapTargetIpAddr", "192.168.1.44").toString();
+    s = _ss.value("pstSystemTrapTargetIpAddr", ip).toString();
     _ss.endArray();
     _ss.endGroup();
 
