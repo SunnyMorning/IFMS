@@ -1,5 +1,8 @@
 #include "qpst.h"
 
+#include <QProcess>
+
+
 static QMutex gPST_mutex;
 
 QAtomicPointer<QPST> _instance;/*!<使用原子指针,默认初始化为0。*/
@@ -45,7 +48,7 @@ void QPST::initConnections()
 {
    connect(this, SIGNAL(sigOTDRTrap(quint16,QString&)), this, SLOT(onSigOTDRTrap(quint16,QString&)));
    connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
-//   connect(this, SIGNAL(sigTrapTargetsChanged()), this, SLOT(onTrapTargetsChanged()));
+   connect(this, SIGNAL(sigTrapTargetsChanged()), this, SLOT(onTrapTargetsChanged()));
 }
 
 void QPST::TrapTargetsChanged()
@@ -55,26 +58,26 @@ void QPST::TrapTargetsChanged()
 
 void QPST::onTrapTargetsChanged()
 {
-    char peername[256];
-    char community[256];
-    QMutexLocker locker(&gPST_mutex);//加互斥锁。
+//    char peername[256];
+//    char community[256];
+//    QMutexLocker locker(&gPST_mutex);//加互斥锁。
 
-    QString targetIP;
-    QString targetCommunity;
+//    QString targetIP;
+//    QString targetCommunity;
 
-//    snmpd_free_trapsinks();
+////    snmpd_free_trapsinks();
 
-    for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
-    {
-        targetIP = m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
-        if(targetIP != QString("0.0.0.0")){
-            strcpy(peername, targetIP.toLatin1().data());
-            targetCommunity = m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
-            strcpy(community, targetCommunity.toLatin1().data());
-            create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
-        }
-    }
-
+//    for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
+//    {
+//        targetIP = m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+//        if(targetIP != QString("0.0.0.0")){
+//            strcpy(peername, targetIP.toLatin1().data());
+//            targetCommunity = m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
+//            strcpy(community, targetCommunity.toLatin1().data());
+//            create_trap_session(peername, 0, community, SNMP_VERSION_2c, SNMP_MSG_INFORM);
+//        }
+//    }
+    qDebug() << "onTrapTargetsChanged!" << endl;
 }
 
 void QPST::run()
@@ -92,7 +95,7 @@ void QPST::run()
         m_product->init_pstIFMS1000();
         m_system->init_pstSystem();
 
-        onTrapTargetsChanged();
+//        onTrapTargetsChanged();
 
         do{
             agent_check_and_process(1);
@@ -113,7 +116,7 @@ void QPST::sendCommandToOTDRModule(quint16 channel, QString cmdline)
 int
 QPST::send_pstIFMS1000MeasureEvent_trap(QString data)
 {
-
+#if 0
      static long modstatus = 0;
 //     netsnmp_session     _session;
 //    netsnmp_session     *_ss;
@@ -183,6 +186,32 @@ QPST::send_pstIFMS1000MeasureEvent_trap(QString data)
     send_v2trap( var_list );
     snmp_free_varbind( var_list );
 //    snmpd_free_trapsinks();
+
+#else
+    QProcess *process;
+    QString  targetIP;
+    QString  targetCommunity;
+    QString  trapCommand;
+    QString  trapOID = QString("1.3.6.1.4.1.48391.3.5.5.1");
+    QString  trapName = QString("pstIFMS1000MeasureEvent");
+    QPST *pst = QPST::getInstance();
+
+        for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
+        {
+            targetIP = pst->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
+            targetCommunity = pst->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
+
+            if((targetIP != QString("0.0.0.0")) && (!targetCommunity.isEmpty())){
+//                process = new QProcess();
+                trapCommand = QString("snmptrap -v 2c -c %1 %2 \"\" %3 %4 s \"%5\"").arg(targetCommunity).arg(\
+                            targetIP).arg(trapOID).arg(trapName).arg(data);
+//                process->start(trapCommand);
+                qDebug() << qPrintable(trapCommand) << endl;
+//                QProcess::execute(trapCommand);
+                system(qPrintable(trapCommand));
+            }
+        }
+#endif
     return SNMP_ERR_NOERROR;
 }
 
@@ -194,11 +223,8 @@ QPST::send_pstIFMS1000MeasureEvent_trap(QString data)
 
 void QPST::onSigOTDRTrap(quint16 module, QString &data)
 {
-// TODO: send trap to nms
-
-    QPST::send_pstIFMS1000MeasureEvent_trap(data);
-
     qDebug() << "["<<QThread::currentThreadId() << "] onSigOTDRTrap" << endl;
+    send_pstIFMS1000MeasureEvent_trap(data);
 }
 
 void QPST::onSigSetProgress(quint16 channel, quint16 progress)

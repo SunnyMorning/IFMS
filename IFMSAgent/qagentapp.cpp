@@ -119,7 +119,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 //    QString qcmdline = QString("GETSOR? 0");
 //    emit command_thread->sigSendCommandToModule(0,qcmdline);
 //    emit sigModuleSingleMonitor(0);
-    emit pstThread->TrapTargetsChanged();
+//    emit pstThread->TrapTargetsChanged();
 
     qDebug() << "[" << QThread::currentThreadId() << "] QAgent:StartSession" << endl;
     return true;
