@@ -25,7 +25,7 @@ typedef struct  _pstSystemBasicManagement
     char*	devName;
     char*	devIpAddr;
     char*	devGateway;
-    char*  devNetMask;
+    char* devNetMask;
     long	saveCurrentConfiguration;
     long	reset2Factory;
     long	reboot;
@@ -33,23 +33,23 @@ typedef struct  _pstSystemBasicManagement
 
 typedef struct  _pstSystemVerInfo
 {
-        char* pstHwVer;
-        char* pstSwVer;
-        char* pstFwVer;
-        char* pstModel;
-        char* pstSn;
-        char* devMacAddress;
+    char* pstHwVer;
+    char* pstSwVer;
+    char* pstFwVer;
+    char* pstModel;
+    char* pstSn;
+    char* devMacAddress;
 }pstSystemVerInfo;
 
 typedef struct pstSystemTrapTargetTable_entry {
     /* Index values */
-    char pstSystemTrapTargetName[NNN];
-    size_t pstSystemTrapTargetName_len;
+    long pstSystemTrapTargetName;
 
     /* Column values */
     char pstSystemTrapTargetIpAddr[NNN];
     size_t pstSystemTrapTargetIpAddr_len;
     char old_pstSystemTrapTargetIpAddr[NNN];
+    size_t old_pstSystemTrapTargetIpAddr_len;
     char pstSystemTrapTargetCommunity[NNN];
     size_t pstSystemTrapTargetCommunity_len;
     char old_pstSystemTrapTargetCommunity[NNN];
@@ -121,6 +121,9 @@ typedef struct  _pstSystemStatus
     vector<pstSystemPowerEntry> pstSystemPowerTable;
 
     char* pstSystemTemperature;
+	  char* pstSystemTemperatureHighThreshold;
+	  char* pstSystemTemperatureLowThreshold;
+
 }pstSystemStatus;
 
 typedef struct _pstSystemOnlineUpgrade
@@ -129,11 +132,11 @@ typedef struct _pstSystemOnlineUpgrade
     char* pstSystemFtpUserName;
     char* pstSystemFtpUserPwd;
     char* pstSystemFtpFileName;
-    long	 pstSystemUpgFileType;
-    long	 pstSystemUpgDstSlot;
-    long	 pstSystemUpgAction;
-    long	 pstSystemUpgStatus;
-    char*    pstSystemUpgResultInfo;
+    long	pstSystemUpgFileType;
+    long	pstSystemUpgDstSlot;
+    long	pstSystemUpgAction;
+    long	pstSystemUpgStatus;
+    char* pstSystemUpgResultInfo;
 }pstSystemOnlineUpgrade;
 
 typedef struct _pstSystemProductInfo
@@ -155,10 +158,7 @@ public:
     pstSystemProductInfo  ProductInfo;
 
     void init_pstData();
-
-signals:
-
-public slots:
+    
     QString get_devName();
     void    set_devName(QString s);
     QString get_devIpAddr();
@@ -168,37 +168,71 @@ public slots:
     QString get_devNetMask();
     void    set_devNetMask(QString s);
     long    get_saveCurrentConfiguration();
-    void    set_saveCurrentConfiguration(long cfg);
+    void    set_saveCurrentConfiguration(long s);
     long    get_reset2Factory();
     void    set_reset2Factory(long rf);
     long    get_reboot();
-    void    set_reboot(long rb);
-
-    QString	get_pstSystemTrapTargetName(int index);
-
-    long	get_pstSystemTrapTargetName_len(int index);
-
-    QString get_pstSystemTrapTargetCommunity(int index);
-
-    void 	set_pstSystemTrapTargetCommunity(int index, QString s);
-
-
-    long	get_pstSystemTrapTargetCommunity_len(int index);
+    void    set_reboot(long s);
+    
+    QString get_pstHwVer();
+    QString get_pstSwVer();
+    QString get_pstFwVer();
+    QString get_pstModel();
+    QString get_pstSn();
+    QString get_devMacAddress();
 
 
+    QString 	get_pstSystemTrapTargetCommunity(int index);
+    void 			set_pstSystemTrapTargetCommunity(int index, QString s);
+    long			get_pstSystemTrapTargetCommunity_len(int index);
     QString 	get_pstSystemTrapTargetIpAddr(int index);
+    void			set_pstSystemTrapTargetIpAddr(int index, QString s);
+    long 			get_pstSystemTrapTargetTrapVersion(int index);
+    void			set_pstSystemTrapTargetTrapVersion(int index, long s);
+    long 			get_pstSystemTrapTargetRowStatus(int index);
+    void 			set_pstSystemTrapTargetRowStatus(int index, long s);
+    long 		  get_pstSystemTrapFuncEn();
+    long 		  get_pstSystemTrapCount();   
+    
+    long get_pstSystemFanTotalNum();                     
+    long get_pstSystemPowerTotalNum();      
+    QString get_pstSystemTemperature();                  
+	  QString get_pstSystemTemperatureHighThreshold();                      
+	  QString get_pstSystemTemperatureLowThreshold();
+	  void set_pstSystemTemperatureHighThreshold(QString s);               	  
+	  void set_pstSystemTemperatureLowThreshold(QString s);    
+	  
+    QString get_pstSystemPowerMaximumConsumption(int index);      
+    QString get_pstSystemPowerVoltage12VA(int index);             
+    QString get_pstSystemPowerVoltage12VB(int index);             
+    QString get_pstSystemPowerVoltage12VFAN(int index);           
+    QString get_pstSystemPowerVoltage12VOTDR1(int index);         
+    QString get_pstSystemPowerVoltage12VOTDR2(int index);         
+    QString get_pstSystemPowerVoltageVDD5V(int index);            
+    QString get_pstSystemPowerVoltageVDD3V3(int index);           
+    QString get_pstSystemPowerVoltage1V8RTC(int index);           
+	  
+	  QString get_pstSystemFtpSrvIp();
+    QString get_pstSystemFtpUserName();
+    QString get_pstSystemFtpUserPwd();
+    QString get_pstSystemFtpFileName();
+    long	  get_pstSystemUpgFileType();
+    long	  get_pstSystemUpgDstSlot();
+    long	  get_pstSystemUpgAction();
+    void    set_pstSystemFtpSrvIp(QString s);
+    void    set_pstSystemFtpUserName(QString s);
+    void    set_pstSystemFtpUserPwd(QString s);
+    void    set_pstSystemFtpFileName(QString s);
+    void    set_pstSystemUpgFileType(long s);
+    void    set_pstSystemUpgDstSlot(long s);
+    void    set_pstSystemUpgAction(long s);
+        
+    long			get_pstSystemUpgStatus();
+    QString   get_pstSystemUpgResultInfo();
+    long 		  get_pstSystemProductType();    
+signals:
 
-    void	set_pstSystemTrapTargetIpAddr(int index, QString s);
-
-
-    long 	get_pstSystemTrapTargetTrapVersion(int index);
-
-    void	set_pstSystemTrapTargetTrapVersion(int index, long version);
-
-
-    long 	get_pstSystemTrapTargetRowStatus(int index);
-
-    void 	set_pstSystemTrapTargetRowStatus(int index, long status);
+public slots:
 
 
 private:

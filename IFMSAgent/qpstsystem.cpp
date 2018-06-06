@@ -139,12 +139,12 @@ void QPSTSystem::init_pstSystem()
     netsnmp_register_scalar(
         netsnmp_create_handler_registration("pstSystemTemperatureHighThreshold", handle_pstSystemTemperatureHighThreshold,
                                pstSystemTemperatureHighThreshold_oid, OID_LENGTH(pstSystemTemperatureHighThreshold_oid),
-                               HANDLER_CAN_RONLY
+                               HANDLER_CAN_RWRITE
         ));
     netsnmp_register_scalar(
         netsnmp_create_handler_registration("pstSystemTemperatureLowThreshold", handle_pstSystemTemperatureLowThreshold,
                                pstSystemTemperatureLowThreshold_oid, OID_LENGTH(pstSystemTemperatureLowThreshold_oid),
-                               HANDLER_CAN_RONLY
+                               HANDLER_CAN_RWRITE
         ));
     netsnmp_register_scalar(
         netsnmp_create_handler_registration("pstSystemFtpSrvIp", handle_pstSystemFtpSrvIp,
@@ -330,9 +330,18 @@ int
          */
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
+            {
+            {
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_IPADDRESS);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+            QPST *pst = QPST::getInstance();
+            in_addr_t s = (in_addr_t)(*requests->requestvb->val.integer);
+            char *ip = inet_ntoa(*((struct in_addr*)&s));
+            QString qs = QString("%1").arg(ip);
+            pst->m_system->m_pstSystem.set_devIpAddr(qs);
+            }
             }
             break;
 
@@ -393,8 +402,10 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
     struct sockaddr_in sa;
+    QPST *pst = QPST::getInstance();
+    QString  s = pst->m_system->m_pstSystem.get_devGateway();
 
-    inet_pton(AF_INET, "192.168.1.1", &(sa.sin_addr));
+    inet_pton(AF_INET, s.toLatin1().data(), &(sa.sin_addr));
 
     in_addr_t   it = sa.sin_addr.s_addr;
 
@@ -719,8 +730,9 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+    QPST *pst = QPST::getInstance();
 
-    static long reboot;
+    long reboot = pst->m_system->m_pstSystem.get_reboot();
     
     switch(reqinfo->mode) {
 
@@ -744,8 +756,10 @@ int
                 netsnmp_set_request_error(reqinfo, requests, ret );
             }
 			
-            const char *pstr = "reboot";
-            system(pstr);
+            QPST *pst =  QPST::getInstance();
+            int s = int(*requests->requestvb->val.integer);
+
+            pst->m_system->m_pstSystem.set_reboot(s);
 
 			}
             break;
@@ -931,15 +945,17 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
+    QPST *pst = QPST::getInstance();
 
-    const char *pstSn = "1234";
+
+    QString s  = pst->m_system->m_pstSystem.get_pstSn();
     
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
-                                     pstSn/* XXX: a pointer to the scalar's data */,
-                                     strlen(pstSn)/* XXX: the length of the data in bytes */);
+                                     s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
+                                     s.length()/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -962,14 +978,15 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    const char *devMacAddress = "aa:bb:cc:dd:ee:ff";
+    QPST *pst = QPST::getInstance();
+    QString s = pst->m_system->m_pstSystem.get_devMacAddress();
 
     switch(reqinfo->mode) {
 
         case MODE_GET:
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
-                                     devMacAddress/* XXX: a pointer to the scalar's data */,
-                                     strlen(devMacAddress)/* XXX: the length of the data in bytes */);
+                                     s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
+                                     s.length()/* XXX: the length of the data in bytes */);
             break;
 
 
@@ -1136,14 +1153,17 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    const char *pstSystemTemperature = "45.678";
-    
     switch(reqinfo->mode) {
 
         case MODE_GET:
+            {
+            QPST *pst = QPST::getInstance();
+            QString s = pst->m_system->m_pstSystem.get_pstSystemTemperature();
+
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
-                                     pstSystemTemperature/* XXX: a pointer to the scalar's data */,
-                                     strlen(pstSystemTemperature)/* XXX: the length of the data in bytes */);
+                                     s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
+                                     s.length()/* XXX: the length of the data in bytes */);
+            }
             break;
 
 
@@ -1161,6 +1181,7 @@ int
                           netsnmp_agent_request_info   *reqinfo,
                           netsnmp_request_info         *requests)
 {
+    int ret;
     /* We are never called for a GETNEXT if it's registered as a
        "instance", as it's "magically" handled for us.  */
 
@@ -1178,10 +1199,61 @@ int
             break;
 
 
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_OCTET_STR);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+            break;
+
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
+
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
+
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
+
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
+
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
+
         default:
             /* we should never get here, so this is a really bad error */
-            snmp_log(LOG_ERR, "unknown mode (%d) in handle_pstSystemTemperature\n", reqinfo->mode );
+            snmp_log(LOG_ERR, "unknown mode (%d) in handle_pstSystemTemperatureHighThreshold\n", reqinfo->mode );
             return SNMP_ERR_GENERR;
+
     }
 
     return SNMP_ERR_NOERROR;
@@ -1192,6 +1264,7 @@ int
                           netsnmp_agent_request_info   *reqinfo,
                           netsnmp_request_info         *requests)
 {
+    int ret;
     /* We are never called for a GETNEXT if it's registered as a
        "instance", as it's "magically" handled for us.  */
 
@@ -1208,10 +1281,59 @@ int
                                      strlen(pstSystemTemperatureLowThreshold)/* XXX: the length of the data in bytes */);
             break;
 
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_OCTET_STR);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+            break;
+
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
+
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
+
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
+
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
+
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
-            snmp_log(LOG_ERR, "unknown mode (%d) in handle_pstSystemTemperature\n", reqinfo->mode );
+            snmp_log(LOG_ERR, "unknown mode (%d) in handle_pstSystemTemperatureLowThreshold\n", reqinfo->mode );
             return SNMP_ERR_GENERR;
     }
 
@@ -1231,8 +1353,9 @@ int
        we don't need to loop over a list of requests; we'll only get one. */
 
     struct sockaddr_in sa;
-
-    inet_pton(AF_INET, "192.168.1.101", &(sa.sin_addr));
+    QPST *pst = QPST::getInstance();
+    QString s = pst->m_system->m_pstSystem.get_pstSystemFtpSrvIp();
+    inet_pton(AF_INET, s.toLatin1().data(), &(sa.sin_addr));
 
     in_addr_t   it = sa.sin_addr.s_addr;
     
@@ -1872,8 +1995,7 @@ int
 /* create a new row in the table */
 static netsnmp_tdata_row *
 pstSystemTrapTargetTable_createEntry(netsnmp_tdata *table_data
-                 , char* pstSystemTrapTargetName
-                 , size_t pstSystemTrapTargetName_len
+                 , long  pstSystemTrapTargetName
                 ) {
     struct pstSystemTrapTargetTable_entry *entry;
     netsnmp_tdata_row *row;
@@ -1890,10 +2012,10 @@ pstSystemTrapTargetTable_createEntry(netsnmp_tdata *table_data
     row->data = entry;
 
     DEBUGMSGT(("pstSystemTrapTargetTable:entry:create", "row 0x%x\n", (uintptr_t)row));
-    memcpy(entry->pstSystemTrapTargetName, pstSystemTrapTargetName, pstSystemTrapTargetName_len);
-    entry->pstSystemTrapTargetName_len = pstSystemTrapTargetName_len;
-    netsnmp_tdata_row_add_index( row, ASN_OCTET_STR,
-                                 entry->pstSystemTrapTargetName, pstSystemTrapTargetName_len);
+    entry->pstSystemTrapTargetName = pstSystemTrapTargetName;
+    netsnmp_tdata_row_add_index( row, ASN_INTEGER,
+                                 &(entry->pstSystemTrapTargetName),
+                                 sizeof(entry->pstSystemTrapTargetName));
     if (table_data)
         netsnmp_tdata_add_row( table_data, row );
     return row;
@@ -1916,7 +2038,7 @@ pstSystemTrapTargetTable_removeEntry(netsnmp_tdata     *table_data,
     if (table_data)
         netsnmp_tdata_remove_and_delete_row( table_data, row );
     else
-        netsnmp_tdata_delete_row( row );
+        netsnmp_tdata_delete_row( row );    
 }
 
 /** Initialize the pstSystemTrapTargetTable table by defining its contents and how it's structured */
@@ -1948,10 +2070,10 @@ void
         return;
     }
     netsnmp_table_helper_add_indexes(table_info,
-                           ASN_OCTET_STR,  /* index: pstSystemTrapTargetName */
+                           ASN_INTEGER,  /* index: pstSystemTrapTargetName */
                            0);
 
-    table_info->min_column = COLUMN_PSTSYSTEMTRAPTARGETIPADDR;
+    table_info->min_column = COLUMN_PSTSYSTEMTRAPTARGETNAME;
     table_info->max_column = COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS;
     
     netsnmp_tdata_register( reg, table_data, table_info );
@@ -1961,22 +2083,18 @@ void
 	long i = 0;
 	
 	netsnmp_tdata_row 	*row;
-	QString  targetName;
+    long pstSystemTrapTargetName;
     QString  targetIP;
 	QString	 targetCommunity;
 	struct pstSystemTrapTargetTable_entry		*entry;
     for(i = 0; i < NUMBER_OF_TRAPTARGETS; i++){
-        targetName  = p->m_system->m_pstSystem.get_pstSystemTrapTargetName(i);
         targetIP = p->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
         targetCommunity = p->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
-        char pstSystemTrapTargetName[32];
-        strcpy(pstSystemTrapTargetName,targetName.toLatin1().data());
-        size_t	pstSystemTrapTargetName_len = targetName.length() ;
-        row = pstSystemTrapTargetTable_createEntry(table_data, pstSystemTrapTargetName, pstSystemTrapTargetName_len);
+        pstSystemTrapTargetName = i+1;
+        row = pstSystemTrapTargetTable_createEntry(table_data, pstSystemTrapTargetName);
 
         entry = (struct pstSystemTrapTargetTable_entry *)row->data;
-        strcpy(entry->pstSystemTrapTargetName,targetName.toLatin1().data());
-        entry->pstSystemTrapTargetName_len = targetName.length();
+        entry->pstSystemTrapTargetName = pstSystemTrapTargetName;
         strcpy(entry->pstSystemTrapTargetIpAddr, targetIP.toLatin1().data());
         entry->pstSystemTrapTargetIpAddr_len = targetIP.length();
 //        entry->old_pstSystemTrapTargetIpAddr = 0;
@@ -2047,6 +2165,15 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
             table_info  =     netsnmp_extract_table_info( request);
     
             switch (table_info->colnum) {
+            case COLUMN_PSTSYSTEMTRAPTARGETNAME:
+                if ( !table_entry ) {
+                    netsnmp_set_request_error(reqinfo, request,
+                                              SNMP_NOSUCHINSTANCE);
+                    continue;
+                }
+                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                            table_entry->pstSystemTrapTargetName);
+                break;
             case COLUMN_PSTSYSTEMTRAPTARGETIPADDR:
             {
                 if ( !table_entry ) {
@@ -2056,13 +2183,14 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
                 }
 
                 QPST *pst = QPST::getInstance();
-                char * name = table_entry->pstSystemTrapTargetName;
-                int index  = QString("%1").arg(name).toInt();
+                int index  = table_entry->pstSystemTrapTargetName;
+                if( 0 < index <= NUMBER_OF_TRAPTARGETS){
                 QString s = pst->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(index);
 
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
                                           s.toLatin1().data(),
                                           s.length()/*table_entry->pstSystemTrapTargetIpAddr*/);
+                }
             }
                 break;
             case COLUMN_PSTSYSTEMTRAPTARGETCOMMUNITY:
@@ -2073,8 +2201,8 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
                     continue;
                 }
                 QPST *pst = QPST::getInstance();
-                char * name = table_entry->pstSystemTrapTargetName;
-                int index  = QString("%1").arg(name).toInt();
+                int index  = table_entry->pstSystemTrapTargetName;
+                if( 0 < index <= NUMBER_OF_TRAPTARGETS){
 
                 QString s = pst->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(index);
 
@@ -2083,6 +2211,7 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
                                           s.length()
                                           /*table_entry->pstSystemTrapTargetCommunity,
                                           table_entry->pstSystemTrapTargetCommunity_len*/);
+                }
             }
                 break;
             case COLUMN_PSTSYSTEMTRAPTARGETTRAPVERSION:
@@ -2134,8 +2263,8 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 QPST *pst = QPST::getInstance();
-                char * name = table_entry->pstSystemTrapTargetName;
-                int index  = QString("%1").arg(name).toInt();
+                int index  = table_entry->pstSystemTrapTargetName;
+                if( 0 < index <= NUMBER_OF_TRAPTARGETS){
 
 //                in_addr_t s = (in_addr_t)(*request->requestvb->val.integer);
 //                char *ip = inet_ntoa(*((struct in_addr*)&s));
@@ -2144,6 +2273,7 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
                 QString qs = QString("%1").arg(cs);
                 pst->m_system->m_pstSystem.set_pstSystemTrapTargetIpAddr(index, qs);
                 pst->TrapTargetsChanged();
+                }
             }
                 break;
             case COLUMN_PSTSYSTEMTRAPTARGETCOMMUNITY:
@@ -2156,14 +2286,14 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
                     return SNMP_ERR_NOERROR;
                 }
                 QPST *pst = QPST::getInstance();
-                char * name = table_entry->pstSystemTrapTargetName;
-                int index  = QString("%1").arg(name).toInt();
-
+                int index  = table_entry->pstSystemTrapTargetName;
+                if( 0 < index <= NUMBER_OF_TRAPTARGETS){
                 char *cs = (char*)request->requestvb->val.string;
                 QString qs = QString("%1").arg(cs);
 
                 pst->m_system->m_pstSystem.set_pstSystemTrapTargetCommunity(index, qs);
                 pst->TrapTargetsChanged();
+                }
             }
                 break;
             case COLUMN_PSTSYSTEMTRAPTARGETTRAPVERSION:
@@ -2203,8 +2333,7 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
             case COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS:
                 if ( !table_row ) {
                     table_row = pstSystemTrapTargetTable_createEntry(table_data
-                        ,(char*)table_info->indexes->val.string
-                        ,  table_info->indexes->val_len
+                        , *table_info->indexes->val.integer
                         );
                     if (table_row) {
                         netsnmp_insert_tdata_row( request, table_row );
@@ -2241,20 +2370,30 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
         break;
 
     case MODE_SET_ACTION:
-        for (request=requests; request; request=request->next) {
-            if (request->processed)
-                continue;
+//        for (request=requests; request; request=request->next) {
+//            if (request->processed)
+//                continue;
 
-            table_entry = (struct pstSystemTrapTargetTable_entry *)
-                              netsnmp_tdata_extract_entry(request);
-            table_info  =     netsnmp_extract_table_info( request);
+//            table_entry = (struct pstSystemTrapTargetTable_entry *)
+//                              netsnmp_tdata_extract_entry(request);
+//            table_info  =     netsnmp_extract_table_info( request);
     
-            switch (table_info->colnum) {
-            case COLUMN_PSTSYSTEMTRAPTARGETIPADDR:
-//                table_entry->old_pstSystemTrapTargetIpAddr = table_entry->pstSystemTrapTargetIpAddr;
-//                table_entry->pstSystemTrapTargetIpAddr     = *request->requestvb->val.integer;
-                break;
-            case COLUMN_PSTSYSTEMTRAPTARGETCOMMUNITY:
+//            switch (table_info->colnum) {
+//            case COLUMN_PSTSYSTEMTRAPTARGETIPADDR:
+//                memcpy( table_entry->old_pstSystemTrapTargetIpAddr,
+//                        table_entry->pstSystemTrapTargetIpAddr,
+//                        sizeof(table_entry->pstSystemTrapTargetIpAddr));
+//                table_entry->old_pstSystemTrapTargetIpAddr_len =
+//                        table_entry->pstSystemTrapTargetIpAddr_len;
+//                memset( table_entry->pstSystemTrapTargetIpAddr, 0,
+//                        sizeof(table_entry->pstSystemTrapTargetIpAddr));
+//                memcpy( table_entry->pstSystemTrapTargetIpAddr,
+//                        request->requestvb->val.string,
+//                        request->requestvb->val_len);
+//                table_entry->pstSystemTrapTargetIpAddr_len =
+//                        request->requestvb->val_len;
+//                break;
+//            case COLUMN_PSTSYSTEMTRAPTARGETCOMMUNITY:
 //                memcpy( table_entry->old_pstSystemTrapTargetCommunity,
 //                        table_entry->pstSystemTrapTargetCommunity,
 //                        sizeof(table_entry->pstSystemTrapTargetCommunity));
@@ -2267,36 +2406,41 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
 //                        request->requestvb->val_len);
 //                table_entry->pstSystemTrapTargetCommunity_len =
 //                        request->requestvb->val_len;
-                break;
-            case COLUMN_PSTSYSTEMTRAPTARGETTRAPVERSION:
+//                break;
+//            case COLUMN_PSTSYSTEMTRAPTARGETTRAPVERSION:
 //                table_entry->old_pstSystemTrapTargetTrapVersion = table_entry->pstSystemTrapTargetTrapVersion;
 //                table_entry->pstSystemTrapTargetTrapVersion     = *request->requestvb->val.integer;
-                break;
-            case COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS:
+//                break;
+//            case COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS:
 //                table_entry->old_pstSystemTrapTargetRowStatus = table_entry->pstSystemTrapTargetRowStatus;
 //                table_entry->pstSystemTrapTargetRowStatus     = *request->requestvb->val.integer;
-                break;
-            }
-        }
+//                break;
+//            }
+//        }
         break;
 
     case MODE_SET_UNDO:
-        for (request=requests; request; request=request->next) {
-            if (request->processed)
-                continue;
+//        for (request=requests; request; request=request->next) {
+//            if (request->processed)
+//                continue;
 
-            table_entry = (struct pstSystemTrapTargetTable_entry *)
-                              netsnmp_tdata_extract_entry(request);
-            table_row   =     netsnmp_tdata_extract_row(  request);
-            table_data  =     netsnmp_tdata_extract_table(request);
-            table_info  =     netsnmp_extract_table_info( request);
+//            table_entry = (struct pstSystemTrapTargetTable_entry *)
+//                              netsnmp_tdata_extract_entry(request);
+//            table_row   =     netsnmp_tdata_extract_row(  request);
+//            table_data  =     netsnmp_tdata_extract_table(request);
+//            table_info  =     netsnmp_extract_table_info( request);
     
-            switch (table_info->colnum) {
-            case COLUMN_PSTSYSTEMTRAPTARGETIPADDR:
-//                table_entry->pstSystemTrapTargetIpAddr     = table_entry->old_pstSystemTrapTargetIpAddr;
-//                table_entry->old_pstSystemTrapTargetIpAddr = 0;
-                break;
-            case COLUMN_PSTSYSTEMTRAPTARGETCOMMUNITY:
+//            switch (table_info->colnum) {
+//            case COLUMN_PSTSYSTEMTRAPTARGETIPADDR:
+//                memcpy( table_entry->pstSystemTrapTargetIpAddr,
+//                        table_entry->old_pstSystemTrapTargetIpAddr,
+//                        sizeof(table_entry->pstSystemTrapTargetIpAddr));
+//                memset( table_entry->old_pstSystemTrapTargetIpAddr, 0,
+//                        sizeof(table_entry->pstSystemTrapTargetIpAddr));
+//                table_entry->pstSystemTrapTargetIpAddr_len =
+//                        table_entry->old_pstSystemTrapTargetIpAddr_len;
+//                break;
+//            case COLUMN_PSTSYSTEMTRAPTARGETCOMMUNITY:
 //                memcpy( table_entry->pstSystemTrapTargetCommunity,
 //                        table_entry->old_pstSystemTrapTargetCommunity,
 //                        sizeof(table_entry->pstSystemTrapTargetCommunity));
@@ -2304,21 +2448,21 @@ QPSTSystem::pstSystemTrapTargetTable_handler(
 //                        sizeof(table_entry->pstSystemTrapTargetCommunity));
 //                table_entry->pstSystemTrapTargetCommunity_len =
 //                        table_entry->old_pstSystemTrapTargetCommunity_len;
-                break;
-            case COLUMN_PSTSYSTEMTRAPTARGETTRAPVERSION:
+//                break;
+//            case COLUMN_PSTSYSTEMTRAPTARGETTRAPVERSION:
 //                table_entry->pstSystemTrapTargetTrapVersion     = table_entry->old_pstSystemTrapTargetTrapVersion;
 //                table_entry->old_pstSystemTrapTargetTrapVersion = 0;
-                break;
-            case COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS:
+//                break;
+//            case COLUMN_PSTSYSTEMTRAPTARGETROWSTATUS:
 //                if ( table_entry && !table_entry->valid ) {
 //                    pstSystemTrapTargetTable_removeEntry(table_data, table_row );
 //                } else {
 //                    table_entry->pstSystemTrapTargetRowStatus     = table_entry->old_pstSystemTrapTargetRowStatus;
 //                    table_entry->old_pstSystemTrapTargetRowStatus = 0;
 //                }
-                break;
-            }
-        }
+//                break;
+//            }
+//        }
         break;
 
     case MODE_SET_COMMIT:
@@ -2437,7 +2581,7 @@ QPSTSystem::initialize_table_pstSystemFanTable(void)
         row = pstSystemFanTable_createEntry(table_data, i);
 
         entry = (struct pstSystemFanTable_entry *)row->data;
-		entry->pstSystemFanIndex= i;
+        entry->pstSystemFanIndex= i+1;
 		entry->pstSystemFanSpeed=255;
 		entry->pstSystemFanStatus=0;
 		}
@@ -2615,7 +2759,35 @@ QPSTSystem::initialize_table_pstSystemPowerTable(void)
     netsnmp_tdata_register( reg, table_data, table_info );
 
     /* Initialise the contents of the table here */
+    long i= 0;
+    netsnmp_tdata_row 	*row;
 
+    struct pstSystemPowerTable_entry		*entry;
+    for(i = 0; i < 1; i++){
+        row = pstSystemPowerTable_createEntry(table_data, "1", 1);
+
+        entry = (struct pstSystemPowerTable_entry *)row->data;
+        strcpy(entry->pstSystemPowerIndex, "1");
+        entry->pstSystemPowerIndex_len = 1;
+        strcpy(entry->pstSystemPowerMaximumConsumption, "45");
+        entry->pstSystemPowerMaximumConsumption_len = 2;
+        strcpy(entry->pstSystemPowerVoltage12VA,"0");
+        entry->pstSystemPowerVoltage12VA_len = 1;
+        strcpy(entry->pstSystemPowerVoltage12VB,"0");
+        entry->pstSystemPowerVoltage12VB_len = 1;
+        strcpy(entry->pstSystemPowerVoltage12VFAN,"0");
+        entry->pstSystemPowerVoltage12VFAN_len = 1;
+        strcpy(entry->pstSystemPowerVoltage12VOTDR1,"0");
+        entry->pstSystemPowerVoltage12VOTDR1_len = 1;
+        strcpy(entry->pstSystemPowerVoltage12VOTDR2,"0");
+        entry->pstSystemPowerVoltage12VOTDR2_len = 1;
+        strcpy(entry->pstSystemPowerVoltageVDD5V ,"0");
+        entry->pstSystemPowerVoltageVDD5V_len = 1;
+        strcpy(entry->pstSystemPowerVoltageVDD3V3,"0");
+        entry->pstSystemPowerVoltageVDD3V3_len = 1;
+        strcpy(entry->pstSystemPowerVoltage1V8RTC,"0");
+        entry->pstSystemPowerVoltage1V8RTC_len = 1;
+       }
 }
 
 //    /* Typical data structure for a row entry */
@@ -2701,14 +2873,20 @@ QPSTSystem::pstSystemPowerTable_handler(
                                           table_entry->pstSystemPowerMaximumConsumption_len);
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE12VA:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltage12VA(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage12VA,
-                                          table_entry->pstSystemPowerVoltage12VA_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+            }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE12VB:
                 if ( !table_entry ) {

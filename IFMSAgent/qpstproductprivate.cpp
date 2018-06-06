@@ -78,8 +78,8 @@ void QPSTProductPrivate::init_pstData()
 		strcpy(measure.pstIFMS1000MeasureOldLossMinorThreshold, "0.5");
         measure.pstIFMS1000MeasureOldLossMinorThreshold_len = 3;
         
-        strcpy(measure.pstIFMS1000MeasureReserved1, "55");
-        measure.pstIFMS1000MeasureReserved1_len = 2;
+        strcpy(measure.pstIFMS1000MeasureEventPositionChangeThreshold, "100");
+        measure.pstIFMS1000MeasureEventPositionChangeThreshold_len = 3;
         
         strcpy(measure.pstIFMS1000MeasureReserved2, "-5");
         measure.pstIFMS1000MeasureReserved2_len = 2;
@@ -679,14 +679,14 @@ size_t QPSTProductPrivate::get_pstIFMS1000MeasureOldLossMinorThreshold_len(quint
 }
 
 
-QString QPSTProductPrivate::get_pstIFMS1000MeasureReserved1(quint16 channel)
+QString QPSTProductPrivate::get_pstIFMS1000MeasureEventPositionChangeThreshold(quint16 channel)
 {
     QString  s;
 
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
-    _ss.beginReadArray("pstIFMS1000MeasureReserved1");
+    _ss.beginReadArray("pstIFMS1000MeasureEventPositionChangeThreshold");
     _ss.setArrayIndex(channel-1);
-    s = _ss.value("pstIFMS1000MeasureReserved1", "55").toString();
+    s = _ss.value("pstIFMS1000MeasureEventPositionChangeThreshold", "100").toString();
     _ss.endArray();
     _ss.endGroup();
 
@@ -694,9 +694,9 @@ QString QPSTProductPrivate::get_pstIFMS1000MeasureReserved1(quint16 channel)
 }
 
 
-size_t QPSTProductPrivate::get_pstIFMS1000MeasureReserved1_len(quint16 channel)
+size_t QPSTProductPrivate::get_pstIFMS1000MeasureEventPositionChangeThreshold_len(quint16 channel)
 {
-    return MeasureTable[channel-1].pstIFMS1000MeasureReserved1_len;
+    return MeasureTable[channel-1].pstIFMS1000MeasureEventPositionChangeThreshold_len;
 }
 
 
@@ -1103,21 +1103,21 @@ void  QPSTProductPrivate::set_pstIFMS1000MeasureOldLossMinorThreshold_len(quint1
 }
 
 
-void  QPSTProductPrivate::set_pstIFMS1000MeasureReserved1(quint16 channel, QString s)
+void  QPSTProductPrivate::set_pstIFMS1000MeasureEventPositionChangeThreshold(quint16 channel, QString s)
 {
     _ss.beginGroup(PRODUCT_SETTINGS_GROUP);
-        _ss.beginWriteArray("pstIFMS1000MeasureReserved1");
+        _ss.beginWriteArray("pstIFMS1000MeasureEventPositionChangeThreshold");
             _ss.setArrayIndex(channel-1);
-            _ss.setValue("pstIFMS1000MeasureReserved1", s);
+            _ss.setValue("pstIFMS1000MeasureEventPositionChangeThreshold", s);
         _ss.endArray();
     _ss.endGroup();
     _ss.sync();
 }
 
 
-void  QPSTProductPrivate::set_pstIFMS1000MeasureReserved1_len(quint16 channel, int s)
+void  QPSTProductPrivate::set_pstIFMS1000MeasureEventPositionChangeThreshold_len(quint16 channel, int s)
 {
-    MeasureTable[channel-1].pstIFMS1000MeasureReserved1_len = (long) (s) ;
+    MeasureTable[channel-1].pstIFMS1000MeasureEventPositionChangeThreshold_len = (long) (s) ;
 }
 
 

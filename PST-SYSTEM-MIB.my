@@ -211,7 +211,7 @@
 		PSTSystemTrapTargetEntry ::=
 			SEQUENCE { 
 				pstSystemTrapTargetName
-					OCTET STRING,
+					Integer32,
 				pstSystemTrapTargetIpAddr
 					OCTET STRING,
 				pstSystemTrapTargetCommunity
@@ -224,8 +224,8 @@
 
 		-- 1.3.6.1.4.1.48391.2.1.3.2.1.1
 		pstSystemTrapTargetName OBJECT-TYPE
-			SYNTAX OCTET STRING (SIZE (1..32))
-			MAX-ACCESS not-accessible
+			SYNTAX Integer32 (1..8)
+			MAX-ACCESS  read-only
 			STATUS current
 			DESCRIPTION
 				"Description."

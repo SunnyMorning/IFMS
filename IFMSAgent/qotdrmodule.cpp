@@ -697,7 +697,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
 		int i = 0;
 		int j = 0;
         int k = 0;
-        for(i=0; i < oldEventNums-1; i++){
+        for(i=0; i < oldEventNums; i++){
 			oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType = EVENT_TYPE_OLD;
 			oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType |= EVENT_TYPE_DISAPPEAR;
 
@@ -758,7 +758,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                         _SORsChanged[channel] = true;
 
                         }
-//                        k++;
+                        k++;
 //                        break;
 					}
 

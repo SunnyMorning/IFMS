@@ -3,7 +3,11 @@
 #include <QNetworkInterface>
 #include <QProcess>
 #include <QList>
+#include <QFile>
+#include <QIODevice>
+#include <QDataStream>
 
+#include "NetworkHelper.h"
 #include "qpstsystemprivate.h"
 #include "qagentapp.h"
 #include <stdlib.h>
@@ -18,111 +22,7 @@ void QPSTSystemPrivate::init_pstData()
 {
     int i=0;
     memset(&BasicManagement, 0, sizeof(BasicManagement));
-    BasicManagement.devName = "IFMS";
-    BasicManagement.devIpAddr = "192.168.1.100";
-    BasicManagement.devGateway = "192.168.1.1";
-    BasicManagement.devNetMask = "255.255.255.0";
-    BasicManagement.saveCurrentConfiguration = 1;
-    BasicManagement.reset2Factory = 0;
-    BasicManagement.reboot = 1;
-	
     memset(&VerInfo, 0, sizeof(VerInfo));
-    VerInfo.pstHwVer = "1.0.0";
-    VerInfo.pstSwVer = "1.0.0";
-    VerInfo.pstFwVer = "1.0.0";
-    VerInfo.pstModel = "IFMS-1000";
-    VerInfo.pstSn = "IFMS-2018-0001";
-    VerInfo.devMacAddress = "AA:BB:CC:DD:EE:FF";
-
-    pstSystemTrapTargetEntry trapTarget;
-    memset(&TrapInfo, 0, sizeof(TrapInfo));
-    TrapInfo.pstSystemTrapCount = NUMBER_OF_TRAPTARGETS;
-    TrapInfo.pstSystemTrapFuncEn = 1;
-
-	QStringList		trapTargets;
-	QStringList		trapIpAddrs;
-	trapTargets << "192.168.1.44:1622" << "192.168.30.2:1622";
-	trapIpAddrs << "192.168.1.44" << "192.168.30.2";
-
-	_ss.beginGroup("pstSystemTrapInfo");
-	_ss.setValue("pstSystemTrapCount", 2);
-	_ss.setValue("pstSystemTrapFuncEn", 1);
-	
-	_ss.beginWriteArray("pstSystemTrapTargetTable");
-    for(i=0;i<NUMBER_OF_TRAPTARGETS;i++){
-//        char *str = "192.168.1.44:1622";
-//        memcpy(trapTarget.pstSystemTrapTargetName, str, strlen(str));
-//
-//		struct sockaddr_in sa;
-//	 	inet_pton(AF_INET, "192.168.1.44", &(sa.sin_addr));
-//	 	in_addr_t	 it = sa.sin_addr.s_addr;
-//
-//		trapTarget.pstSystemTrapTargetIpAddr = it;
-//        str = "public";
-//        memcpy(trapTarget.pstSystemTrapTargetCommunity, str, strlen(str));
-//        trapTarget.pstSystemTrapTargetTrapVersion = 2;
-//        trapTarget.pstSystemTrapTargetRowStatus = 4;
-//        TrapInfo.pstSystemTrapTargetTable.push_back(trapTarget);
-
-//		int size = settings.beginReadArray("logins");
-//		 for (int i = 0; i < size; ++i) {
-//			 settings.setArrayIndex(i);
-//			 Login login;
-//			 login.userName = settings.value("userName").toString();
-//			 login.password = settings.value("password").toString();
-//			 logins.append(login);
-//		 }
-//		 settings.endArray();
-
-
-		_ss.setArrayIndex(i);
-		_ss.setValue("pstSystemTrapTargetName", trapTargets.at(i));
-		_ss.setValue("pstSystemTrapTargetIpAddr", trapIpAddrs.at(i));
-		_ss.setValue("pstSystemTrapTargetCommunity", QString("public"));
-		_ss.setValue("pstSystemTrapVersion", 2);
-		_ss.setValue("pstSystemTrapTargetRowStatus", 0);
-
-    }
-	_ss.endArray();
-	_ss.endGroup();
-    _ss.sync();
-
-    pstSystemFanEntry fan;
-    pstSystemPowerEntry power;
-    memset(&Status, 0, sizeof(Status));
-    Status.pstSystemFanTotalNum = NUMBER_OF_FANS;
-    for(i=0;i<NUMBER_OF_FANS;i++){
-        fan.pstSystemFanIndex = i+1;
-        fan.pstSystemFanSpeed = 255;
-        fan.pstSystemFanStatus = 0;
-        Status.pstSystemFanTable.push_back(fan);
-    }
-
-    Status.pstSystemPowerTotalNum = NUMBER_OF_POWERS;
-    QString  powerIndex;
-
-    for(i=0;i<NUMBER_OF_POWERS;i++){
-        powerIndex = QString("%1").arg(i);
-        strcpy(power.pstSystemPowerIndex, powerIndex.toLatin1().data());
-//        power.pstSystemPowerCurrent = "1";
-//        power.pstSystemPowerVoltage = "12";
-//        power.pstSystemPowerStatus = 0;
-        Status.pstSystemPowerTable.push_back(power);
-    }
-
-    Status.pstSystemTemperature = "50";
-	
-    memset(&OnlineUpgrade, 0, sizeof(OnlineUpgrade));
-    OnlineUpgrade.pstSystemFtpSrvIp = "192.168.1.100";
-    OnlineUpgrade.pstSystemFtpUserName = "ifms";
-    OnlineUpgrade.pstSystemFtpUserPwd = "ifms";
-    OnlineUpgrade.pstSystemFtpFileName = "*.*";
-    OnlineUpgrade.pstSystemUpgFileType = 1;
-    OnlineUpgrade.pstSystemUpgDstSlot = 1;
-    OnlineUpgrade.pstSystemUpgAction = 1;
-    OnlineUpgrade.pstSystemUpgStatus = 0;
-    OnlineUpgrade.pstSystemUpgResultInfo = "ready";
-    ProductInfo.pstSystemProductType = 1000;
 }
 
 QString QPSTSystemPrivate::get_devName()
@@ -130,10 +30,7 @@ QString QPSTSystemPrivate::get_devName()
     QString  s;
 
     _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
-//    _ss.beginReadArray("devName");
-//    _ss.setArrayIndex(channel-1);
     s = _ss.value("devName", "IFMS1000").toString();
-//    _ss.endArray();
     _ss.endGroup();
 
     return s;
@@ -142,10 +39,7 @@ QString QPSTSystemPrivate::get_devName()
 void    QPSTSystemPrivate::set_devName(QString s)
 {
     _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
-//        _ss.beginWriteArray("pstIFMS1000PortRxPwr");
-//            _ss.setArrayIndex(channel-1);
-            _ss.setValue("devName", s);
-//        _ss.endArray();
+    _ss.setValue("devName", s);
     _ss.endGroup();
     _ss.sync();
 }
@@ -163,7 +57,7 @@ QString QPSTSystemPrivate::get_devIpAddr()
         }
     }
     if(s.isEmpty()){
-        s = QString("192.168.1.100");
+        s = QString("0.0.0.0");
     }
 
     return s;
@@ -171,17 +65,15 @@ QString QPSTSystemPrivate::get_devIpAddr()
 
 void    QPSTSystemPrivate::set_devIpAddr(QString s)
 {
-//    QNetworkInterface a = QNetworkInterface::interfaceFromName("eth1");
-//    QList<QHostAddress> list = a.allAddresses();
-//    if(list.size() > 0){
-//        QHostAddress h = list.at(0);
-//        h.setAddress(s);
-//    }
+// TODO: store the IP to ini and wait savecfg
+//    QProcess::execute("writeip.sh");
 }
 
 QString QPSTSystemPrivate::get_devGateway()
 {
+    QString  s = NetworkHelper::DefaultGateway();
 
+    return s;
 }
 
 void    QPSTSystemPrivate::set_devGateway(QString s)
@@ -204,7 +96,7 @@ long    QPSTSystemPrivate::get_saveCurrentConfiguration()
 
 }
 
-void    QPSTSystemPrivate::set_saveCurrentConfiguration(long cfg)
+void    QPSTSystemPrivate::set_saveCurrentConfiguration(long s)
 {
 
 }
@@ -214,33 +106,19 @@ long    QPSTSystemPrivate::get_reset2Factory()
 
 }
 
-void    QPSTSystemPrivate::set_reset2Factory(long rf)
+void    QPSTSystemPrivate::set_reset2Factory(long s)
 {
 
 }
 
 long    QPSTSystemPrivate::get_reboot()
 {
-
+    return 0;
 }
 
-void    QPSTSystemPrivate::set_reboot(long rb)
+void    QPSTSystemPrivate::set_reboot(long s)
 {
-
-}
-
-QString	QPSTSystemPrivate::get_pstSystemTrapTargetName(int index)
-{
-    QString  targetName = QString("%1").arg(index);
-//	int size = _ss.beginReadArray("pstSystemTrapTargetTable");
-//	_ss.setArrayIndex(index);
-//    targetName = _ss.value("pstSystemTrapTargetName", "0").toString();
-    return targetName;
-}
-
-long	QPSTSystemPrivate::get_pstSystemTrapTargetName_len(int index)
-{
-
+    QProcess::execute("shutdown -r -t 0");
 }
 
 QString QPSTSystemPrivate::get_pstSystemTrapTargetCommunity(int index)
@@ -308,7 +186,7 @@ long 	QPSTSystemPrivate::get_pstSystemTrapTargetTrapVersion(int index)
 
 }
 
-void	QPSTSystemPrivate::set_pstSystemTrapTargetTrapVersion(int index, long version)
+void	QPSTSystemPrivate::set_pstSystemTrapTargetTrapVersion(int index, long s)
 {
 
 }
@@ -317,6 +195,176 @@ long 	QPSTSystemPrivate::get_pstSystemTrapTargetRowStatus(int index)
 {
 }
 
-void 	QPSTSystemPrivate::set_pstSystemTrapTargetRowStatus(int index, long status)
+void 	QPSTSystemPrivate::set_pstSystemTrapTargetRowStatus(int index, long s)
 {
 }
+    
+QString QPSTSystemPrivate::get_pstHwVer()
+{
+}
+QString QPSTSystemPrivate::get_pstSwVer()
+{
+}
+QString QPSTSystemPrivate::get_pstFwVer()
+{
+}
+QString QPSTSystemPrivate::get_pstModel()
+{
+}
+
+QString QPSTSystemPrivate::get_pstSn()
+{
+    QString s = QString("201806010001");
+    return s;
+}
+
+QString QPSTSystemPrivate::get_devMacAddress()
+{
+    QString  s;
+    QNetworkInterface a = QNetworkInterface::interfaceFromName("eth1");
+
+    s = a.hardwareAddress();
+
+    if(s.isEmpty()){
+        s = QString("AA:BB:CC:DD:EE:FF");
+    }
+
+    return s;
+}
+
+long QPSTSystemPrivate::get_pstSystemTrapFuncEn()
+{
+}
+long QPSTSystemPrivate::get_pstSystemTrapCount()
+{
+}   
+
+long QPSTSystemPrivate::get_pstSystemFanTotalNum()
+{
+}                     
+long QPSTSystemPrivate::get_pstSystemPowerTotalNum()
+{
+}      
+QString QPSTSystemPrivate::get_pstSystemTemperature()
+{
+    QFile   file("/sys/class/hwmon/hwmon0/temp1_input");
+    QString s;
+    int t = 10000;
+
+    if(file.open((QIODevice::ReadOnly | QIODevice::Text))){
+        t = file.readAll().trimmed().toInt();
+    }
+
+    s = QString("%1").arg((float)t/1000);
+    return s;
+}
+
+QString QPSTSystemPrivate::get_pstSystemTemperatureHighThreshold()
+{
+
+}
+
+QString QPSTSystemPrivate::get_pstSystemTemperatureLowThreshold()
+{
+}
+void QPSTSystemPrivate::set_pstSystemTemperatureHighThreshold(QString s)
+{
+}               	  
+void QPSTSystemPrivate::set_pstSystemTemperatureLowThreshold(QString s)
+{
+}    
+
+QString QPSTSystemPrivate::get_pstSystemPowerMaximumConsumption(int index)
+{
+}
+
+QString QPSTSystemPrivate::get_pstSystemPowerVoltage12VA(int index)
+{
+    QFile   file("/sys/bus/iio/devices/iio:device0/in_voltage1_raw");
+    QString s;
+    float t = 3200;
+
+    if(file.open((QIODevice::ReadOnly | QIODevice::Text))){
+        t = file.readAll().trimmed().toInt();
+    }
+
+    s = QString("%1").arg((float)t*1.8f*8.5f/4096);
+    return s;
+}
+
+QString QPSTSystemPrivate::get_pstSystemPowerVoltage12VB(int index)
+{
+}             
+QString QPSTSystemPrivate::get_pstSystemPowerVoltage12VFAN(int index)
+{
+}           
+QString QPSTSystemPrivate::get_pstSystemPowerVoltage12VOTDR1(int index)
+{
+}         
+QString QPSTSystemPrivate::get_pstSystemPowerVoltage12VOTDR2(int index)
+{
+}         
+QString QPSTSystemPrivate::get_pstSystemPowerVoltageVDD5V(int index)
+{
+}            
+QString QPSTSystemPrivate::get_pstSystemPowerVoltageVDD3V3(int index)
+{
+}           
+QString QPSTSystemPrivate::get_pstSystemPowerVoltage1V8RTC(int index)
+{
+}           
+
+QString QPSTSystemPrivate::get_pstSystemFtpSrvIp()
+{
+    return get_devIpAddr();
+}
+QString QPSTSystemPrivate::get_pstSystemFtpUserName()
+{
+}
+QString QPSTSystemPrivate::get_pstSystemFtpUserPwd()
+{
+}
+QString QPSTSystemPrivate::get_pstSystemFtpFileName()
+{
+}
+long	  QPSTSystemPrivate::get_pstSystemUpgFileType()
+{
+}
+long	  QPSTSystemPrivate::get_pstSystemUpgDstSlot()
+{
+}
+long	  QPSTSystemPrivate::get_pstSystemUpgAction()
+{
+}
+void    QPSTSystemPrivate::set_pstSystemFtpSrvIp(QString s)
+{
+
+}
+void    QPSTSystemPrivate::set_pstSystemFtpUserName(QString s)
+{
+}
+void    QPSTSystemPrivate::set_pstSystemFtpUserPwd(QString s)
+{
+}
+void    QPSTSystemPrivate::set_pstSystemFtpFileName(QString s)
+{
+}
+void    QPSTSystemPrivate::set_pstSystemUpgFileType(long s)
+{
+}
+void    QPSTSystemPrivate::set_pstSystemUpgDstSlot(long s)
+{
+}
+void    QPSTSystemPrivate::set_pstSystemUpgAction(long s)
+{
+}
+    
+long			QPSTSystemPrivate::get_pstSystemUpgStatus()
+{
+}
+QString   QPSTSystemPrivate::get_pstSystemUpgResultInfo()
+{
+}
+long 		  QPSTSystemPrivate::get_pstSystemProductType()
+{
+}    

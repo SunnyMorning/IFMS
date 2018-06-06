@@ -121,8 +121,8 @@ typedef struct pstIFMS1000MeasureTable_entry {
     size_t pstIFMS1000MeasureOldLossMinorThreshold_len;
     char old_pstIFMS1000MeasureOldLossMinorThreshold[NNN];
     size_t old_pstIFMS1000MeasureOldLossMinorThreshold_len;
-    char pstIFMS1000MeasureReserved1[NNN];
-    size_t pstIFMS1000MeasureReserved1_len;
+    char pstIFMS1000MeasureEventPositionChangeThreshold[NNN];
+    size_t pstIFMS1000MeasureEventPositionChangeThreshold_len;
     char pstIFMS1000MeasureReserved2[NNN];
     size_t pstIFMS1000MeasureReserved2_len;
     char pstIFMS1000MeasureNumber[NNN];
@@ -621,8 +621,8 @@ public:
     size_t get_pstIFMS1000MeasureOldLossMajorThreshold_len(quint16 channel);
     QString get_pstIFMS1000MeasureOldLossMinorThreshold(quint16 channel);
     size_t get_pstIFMS1000MeasureOldLossMinorThreshold_len(quint16 channel);
-    QString get_pstIFMS1000MeasureReserved1(quint16 channel);
-    size_t get_pstIFMS1000MeasureReserved1_len(quint16 channel);
+    QString get_pstIFMS1000MeasureEventPositionChangeThreshold(quint16 channel);
+    size_t get_pstIFMS1000MeasureEventPositionChangeThreshold_len(quint16 channel);
     QString get_pstIFMS1000MeasureReserved2(quint16 channel);
     size_t get_pstIFMS1000MeasureReserved2_len(quint16 channel);
     QString get_pstIFMS1000MeasureNumber(quint16 channel);
@@ -668,8 +668,8 @@ public:
     void  set_pstIFMS1000MeasureOldLossMajorThreshold_len(quint16 channel, int s);
     void  set_pstIFMS1000MeasureOldLossMinorThreshold(quint16 channel, QString s);
     void  set_pstIFMS1000MeasureOldLossMinorThreshold_len(quint16 channel, int s);
-    void  set_pstIFMS1000MeasureReserved1(quint16 channel, QString s);
-    void  set_pstIFMS1000MeasureReserved1_len(quint16 channel, int s);
+    void  set_pstIFMS1000MeasureEventPositionChangeThreshold(quint16 channel, QString s);
+    void  set_pstIFMS1000MeasureEventPositionChangeThreshold_len(quint16 channel, int s);
     void  set_pstIFMS1000MeasureReserved2(quint16 channel, QString s);
     void  set_pstIFMS1000MeasureReserved2_len(quint16 channel, int s);
     void  set_pstIFMS1000MeasureNumber(quint16 channel, QString s);

@@ -1702,9 +1702,9 @@ QPSTProduct::initialize_table_pstIFMS1000MeasureTable(void)
         strcpy(entry->pstIFMS1000MeasureOldLossMinorThreshold, s.toLatin1().data());
         entry->pstIFMS1000MeasureOldLossMinorThreshold_len	= s.length();
 
-        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureReserved1(i+1);
-        strcpy(entry->pstIFMS1000MeasureReserved1, s.toLatin1().data());
-        entry->pstIFMS1000MeasureReserved1_len	= s.length();
+        s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEventPositionChangeThreshold(i+1);
+        strcpy(entry->pstIFMS1000MeasureEventPositionChangeThreshold, s.toLatin1().data());
+        entry->pstIFMS1000MeasureEventPositionChangeThreshold_len	= s.length();
 
         s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureReserved2(i+1);
         strcpy(entry->pstIFMS1000MeasureReserved2, s.toLatin1().data());
@@ -2128,7 +2128,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                                           table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len*/);
                 }
 				break;
-            case COLUMN_PSTIFMS1000MEASURERESERVED1:
+            case COLUMN_PSTIFMS1000MEASUREEVENTPOSITIONCHANGETHRESHOLD:
             	{
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
@@ -2138,11 +2138,11 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 long index = table_entry->pstIFMS1000MTPortNum;
                 QPST *pst = QPST::getInstance();
 
-                QString  s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureReserved1(index);
+                QString  s = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEventPositionChangeThreshold(index);
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
 										s.toLatin1().data(),
-										s.length()/*table_entry->pstIFMS1000MeasureReserved1,
-                                          table_entry->pstIFMS1000MeasureReserved1_len*/);
+										s.length()/*table_entry->pstIFMS1000MeasureEventPositionChangeThreshold,
+                                          table_entry->pstIFMS1000MeasureEventPositionChangeThreshold_len*/);
                 }
 				break;
             case COLUMN_PSTIFMS1000MEASURERESERVED2:
@@ -2694,11 +2694,11 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
 				}
 	        	}
                 break;
-            case COLUMN_PSTIFMS1000MEASURERESERVED1:
+            case COLUMN_PSTIFMS1000MEASUREEVENTPOSITIONCHANGETHRESHOLD:
 	        /* or possibly 'netsnmp_check_vb_type_and_size' */
 	        	{
                 ret = netsnmp_check_vb_type_and_max_size(
-                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureReserved1));
+                          request->requestvb, ASN_OCTET_STR, sizeof(table_entry->pstIFMS1000MeasureEventPositionChangeThreshold));
                 if ( ret != SNMP_ERR_NOERROR ) {
                     netsnmp_set_request_error( reqinfo, request, ret );
                     return SNMP_ERR_NOERROR;
@@ -2706,12 +2706,12 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
                 long index = table_entry->pstIFMS1000MTPortNum;
 				QPST *pst = QPST::getInstance();
                 char * cs =  (char*)requests->requestvb->val.string;
-                QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureReserved1(index);
+                QString os = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEventPositionChangeThreshold(index);
 				QString ns = QString("%1").arg(cs);
 
 				if(os != ns)
 				{
-					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureReserved1(index, ns);
+					pst->m_product->m_pstIFMS1000.set_pstIFMS1000MeasureEventPositionChangeThreshold(index, ns);
 				}
 	        	}
                 break;
@@ -3027,18 +3027,18 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
 //                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
 //                        request->requestvb->val_len;
 //                break;
-//            case COLUMN_PSTIFMS1000MEASURERESERVED1:
+//            case COLUMN_PSTIFMS1000MEASUREEVENTPOSITIONCHANGETHRESHOLD:
 ////                memcpy( table_entry->old_pstIFMS1000MeasureTempHighThreshold,
 ////                        table_entry->pstIFMS1000MeasureTempHighThreshold,
 ////                        sizeof(table_entry->pstIFMS1000MeasureTempHighThreshold));
 ////                table_entry->old_pstIFMS1000MeasureTempHighThreshold_len =
 ////                        table_entry->pstIFMS1000MeasureTempHighThreshold_len;
-//                memset( table_entry->pstIFMS1000MeasureReserved1, 0,
-//                        sizeof(table_entry->pstIFMS1000MeasureReserved1));
-//                memcpy( table_entry->pstIFMS1000MeasureReserved1,
+//                memset( table_entry->pstIFMS1000MeasureEventPositionChangeThreshold, 0,
+//                        sizeof(table_entry->pstIFMS1000MeasureEventPositionChangeThreshold));
+//                memcpy( table_entry->pstIFMS1000MeasureEventPositionChangeThreshold,
 //                        request->requestvb->val.string,
 //                        request->requestvb->val_len);
-//                table_entry->pstIFMS1000MeasureReserved1_len =
+//                table_entry->pstIFMS1000MeasureEventPositionChangeThreshold_len =
 //                        request->requestvb->val_len;
 //                break;
 //            case COLUMN_PSTIFMS1000MEASURERESERVED2:
@@ -3246,7 +3246,7 @@ QPSTProduct::pstIFMS1000MeasureTable_handler(
 //                table_entry->pstIFMS1000MeasureOldLossMinorThreshold_len =
 //                        table_entry->old_pstIFMS1000MeasureOldLossMinorThreshold_len;
 //                break;
-//            case COLUMN_PSTIFMS1000MEASURERESERVED1:
+//            case COLUMN_PSTIFMS1000MEASUREEVENTPOSITIONCHANGETHRESHOLD:
 
 //                break;
 //            case COLUMN_PSTIFMS1000MEASURERESERVED2:
