@@ -148,8 +148,9 @@ void QOTDRModule::initTcpConnection()
              _pTcpSocket->connectToHost(host, port);
             if(false == _pTcpSocket->waitForConnected(TCP_CONNECT_TIMEOUT)){
                 qDebug() << "Failed to connect to " << host << "in " << TCP_CONNECT_TIMEOUT <<"microseconds\n" << endl;
-
 //                _pTcpSocket->abort();
+                QString s = QString("MD%1,A,2,0,%2,0,0").arg(_moduleIndex+1).arg(_moduleIndex+1);
+                emit this->sigOTDRTrap(_moduleIndex, s);
             }
             else
             {
@@ -165,7 +166,9 @@ void QOTDRModule::initTcpConnection()
             _pTcpSocket->connectToHost(QString(ADDRESS_OF_MODULE2), PORT_OF_MODULE2);
             if(false == _pTcpSocket->waitForConnected(6*1000)){
                 qDebug() << "Failed to connect to " << ADDRESS_OF_MODULE2 << "in " << TCP_CONNECT_TIMEOUT <<"microseconds\n" << endl;
-                _pTcpSocket->abort();
+//                _pTcpSocket->abort();
+                QString s = QString("MD%1,A,2,0,%2,0,0").arg(_moduleIndex+1).arg(_moduleIndex+1);
+                emit this->sigOTDRTrap(_moduleIndex, s);
             }
             else
             {
@@ -173,7 +176,8 @@ void QOTDRModule::initTcpConnection()
             }
         }
     }
-
+//    QString s = QString("MD%1,A,2,0,%2,0,0").arg(_moduleIndex+1).arg(_moduleIndex+1);
+//    emit this->sigOTDRTrap(_moduleIndex, s);
 }
 
 void QOTDRModule::setConnections()
@@ -205,6 +209,8 @@ void QOTDRModule::run()
 
             do{
                 qDebug() << "\n["<<QThread::currentThreadId() <<"] OTDR Module[" << _moduleIndex << "] P:" << _progress << "S:"<< getModuleState() << endl;
+                initTcpConnection();
+
                 if(getModuleState() == STATE_GOTSOR4){
                     setModuleState(STATE_MEASURED);
                 }
@@ -248,6 +254,8 @@ void QOTDRModule::run()
                     if(_lastScanTime.addSecs(300) < QDateTime::currentDateTimeUtc())
                     {
                           setModuleState(STATE_GETINGSOR);
+                          QString s = QString("MD%1,A,2,0,%2,0,0").arg(_moduleIndex+1).arg(_moduleIndex+1);
+                          emit this->sigOTDRTrap(_moduleIndex, s);
                     }
                 }
                 else if(isGettingSOR())

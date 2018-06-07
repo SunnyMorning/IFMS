@@ -201,8 +201,8 @@ QPST::send_pstIFMS1000MeasureEvent_trap(QString data)
 
         for(int i=0; i< NUMBER_OF_TRAPTARGETS;i++)
         {
-            targetIP = pst->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i);
-            targetCommunity = pst->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i);
+            targetIP = pst->m_system->m_pstSystem.get_pstSystemTrapTargetIpAddr(i+1);
+            targetCommunity = pst->m_system->m_pstSystem.get_pstSystemTrapTargetCommunity(i+1);
 
             if((targetIP != QString("0.0.0.0")) && (!targetCommunity.isEmpty())){
 //                process = new QProcess();

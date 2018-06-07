@@ -192,6 +192,7 @@ public:
     long 			get_pstSystemTrapTargetRowStatus(int index);
     void 			set_pstSystemTrapTargetRowStatus(int index, long s);
     long 		  get_pstSystemTrapFuncEn();
+    void          set_pstSystemTrapFuncEn(long s);
     long 		  get_pstSystemTrapCount();   
     
     long get_pstSystemFanTotalNum();                     
@@ -210,7 +211,11 @@ public:
     QString get_pstSystemPowerVoltage12VOTDR2(int index);         
     QString get_pstSystemPowerVoltageVDD5V(int index);            
     QString get_pstSystemPowerVoltageVDD3V3(int index);           
-    QString get_pstSystemPowerVoltage1V8RTC(int index);           
+    QString get_pstSystemPowerVoltage1V8RTC(int index);
+
+    long get_pstSystemFanStatus(long index);
+    long get_pstSystemFanSpeed(long index);
+
 	  
 	  QString get_pstSystemFtpSrvIp();
     QString get_pstSystemFtpUserName();

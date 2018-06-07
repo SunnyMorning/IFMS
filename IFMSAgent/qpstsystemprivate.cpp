@@ -23,6 +23,7 @@ void QPSTSystemPrivate::init_pstData()
     int i=0;
     memset(&BasicManagement, 0, sizeof(BasicManagement));
     memset(&VerInfo, 0, sizeof(VerInfo));
+    TrapInfo.pstSystemTrapFuncEn = 1;
 }
 
 QString QPSTSystemPrivate::get_devName()
@@ -155,10 +156,10 @@ QString 	QPSTSystemPrivate::get_pstSystemTrapTargetIpAddr(int index)
 {
 //    struct sockaddr_in sa;
     QString  s;
-    QString  ip = QString("192.168.1.%1").arg(index+43);
+    QString  ip = QString("0.0.0.0");
     _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
     _ss.beginReadArray("pstSystemTrapTargetIpAddr");
-    _ss.setArrayIndex(index);
+    _ss.setArrayIndex(index-1);
     s = _ss.value("pstSystemTrapTargetIpAddr", ip).toString();
     _ss.endArray();
     _ss.endGroup();
@@ -174,7 +175,7 @@ void	QPSTSystemPrivate::set_pstSystemTrapTargetIpAddr(int index, QString s)
 {
     _ss.beginGroup(SYSTEM_SETTINGS_GROUP);
         _ss.beginWriteArray("pstSystemTrapTargetIpAddr");
-            _ss.setArrayIndex(index);
+            _ss.setArrayIndex(index-1);
             _ss.setValue("pstSystemTrapTargetIpAddr", s);
         _ss.endArray();
     _ss.endGroup();
@@ -202,12 +203,15 @@ void 	QPSTSystemPrivate::set_pstSystemTrapTargetRowStatus(int index, long s)
 QString QPSTSystemPrivate::get_pstHwVer()
 {
 }
+
 QString QPSTSystemPrivate::get_pstSwVer()
 {
 }
+
 QString QPSTSystemPrivate::get_pstFwVer()
 {
 }
+
 QString QPSTSystemPrivate::get_pstModel()
 {
 }
@@ -234,9 +238,17 @@ QString QPSTSystemPrivate::get_devMacAddress()
 
 long QPSTSystemPrivate::get_pstSystemTrapFuncEn()
 {
+    return TrapInfo.pstSystemTrapFuncEn;
 }
+
+void QPSTSystemPrivate::set_pstSystemTrapFuncEn(long s)
+{
+    TrapInfo.pstSystemTrapFuncEn = s;
+}
+
 long QPSTSystemPrivate::get_pstSystemTrapCount()
 {
+    return 2;
 }   
 
 long QPSTSystemPrivate::get_pstSystemFanTotalNum()
@@ -313,6 +325,33 @@ QString QPSTSystemPrivate::get_pstSystemPowerVoltageVDD3V3(int index)
 QString QPSTSystemPrivate::get_pstSystemPowerVoltage1V8RTC(int index)
 {
 }           
+
+long QPSTSystemPrivate::get_pstSystemFanStatus(long index)
+{
+    // TODO: get the status
+    return 0;
+}
+
+long QPSTSystemPrivate::get_pstSystemFanSpeed(long index)
+{
+    QFile file;
+    if(index < 3){
+        file.setFileName("/sys/class/hwmon/hwmon1/pwm1");
+    }
+    else
+    {
+        file.setFileName("/sys/class/hwmon/hwmon2/pwm1");
+    }
+    long  s;
+    int t = 67;
+
+    if(file.open((QIODevice::ReadOnly | QIODevice::Text))){
+        t = file.readAll().trimmed().toInt();
+    }
+
+    s = t*9500/255;
+    return s;
+}
 
 QString QPSTSystemPrivate::get_pstSystemFtpSrvIp()
 {

@@ -2578,7 +2578,7 @@ QPSTSystem::initialize_table_pstSystemFanTable(void)
 
 	struct pstSystemFanTable_entry		*entry;
 	for(i = 0; i < NUMBER_OF_FANS; i++){
-        row = pstSystemFanTable_createEntry(table_data, i);
+        row = pstSystemFanTable_createEntry(table_data, i+1);
 
         entry = (struct pstSystemFanTable_entry *)row->data;
         entry->pstSystemFanIndex= i+1;
@@ -2641,22 +2641,39 @@ QPSTSystem::pstSystemFanTable_handler(
                                             table_entry->pstSystemFanIndex);
                 break;
             case COLUMN_PSTSYSTEMFANSTATUS:
-                if ( !table_entry ) {
+            {
+                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
-                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstSystemFanStatus);
+
+                QPST *pst = QPST::getInstance();
+                long index = table_entry->pstSystemFanIndex;
+                if(0 < index <=4){
+                    long s = pst->m_system->m_pstSystem.get_pstSystemFanStatus(index);
+                    snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                                s/*table_entry->pstSystemFanStatus*/);
+                }
+
+            }
                 break;
             case COLUMN_PSTSYSTEMFANSPEED:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
-                snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
-                                            table_entry->pstSystemFanSpeed);
+
+                QPST *pst = QPST::getInstance();
+                long index = table_entry->pstSystemFanIndex;
+                if(0 < index <=4){
+                    long s = pst->m_system->m_pstSystem.get_pstSystemFanSpeed(index);
+                    snmp_set_var_typed_integer( request->requestvb, ASN_INTEGER,
+                                                s/*table_entry->pstSystemFanStatus*/);
+                }
+             }
                 break;
             default:
                 netsnmp_set_request_error(reqinfo, request,
