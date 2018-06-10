@@ -68,6 +68,8 @@ bool QAgentApp::startSession(int &argc, char **argv)
     _module2->initModuleData();
     _module2->setConnections();
 
+    m_fans = new QFanControl(this);
+
     command_thread = new QCommander(this);
 
     pstThread = QPST::getInstance();
@@ -76,6 +78,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
 
     pstThread->start();
     command_thread->start();
+    m_fans->start();
 
     initAppData(pstThread);
 
@@ -89,12 +92,17 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(command_thread, SIGNAL(sigModuleSingleMonitor(quint16)), this, SIGNAL(sigModuleSingleMonitor(quint16)));
 
 	connect(pstThread, SIGNAL(sigSendCommandToModule(quint16,QString)), this, SIGNAL(sigSendCommandToModule(quint16, QString)));
+    connect(pstThread,  SIGNAL(sigSystemTemperatureHighThreshold(int)), m_fans, SLOT(onFanSetHighTemperature(int)));
+    connect(pstThread, SIGNAL(sigSystemTemperatureLowThreshold(int)), m_fans, SLOT(onFanSetLowTemperature(int)));
+    connect(pstThread, SIGNAL(sigSystemFanControlMode(int)), m_fans, SLOT(onFanControlMode(int)));
+    connect(m_fans, SIGNAL(sigTemperatureChanged(int)), pstThread, SLOT(onSigTemperatureChanged(int)));
 
     connect(this, SIGNAL(sigModuleRecvResponse(quint16,QString&,QByteArray&)), this, SLOT(onSigModuleRecvResponse(quint16, QString&, QByteArray&)));
     connect(this, SIGNAL(sigSendCommandToModule(quint16,QString&)), this, SLOT(onSigSendCommandToModule(quint16, QString&)));
     connect(this, SIGNAL(sigModuleStartMonitor(quint16)), this, SLOT(onSigModuleStartMonitor(quint16)));
     connect(this, SIGNAL(sigModuleStopMonitor(quint16)), this, SLOT(onSigModuleStopMonitor(quint16)));
     connect(this, SIGNAL(sigModuleSingleMonitor(quint16)), this, SLOT(onSigModuleSingleMonitor(quint16)));
+    connect(this, SIGNAL(sigModuleUpdate(quint16)), this, SLOT(onSigModuleUpdate(quint16)));
 
 
     connect(_module1, SIGNAL(sigSendCommand(quint16, QString&)), _module1, SLOT(onSendCommand(quint16, QString&)));
@@ -103,6 +111,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(_module1, SIGNAL(sigOTDRTrap(quint16,QString&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QString&)));
     connect(_module1, SIGNAL(sigSetMeasuredCount(quint16, quint32)), pstThread, SLOT(onSigSetMeasuredCount(quint16, quint32)));
     connect(_module1, SIGNAL(sigOTDRSetMeasuringStatus(quint16,quint32)), pstThread, SLOT(onSigSetMeasuringStatus(quint16,quint32)));
+    connect(_module1, SIGNAL(sigOTDRUpdateStatus(quint16,int)), pstThread, SLOT(onSigOTDRUpdateStatus(quint16,int)));
 
     connect(_module2, SIGNAL(sigSendCommand(quint16, QString&)), _module2, SLOT(onSendCommand(quint16, QString&)));
     connect(_module2, SIGNAL(sigOTDRSetMode(quint16,quint16)), pstThread, SLOT(onSigOTDRSetMode(quint16,quint16)));
@@ -110,7 +119,7 @@ bool QAgentApp::startSession(int &argc, char **argv)
     connect(_module2, SIGNAL(sigOTDRTrap(quint16,QString&)), pstThread, SIGNAL(sigOTDRTrap(quint16, QString&)));
     connect(_module2, SIGNAL(sigSetMeasuredCount(quint16, quint32)), pstThread, SLOT(onSigSetMeasuredCount(quint16, quint32)));
     connect(_module2, SIGNAL(sigOTDRSetMeasuringStatus(quint16,quint32)), pstThread, SLOT(onSigSetMeasuringStatus(quint16,quint32)));
-
+    connect(_module2, SIGNAL(sigOTDRUpdateStatus(quint16,int)), pstThread, SLOT(onSigOTDRUpdateStatus(quint16,int)));
 // FOR DEBUG ONLY
 //    emit sigModuleStartMonitor(0);
 //    emit sigModuleStartMonitor(1);
@@ -146,6 +155,11 @@ void QAgentApp::stopSession()
         pstThread->terminate();
         pstThread->wait(1000);
     }
+	
+	if(m_fans->isRunning()){
+		m_fans->terminate();
+		m_fans->wait(1000);
+	}
 }
 
 
@@ -344,6 +358,35 @@ void QAgentApp::onSigModuleSingleMonitor(quint16 module)
             }
             _module2->setKeepRunning(0);
             _module2->setModuleMode(1 , OTDR_WORK_MODE_SINGLE);
+            _module2->start();
+        }
+    }
+}
+
+
+void QAgentApp::onSigModuleUpdate(quint16 module)
+{
+    qDebug() << "qAgentApp:" <<  QThread::currentThreadId() << endl;
+
+    if(module == 0){
+        if(_module1){
+            if((_module1->isMeasured()!=true) && (_module1->isIdling()!= true)) {
+                qDebug() << "It is measuring ...." << endl;
+                return;
+            }
+            _module1->setModuleMode(0 , OTDR_WORK_MODE_UPDATE);
+            _module1->setKeepRunning(0);
+            _module1->start();
+        }
+    }
+    if(module == 1){
+        if(_module2){
+            if((_module2->isMeasured()!=true) && (_module2->isIdling()!= true)) {
+                qDebug() << "It is measuring ...." << endl;
+                return;
+            }
+            _module2->setKeepRunning(0);
+            _module2->setModuleMode(1 , OTDR_WORK_MODE_UPDATE);
             _module2->start();
         }
     }

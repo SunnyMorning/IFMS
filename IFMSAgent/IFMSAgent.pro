@@ -50,7 +50,9 @@ SOURCES += main.cpp \
     qpst.cpp \
     qpstsystemprivate.cpp \
     qpstproductprivate.cpp \
-    qcommander.cpp
+    qcommander.cpp \
+    qfancontrol.cpp \
+    SysfsGPIO.cpp
 HEADERS += \
     qagentapp.h \
     qcommander.h \
@@ -62,7 +64,10 @@ HEADERS += \
     qpstsystem.h \
     qpstproduct.h \
     qpstsystemprivate.h \
-    qpstproductprivate.h
+    qpstproductprivate.h \
+    qfancontrol.h \
+    SysfsGPIO.h \
+    gpio_ifms1000.h
 
 DISTFILES += \
     pstRoot \

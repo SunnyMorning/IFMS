@@ -75,11 +75,11 @@
        #define COLUMN_PSTIFMS1000DIFFINFODBVAL		5
        #define COLUMN_PSTIFMS1000DIFFINFODIFFTYPE		6
        #define COLUMN_PSTIFMS1000DIFFINFOPOINTID		7
-//
-///* column number definitions for table pstIFMS1000PortLedTable */
-//       #define COLUMN_PSTIFMS1000PORTLEDPORTNUM		1
-//       #define COLUMN_PSTIFMS1000PORTLEDSTATUS		2
-//
+
+/* column number definitions for table pstIFMS1000PortLedTable */
+       #define COLUMN_PSTIFMS1000PORTLEDPORTNUM		1
+       #define COLUMN_PSTIFMS1000PORTLEDSTATUS		2
+
 ///* column number definitions for table pstIFMS1000DiagnoseTable */
 //       #define COLUMN_PSTIFMS1000DGPORTNUM		1
 //       #define COLUMN_PSTIFMS1000DGLASERACBIAS		2
@@ -225,8 +225,8 @@ public:
 //    static Netsnmp_Node_Handler pstIFMS1000DiffTotalTable_handler;
 //    void initialize_table_pstIFMS1000DiffInfoTable(void);
 //    static Netsnmp_Node_Handler pstIFMS1000DiffInfoTable_handler;
-//    void initialize_table_pstIFMS1000PortLedTable(void);
-//    static Netsnmp_Node_Handler pstIFMS1000PortLedTable_handler;
+    void initialize_table_pstIFMS1000PortLedTable(void);
+    static Netsnmp_Node_Handler pstIFMS1000PortLedTable_handler;
 //    void initialize_table_pstIFMS1000DiagnoseTable(void);
 //    static Netsnmp_Node_Handler pstIFMS1000DiagnoseTable_handler;
 //    void initialize_table_pstIFMS1000DebugRegTable(void);

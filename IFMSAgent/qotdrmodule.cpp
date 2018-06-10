@@ -12,6 +12,7 @@
 #include <QStringList>
 #include <QChar>
 #include <QByteArray>
+#include <QProcess>
 
 #include <math.h>
 #include <iostream>
@@ -205,90 +206,105 @@ void QOTDRModule::run()
 
             initTcpConnection();
 
-            sendScanCommand();
-
-            do{
-                qDebug() << "\n["<<QThread::currentThreadId() <<"] OTDR Module[" << _moduleIndex << "] P:" << _progress << "S:"<< getModuleState() << endl;
-                initTcpConnection();
-
-                if(getModuleState() == STATE_GOTSOR4){
-                    setModuleState(STATE_MEASURED);
-                }
-
-                if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_STOP){
-                    setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_IDLE);
-                    return;
-                }
-                else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
-                {
-                    setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_AUTO_RUNNING);
-                }
-                else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE)
-                {
-                    setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_SINGLE_RUNNING);
-                }
-
-                QThread::msleep(5000);
-                if(isIdling()||isGetSOR()){
-
-                    setProgress(80);
-                    sendGetSorCommand();
-                    QThread::msleep(300);
-                }
-                else if(isMeasured())
-                {
-                    setProgress(100);
-                    if(_moduleMode == OTDR_WORK_MODE_AUTO){
-                        sendScanCommand();
-                    }
-                    setProgress(0);
-                }
-                else if(isMeasuring())
-                {
-                    _progress += 9;
-                    if(_progress >= 70){
-                        _progress = 70;
-                    }
-                    setProgress(_progress);
-                    sendStateCommand();
-                    if(_lastScanTime.addSecs(300) < QDateTime::currentDateTimeUtc())
-                    {
-                          setModuleState(STATE_GETINGSOR);
-                          QString s = QString("MD%1,A,2,0,%2,0,0").arg(_moduleIndex+1).arg(_moduleIndex+1);
-                          emit this->sigOTDRTrap(_moduleIndex, s);
-                    }
-                }
-                else if(isGettingSOR())
-                {
-                    if(_lastGetSorTime.addSecs(60) < QDateTime::currentDateTimeUtc())
-                    {
-                          setModuleState(STATE_MEASURED);
-                          _MeasuredChannels.OTDRModule.channels = 0;
-                    }
-                    _progress += 9;
-                    if(_progress >= 90){
-                        _progress = 90;
-                    }
-                    setProgress(_progress);
-                }
-
-            }while(((_moduleMode == OTDR_WORK_MODE_SINGLE)&&(isMeasured()== false)) || (_moduleMode == OTDR_WORK_MODE_AUTO)||(getKeepRunning() == 1));
-            setModuleState(STATE_MEASURED);
-            qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
-            setProgress(0);
-            if(_moduleIndex == 0){
-                _MeasuredChannels.OTDRModule.channels &= 0x0F;
+            if( getModuleMode(_moduleIndex) == OTDR_WORK_MODE_UPDATE){
+                 emit this->sigOTDRUpdateStatus(_moduleIndex, 1);
+                 updateModule(_moduleIndex);
             }
             else
             {
-                _MeasuredChannels.OTDRModule.channels &= 0xF0;
-            }
-            if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE){
-                setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_SINGLE_DONE);
-            }
-            else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
-            {
-                setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_IDLE);
+
+                sendScanCommand();
+
+                do{
+                    qDebug() << "\n["<<QThread::currentThreadId() <<"] OTDR Module[" << _moduleIndex << "] P:" << _progress << "S:"<< getModuleState() << endl;
+                    initTcpConnection();
+
+                    if(getModuleState() == STATE_GOTSOR4){
+                        setModuleState(STATE_MEASURED);
+                    }
+
+                    if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_STOP){
+                        setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_IDLE);
+                        return;
+                    }
+                    else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
+                    {
+                        setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_AUTO_RUNNING);
+                    }
+                    else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE)
+                    {
+                        setMeasuringStaus( _moduleIndex, OTDR_MEASURE_STATUS_SINGLE_RUNNING);
+                    }
+
+                    QThread::msleep(5000);
+                    if(isIdling()||isGetSOR()){
+
+                        setProgress(80);
+                        sendGetSorCommand();
+                        QThread::msleep(300);
+                    }
+                    else if(isMeasured())
+                    {
+                        setProgress(100);
+                        if(_moduleMode == OTDR_WORK_MODE_AUTO){
+                            sendScanCommand();
+                        }
+                        setProgress(0);
+                    }
+                    else if(isMeasuring())
+                    {
+                        _progress += 9;
+                        if(_progress >= 70){
+                            _progress = 70;
+                        }
+                        setProgress(_progress);
+                        sendStateCommand();
+                        if(_lastScanTime.addSecs(300) < QDateTime::currentDateTimeUtc())
+                        {
+                              setModuleState(STATE_GETINGSOR);
+                              QString s = QString("MD%1,A,2,0,%2,0,0").arg(_moduleIndex+1).arg(_moduleIndex+1);
+                              emit this->sigOTDRTrap(_moduleIndex, s);
+                        }
+                    }
+                    else if(isGettingSOR())
+                    {
+                        if(_lastGetSorTime.addSecs(60) < QDateTime::currentDateTimeUtc())
+                        {
+                              setModuleState(STATE_MEASURED);
+                              _MeasuredChannels.OTDRModule.channels = 0;
+                        }
+                        _progress += 9;
+                        if(_progress >= 90){
+                            _progress = 90;
+                        }
+                        setProgress(_progress);
+                    }
+
+                }while(((_moduleMode == OTDR_WORK_MODE_SINGLE)&&(isMeasured()== false)) || (_moduleMode == OTDR_WORK_MODE_AUTO)||(getKeepRunning() == 1));
+                setModuleState(STATE_MEASURED);
+                qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
+                setProgress(0);
+
+                for(quint16 i =0; i<= 8; i++){
+                    _MeasuredCounts[i] = 0;
+                    _MeasuringProgresss[i] =  0;
+                    _SORsChanged[i] = false;
+                }
+
+                if(_moduleIndex == 0){
+                    _MeasuredChannels.OTDRModule.channels &= 0x0F;
+                }
+                else
+                {
+                    _MeasuredChannels.OTDRModule.channels &= 0xF0;
+                }
+                if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_SINGLE){
+                    setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_SINGLE_DONE);
+                }
+                else if(getModuleMode(_moduleIndex) == OTDR_WORK_MODE_AUTO)
+                {
+                    setMeasuringStaus(_moduleIndex, OTDR_MEASURE_STATUS_IDLE);
+                }
             }
             setModuleMode(_moduleIndex, OTDR_WORK_MODE_STOP);
             if(_pTcpSocket!=NULL){
@@ -503,6 +519,7 @@ void QOTDRModule::sendScanCommand()
     {
         _MeasuredChannels.OTDRModule.channels &= 0xF0;
     }
+
 }
 
 void QOTDRModule::setProgress(quint16 channel, quint16 progress)
@@ -632,6 +649,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
     float pstIFMS1000MeasureOldLossCriticalThreshold;
     float pstIFMS1000MeasureOldLossMajorThreshold;
     float pstIFMS1000MeasureOldLossMinorThreshold;
+    float pstIFMS1000MeasureEventPositionChangeThreshold;
     QFingerData    *oldFingerData = _OldFingers.value(channel);
     QFingerData    *newFingerData = _NewFingers.value(channel);
 	if((oldFingerData == NULL) || (newFingerData == NULL))
@@ -653,6 +671,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
     pstIFMS1000MeasureOldLossCriticalThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossCriticalThreshold(channel).toFloat();
     pstIFMS1000MeasureOldLossMajorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossMajorThreshold(channel).toFloat();
     pstIFMS1000MeasureOldLossMinorThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureOldLossMinorThreshold(channel).toFloat();
+    pstIFMS1000MeasureEventPositionChangeThreshold = pst->m_product->m_pstIFMS1000.get_pstIFMS1000MeasureEventPositionChangeThreshold(channel).toFloat();
     oldTotalLength = oldFingerData->getLength() *( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
     newTotalLength = newFingerData->getLength() *( C_LIGHT_SPEED/(pstIFMS1000MeasureRefIndex * pow(10.0,13)));
 
@@ -718,7 +737,7 @@ QStringList QOTDRModule::generateTrapData(quint16 module, quint16 channel)
                 oldEventLoss = (float)oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventLoss/1000;
                 newEventLoss = (float)newFingerData->mIFMSFingerData.vIFMSEvents[j].EventLoss/1000;
 
-                if(qAbs(newEventPosition - oldEventPosition ) < 0.1f)
+                if(qAbs(newEventPosition - oldEventPosition ) < pstIFMS1000MeasureEventPositionChangeThreshold/1000)
 					{
 						oldFingerData->mIFMSFingerData.vIFMSEvents[i].EventType &= (~EVENT_TYPE_DISAPPEAR);     // 旧的没有消失
 						newFingerData->mIFMSFingerData.vIFMSEvents[j].EventType &= (~EVENT_TYPE_NEW); // 新的不是新增
@@ -959,6 +978,18 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
         if(responseString.contains("state 1",Qt::CaseInsensitive)){
             setModuleState(STATE_MEASURING);
         }
+
+        if(cmdline.contains("UPDATE",Qt::CaseInsensitive)){
+            if(responseString.contains("ERR20",Qt::CaseInsensitive)){
+                setModuleState(STATE_UPDATE_SUCCESS);
+                emit this->sigOTDRUpdateStatus(module, 2);
+            }
+            else
+            {
+                setModuleState(STATE_UPDATE_FAILED);
+                emit this->sigOTDRUpdateStatus(module, 3);
+            }
+        }
     }
 
     QStringList     qcmdlist = cmdline.split(" ", QString::SkipEmptyParts);
@@ -1079,6 +1110,35 @@ void QOTDRModule::recvResponse(quint16 module, QString &cmdline, QByteArray &dat
         }
    }
 
+}
+
+void QOTDRModule::updateModule(quint16 module)
+{
+    QString host;
+    int port;
+    QString user= QString("eotdr");
+    QString passwd = QString("002281");
+    QString localFile = QString("firmware");
+    QString remoteFile = QString("firmware");
+    if(module == 0){
+         host = QString(ADDRESS_OF_MODULE1);
+         port = 21;
+    }
+
+    if(module == 1){
+        host = QString(ADDRESS_OF_MODULE2);
+        port = 21;
+    }
+    QString cmd = QString("/usr/bin/lftp_put.sh %1 %2 %3 %4 %5").arg(host).arg(user).arg(\
+                passwd).arg(localFile).arg(remoteFile);
+
+    qDebug()<< "UPDATE: "<< cmd << endl;
+    QProcess *p = new QProcess();
+    p->start(cmd);
+    p->waitForFinished(5000);
+    QByteArray data;
+
+    sendCommandWithResponse(module, QString("UPDATE"), &data);
 }
 
 //=============================SLOTS====================================================

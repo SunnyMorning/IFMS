@@ -50,11 +50,43 @@ void QPST::initConnections()
    connect(this, SIGNAL(sigOTDRTrap(quint16,QString&)), this, SLOT(onSigOTDRTrap(quint16,QString&)));
    connect(this, SIGNAL(sigSetProgress(quint16,quint16)), this, SLOT(onSigSetProgress(quint16,quint16)));
    connect(this, SIGNAL(sigTrapTargetsChanged()), this, SLOT(onTrapTargetsChanged()));
+   m_gpios.configureGPIO(GPIO_ADG_AD0,QString("out"));
+   m_gpios.configureGPIO(GPIO_ADG_AD1,QString("out"));
+   m_gpios.configureGPIO(GPIO_ADG_AD2,QString("out"));
+   m_gpios.configureGPIO(GPIO_STA_ALARMH, QString("out"));
+   m_gpios.configureGPIO(GPIO_STA_ALARML, QString("out"));
+   m_gpios.configureGPIO(GPIO_ALERT_1, QString("in"));
+   m_gpios.configureGPIO(GPIO_ALERT_0, QString("in"));
 }
 
 void QPST::TrapTargetsChanged()
 {
 //    emit this->sigTrapTargetsChanged();
+}
+
+void QPST::onSigTemperatureChanged(int t)
+{
+    int currentTemperature=0;
+    int highTemperature = 0;
+//    QMutexLocker locker(&gPST_mutex);
+    QString s = QString("%1").arg(t);
+    currentTemperature = m_system->m_pstSystem.get_pstSystemTemperature().toInt();
+    highTemperature = m_system->m_pstSystem.get_pstSystemTemperatureHighThreshold().toInt();
+    if(currentTemperature > highTemperature){
+//        m_gpios.configureGPIO(GPIO_STA_ALARMH, QString("out"));
+//        m_gpios.configureGPIO(GPIO_STA_ALARML, QString("out"));
+        m_gpios.writeGPIO(GPIO_STA_ALARMH, 0);
+        m_gpios.writeGPIO(GPIO_STA_ALARML, 1);
+    }
+    else
+    {
+//        m_gpios.configureGPIO(GPIO_STA_ALARMH, QString("out"));
+//        m_gpios.configureGPIO(GPIO_STA_ALARML, QString("out"));
+        m_gpios.writeGPIO(GPIO_STA_ALARMH, 1);
+        m_gpios.writeGPIO(GPIO_STA_ALARML, 0);
+    }
+
+    m_system->m_pstSystem.set_pstSystemTemerature(s);
 }
 
 void QPST::onTrapTargetsChanged()
@@ -254,4 +286,9 @@ void QPST::onSigSetMeasuredCount(quint16 channel, quint32 count)
 void QPST::onSigSetMeasuringStatus(quint16 channel, quint32 status)
 {
     m_product->m_pstIFMS1000.set_pstIFMS1000MeasureStatus(channel, status);
+}
+
+void QPST::onSigOTDRUpdateStatus(quint16 module, int status)
+{
+    m_system->m_pstSystem.set_pstSystemUpgStatus(module+1, status);
 }

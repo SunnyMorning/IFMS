@@ -19,6 +19,7 @@
 
 #include "qpstproduct.h"
 #include "qpstsystem.h"
+#include "SysfsGPIO.h"
 
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
@@ -37,6 +38,9 @@ public:
 
     QPSTProduct *m_product;
     QPSTSystem  *m_system;
+    SysfsGPIO    m_gpios;
+
+
     void initConnections();
 
     void setKeepRunning(int running);
@@ -65,7 +69,9 @@ signals:
     void sigSetProgress(quint16 module, quint16 progress);
     void sigSendCommandToModule(quint16 module, QString &cmdline);
     void sigTrapTargetsChanged(void);
-
+    void sigSystemTemperatureHighThreshold(int t);
+    void sigSystemTemperatureLowThreshold(int t);
+	void sigSystemFanControlMode(int t);
 
 public slots:
     void onSigOTDRTrap(quint16 module, QString& data);
@@ -74,6 +80,8 @@ public slots:
     void onSigSetMeasuredCount(quint16 channel, quint32 count);
     void onSigSetMeasuringStatus(quint16 channel, quint32 status);
     void onTrapTargetsChanged(void);
+    void onSigTemperatureChanged(int t);
+    void onSigOTDRUpdateStatus(quint16 module, int status);
 };
 
 #endif // QPST_H

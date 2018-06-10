@@ -677,6 +677,9 @@ public:
     void  set_pstIFMS1000MeasureNumberSORStoredEachChannel(quint16 channel, QString s);
     void  set_pstIFMS1000MeasureNumberSORStoredEachChannel_len(quint16 channel, int s); 
     bool  is_pstIFMS1000Measuring(quint16 channel);
+
+    long  get_pstIFMS1000PortLedStatus(int index);
+    void  set_pstIFMS1000PortLedStatus(int index, int status);
 signals:
 
 public slots:

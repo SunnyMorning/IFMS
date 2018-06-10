@@ -120,23 +120,28 @@ typedef struct  _pstSystemStatus
     vector<pstSystemFanEntry>	pstSystemFanTable;
     vector<pstSystemPowerEntry> pstSystemPowerTable;
 
-    char* pstSystemTemperature;
-	  char* pstSystemTemperatureHighThreshold;
-	  char* pstSystemTemperatureLowThreshold;
+    char  pstSystemTemperature[NNN];
+    char  pstSystemTemperatureHighThreshold[NNN];
+    char  pstSystemTemperatureLowThreshold[NNN];
+    long  pstSystemTemperatureControlMode;
+	long  pstSystemADG707Switch;
+	long  DDRConsumption;
+	long  DDRCleanUp;
 
 }pstSystemStatus;
 
 typedef struct _pstSystemOnlineUpgrade
 {
-    char* pstSystemFtpSrvIp;
-    char* pstSystemFtpUserName;
-    char* pstSystemFtpUserPwd;
-    char* pstSystemFtpFileName;
+    char pstSystemFtpSrvIp[NNN];
+    char pstSystemFtpUserName[NNN];
+    char pstSystemFtpUserPwd[NNN];
+    char pstSystemFtpFileName[NNN];
     long	pstSystemUpgFileType;
     long	pstSystemUpgDstSlot;
     long	pstSystemUpgAction;
-    long	pstSystemUpgStatus;
-    char* pstSystemUpgResultInfo;
+    long	pstSystemUpgStatus1;
+    long    pstSystemUpgStatus2;
+    char pstSystemUpgResultInfo[NNN];
 }pstSystemOnlineUpgrade;
 
 typedef struct _pstSystemProductInfo
@@ -179,6 +184,7 @@ public:
     QString get_pstFwVer();
     QString get_pstModel();
     QString get_pstSn();
+	void    set_pstSn(QString s);
     QString get_devMacAddress();
 
 
@@ -197,11 +203,20 @@ public:
     
     long get_pstSystemFanTotalNum();                     
     long get_pstSystemPowerTotalNum();      
-    QString get_pstSystemTemperature();                  
+    QString get_pstSystemTemperature();
+    void set_pstSystemTemerature(QString s);
 	  QString get_pstSystemTemperatureHighThreshold();                      
 	  QString get_pstSystemTemperatureLowThreshold();
 	  void set_pstSystemTemperatureHighThreshold(QString s);               	  
-	  void set_pstSystemTemperatureLowThreshold(QString s);    
+	  void set_pstSystemTemperatureLowThreshold(QString s);  
+	  long	get_pstSystemTemperatureControlMode(int index);
+	  void  set_pstSystemTemperatureControlMode(int index, long s);
+	  long	get_pstSystemADG707Switch();
+	  void  set_pstSystemADG707Switch(long s);
+	  long	get_DDRConsumption();
+	  long	get_DDRCleanUp();
+	  void  set_DDRCleanUp(long s);
+	  
 	  
     QString get_pstSystemPowerMaximumConsumption(int index);      
     QString get_pstSystemPowerVoltage12VA(int index);             
@@ -232,9 +247,10 @@ public:
     void    set_pstSystemUpgDstSlot(long s);
     void    set_pstSystemUpgAction(long s);
         
-    long			get_pstSystemUpgStatus();
-    QString   get_pstSystemUpgResultInfo();
-    long 		  get_pstSystemProductType();    
+    long get_pstSystemUpgStatus(int slot);
+    void set_pstSystemUpgStatus(int slot, int status);
+    QString get_pstSystemUpgResultInfo(int slot);
+    long get_pstSystemProductType();
 signals:
 
 public slots:

@@ -26,6 +26,8 @@ void QPSTSystem::init_pstSystem()
     const oid saveCurrentConfiguration_oid[] = { 1,3,6,1,4,1,48391,2,1,1,5 };
     const oid reset2Factory_oid[] = { 1,3,6,1,4,1,48391,2,1,1,6 };
     const oid reboot_oid[] = { 1,3,6,1,4,1,48391,2,1,1,7 };
+    const oid DDRConsumption_oid[] = { 1,3,6,1,4,1,48391,2,1,1,8 };
+    const oid DDRCleanUp_oid[] = { 1,3,6,1,4,1,48391,2,1,1,9 };
     const oid pstHwVer_oid[] = { 1,3,6,1,4,1,48391,2,1,2,1 };
     const oid pstSwVer_oid[] = { 1,3,6,1,4,1,48391,2,1,2,2 };
     const oid pstFwVer_oid[] = { 1,3,6,1,4,1,48391,2,1,2,3 };
@@ -38,6 +40,8 @@ void QPSTSystem::init_pstSystem()
     const oid pstSystemTemperature_oid[] = { 1,3,6,1,4,1,48391,2,1,4,5 };
     const oid pstSystemTemperatureHighThreshold_oid[] = { 1,3,6,1,4,1,48391,2,1,4,6 };
     const oid pstSystemTemperatureLowThreshold_oid[] = { 1,3,6,1,4,1,48391,2,1,4,7 };
+    const oid pstSystemTemperatureControlMode_oid[] = { 1,3,6,1,4,1,48391,2,1,4,8 };
+    const oid pstSystemADG707Switch_oid[] = { 1,3,6,1,4,1,48391,2,1,4,9 };
     const oid pstSystemFtpSrvIp_oid[] = { 1,3,6,1,4,1,48391,2,1,5,1 };
     const oid pstSystemFtpUserName_oid[] = { 1,3,6,1,4,1,48391,2,1,5,2 };
     const oid pstSystemFtpUserPwd_oid[] = { 1,3,6,1,4,1,48391,2,1,5,3 };
@@ -87,6 +91,16 @@ void QPSTSystem::init_pstSystem()
                                HANDLER_CAN_RWRITE
         ));
     netsnmp_register_scalar(
+        netsnmp_create_handler_registration("DDRConsumption", handle_DDRConsumption,
+                               DDRConsumption_oid, OID_LENGTH(DDRConsumption_oid),
+                               HANDLER_CAN_RONLY
+        ));
+    netsnmp_register_scalar(
+        netsnmp_create_handler_registration("DDRCleanUp", handle_DDRCleanUp,
+                               DDRCleanUp_oid, OID_LENGTH(DDRCleanUp_oid),
+                               HANDLER_CAN_RWRITE
+        ));
+    netsnmp_register_scalar(
         netsnmp_create_handler_registration("pstHwVer", handle_pstHwVer,
                                pstHwVer_oid, OID_LENGTH(pstHwVer_oid),
                                HANDLER_CAN_RONLY
@@ -109,7 +123,7 @@ void QPSTSystem::init_pstSystem()
     netsnmp_register_scalar(
         netsnmp_create_handler_registration("pstSn", handle_pstSn,
                                pstSn_oid, OID_LENGTH(pstSn_oid),
-                               HANDLER_CAN_RONLY
+                               HANDLER_CAN_RWRITE
         ));
     netsnmp_register_scalar(
         netsnmp_create_handler_registration("devMacAddress", handle_devMacAddress,
@@ -144,6 +158,16 @@ void QPSTSystem::init_pstSystem()
     netsnmp_register_scalar(
         netsnmp_create_handler_registration("pstSystemTemperatureLowThreshold", handle_pstSystemTemperatureLowThreshold,
                                pstSystemTemperatureLowThreshold_oid, OID_LENGTH(pstSystemTemperatureLowThreshold_oid),
+                               HANDLER_CAN_RWRITE
+        ));
+    netsnmp_register_scalar(
+        netsnmp_create_handler_registration("pstSystemTemperatureControlMode", handle_pstSystemTemperatureControlMode,
+                               pstSystemTemperatureControlMode_oid, OID_LENGTH(pstSystemTemperatureControlMode_oid),
+                               HANDLER_CAN_RWRITE
+        ));
+    netsnmp_register_scalar(
+        netsnmp_create_handler_registration("pstSystemADG707Switch", handle_pstSystemADG707Switch,
+                               pstSystemADG707Switch_oid, OID_LENGTH(pstSystemADG707Switch_oid),
                                HANDLER_CAN_RWRITE
         ));
     netsnmp_register_scalar(
@@ -811,6 +835,130 @@ int
     return SNMP_ERR_NOERROR;
 }
 int
+ QPSTSystem::handle_DDRConsumption(netsnmp_mib_handler *handler,
+                          netsnmp_handler_registration *reginfo,
+                          netsnmp_agent_request_info   *reqinfo,
+                          netsnmp_request_info         *requests)
+{
+    /* We are never called for a GETNEXT if it's registered as a
+       "instance", as it's "magically" handled for us.  */
+
+    /* a instance handler also only hands us one request at a time, so
+       we don't need to loop over a list of requests; we'll only get one. */
+    
+    switch(reqinfo->mode) {
+
+        case MODE_GET:
+        {
+        	QPST *pst = QPST::getInstance();
+            long s = pst->m_system->m_pstSystem.get_DDRConsumption();
+            snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+        }
+        break;
+
+
+        default:
+            /* we should never get here, so this is a really bad error */
+            snmp_log(LOG_ERR, "unknown mode (%d) in handle_DDRConsumption\n", reqinfo->mode );
+            return SNMP_ERR_GENERR;
+    }
+
+    return SNMP_ERR_NOERROR;
+}
+int
+ QPSTSystem::handle_DDRCleanUp(netsnmp_mib_handler *handler,
+                          netsnmp_handler_registration *reginfo,
+                          netsnmp_agent_request_info   *reqinfo,
+                          netsnmp_request_info         *requests)
+{
+    int ret;
+    /* We are never called for a GETNEXT if it's registered as a
+       "instance", as it's "magically" handled for us.  */
+
+    /* a instance handler also only hands us one request at a time, so
+       we don't need to loop over a list of requests; we'll only get one. */
+    
+    switch(reqinfo->mode) {
+
+        case MODE_GET:
+    	{
+		QPST *pst = QPST::getInstance();
+		long s = pst->m_system->m_pstSystem.get_DDRCleanUp();
+            snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+         }
+		 break;
+
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+           {
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+			QPST *pst = QPST::getInstance();
+			
+            long s = (long)(*requests->requestvb->val.integer);
+			pst->m_system->m_pstSystem.set_DDRCleanUp(s);
+			
+			}
+            break;
+
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
+
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
+
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
+
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
+
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
+
+        default:
+            /* we should never get here, so this is a really bad error */
+            snmp_log(LOG_ERR, "unknown mode (%d) in handle_DDRCleanUp\n", reqinfo->mode );
+            return SNMP_ERR_GENERR;
+    }
+
+    return SNMP_ERR_NOERROR;
+}
+
+int
  QPSTSystem::handle_pstHwVer(netsnmp_mib_handler *handler,
                           netsnmp_handler_registration *reginfo,
                           netsnmp_agent_request_info   *reqinfo,
@@ -822,7 +970,7 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    const char *pstHwVer = "1.0";
+    const char *pstHwVer = "1.0.0";
     
     switch(reqinfo->mode) {
 
@@ -853,7 +1001,7 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    const char *pstSwVer = "1.0";
+    const char *pstSwVer = "1.0.0";
     
     switch(reqinfo->mode) {
 
@@ -884,7 +1032,7 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    const char *pstFwVer = "1.0";
+    const char *pstFwVer = "1.0.0";
     
     switch(reqinfo->mode) {
 
@@ -940,24 +1088,81 @@ int
                           netsnmp_agent_request_info   *reqinfo,
                           netsnmp_request_info         *requests)
 {
+    int ret;
     /* We are never called for a GETNEXT if it's registered as a
        "instance", as it's "magically" handled for us.  */
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    QPST *pst = QPST::getInstance();
 
-
-    QString s  = pst->m_system->m_pstSystem.get_pstSn();
-    
     switch(reqinfo->mode) {
 
         case MODE_GET:
+    	{
+			QPST *pst = QPST::getInstance();
+			QString s  = pst->m_system->m_pstSystem.get_pstSn();
+		
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
                                      s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
                                      s.length()/* XXX: the length of the data in bytes */);
+
+		}
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+                	{
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_OCTET_STR);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+			QPST *pst = QPST::getInstance();
+			char *cs = (char*)requests->requestvb->val.string;
+			QString s = QString("%1").arg(cs);
+			pst->m_system->m_pstSystem.set_pstSn(s);
+			
+                	}
             break;
 
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
+
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
+
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+            break;
+
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
+
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
 
         default:
             /* we should never get here, so this is a really bad error */
@@ -1011,14 +1216,17 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    static long pstSystemTrapFuncEn = 1;
-    
+     
     switch(reqinfo->mode) {
 
         case MODE_GET:
+    	{
+    	QPST *pst = QPST::getInstance();
+		long s = pst->m_system->m_pstSystem.get_pstSystemTrapFuncEn();
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     &pstSystemTrapFuncEn/* XXX: a pointer to the scalar's data */,
-                                     sizeof(pstSystemTrapFuncEn)/* XXX: the length of the data in bytes */);
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+        	}
             break;
 
         /*
@@ -1029,10 +1237,15 @@ int
          */
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
+                	{
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
             }
+			QPST *pst = QPST::getInstance();
+			long s = (long)(* requests->requestvb->val.integer);
+			pst->m_system->m_pstSystem.set_pstSystemTrapFuncEn(s);
+                	}
             break;
 
         case MODE_SET_RESERVE2:
@@ -1091,14 +1304,16 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    static long pstSystemFanTotalNum = 4;
-    
     switch(reqinfo->mode) {
 
         case MODE_GET:
+    	{
+    	QPST *pst = QPST::getInstance();
+		long s = pst->m_system->m_pstSystem.get_pstSystemFanTotalNum();
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     &pstSystemFanTotalNum/* XXX: a pointer to the scalar's data */,
-                                     sizeof(pstSystemFanTotalNum)/* XXX: the length of the data in bytes */);
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+        	}
             break;
 
 
@@ -1127,10 +1342,15 @@ int
     switch(reqinfo->mode) {
 
         case MODE_GET:
+    	{
+    	QPST *pst = QPST::getInstance();
+		long s = pst->m_system->m_pstSystem.get_pstSystemPowerTotalNum();
+
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     &pstSystemPowerTotalNum/* XXX: a pointer to the scalar's data */,
-                                     sizeof(pstSystemPowerTotalNum)/* XXX: the length of the data in bytes */);
-            break;
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+          }
+		  break;
 
 
         default:
@@ -1188,15 +1408,18 @@ int
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
 
-    const char *pstSystemTemperatureHighThreshold = "55";
-
     switch(reqinfo->mode) {
 
         case MODE_GET:
+        {
+            QPST *pst = QPST::getInstance();
+            QString s = pst->m_system->m_pstSystem.get_pstSystemTemperatureHighThreshold();
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
-                                     pstSystemTemperatureHighThreshold/* XXX: a pointer to the scalar's data */,
-                                     strlen(pstSystemTemperatureHighThreshold)/* XXX: the length of the data in bytes */);
-            break;
+                                     s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
+                                     s.length()/* XXX: the length of the data in bytes */);
+
+        }
+        break;
 
 
         /*
@@ -1207,9 +1430,11 @@ int
          */
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
+            {
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_OCTET_STR);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
+            }
             }
             break;
 
@@ -1228,8 +1453,17 @@ int
 
         case MODE_SET_ACTION:
             /* XXX: perform the value change here */
-            if (0/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            {
+            QPST *pst = QPST::getInstance();
+            char *cs = (char*)requests->requestvb->val.string;
+            QString s = QString("%1").arg(cs);
+
+            int  t = s.toInt();
+            pst->m_system->m_pstSystem.set_pstSystemTemperatureHighThreshold(s);
+            emit pst->sigSystemTemperatureHighThreshold(t);
+            if (t <= 0) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_BADVALUE);
+            }
             }
             break;
 
@@ -1276,10 +1510,15 @@ int
     switch(reqinfo->mode) {
 
         case MODE_GET:
+        {
+            QPST *pst = QPST::getInstance();
+            QString s = pst->m_system->m_pstSystem.get_pstSystemTemperatureLowThreshold();
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
-                                     pstSystemTemperatureLowThreshold/* XXX: a pointer to the scalar's data */,
-                                     strlen(pstSystemTemperatureLowThreshold)/* XXX: the length of the data in bytes */);
-            break;
+                                     s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
+                                     s.length()/* XXX: the length of the data in bytes */);
+
+        }
+        break;
 
         /*
          * SET REQUEST
@@ -1289,9 +1528,12 @@ int
          */
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
+            {
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_OCTET_STR);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+
             }
             break;
 
@@ -1310,8 +1552,22 @@ int
 
         case MODE_SET_ACTION:
             /* XXX: perform the value change here */
-            if (0/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            {
+                QPST *pst = QPST::getInstance();
+                char *cs = (char*)requests->requestvb->val.string;
+                QString s = QString("%1").arg(cs);
+
+                int  t = s.toInt();
+                int  tl = pst->m_system->m_pstSystem.get_pstSystemTemperatureLowThreshold().toInt();
+                int  th = pst->m_system->m_pstSystem.get_pstSystemTemperatureHighThreshold().toInt();
+                if( tl < th - DEFAULT_LOW_TEMPERATURE){
+                    pst->m_system->m_pstSystem.set_pstSystemTemperatureLowThreshold(s);
+                    emit pst->sigSystemTemperatureLowThreshold(t);
+                }
+                else
+                {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_BADVALUE);
+                }
             }
             break;
 
@@ -1340,6 +1596,204 @@ int
     return SNMP_ERR_NOERROR;
 }
 int
+ QPSTSystem::handle_pstSystemTemperatureControlMode(netsnmp_mib_handler *handler,
+                          netsnmp_handler_registration *reginfo,
+                          netsnmp_agent_request_info   *reqinfo,
+                          netsnmp_request_info         *requests)
+{
+    int ret;
+    /* We are never called for a GETNEXT if it's registered as a
+       "instance", as it's "magically" handled for us.  */
+
+    /* a instance handler also only hands us one request at a time, so
+       we don't need to loop over a list of requests; we'll only get one. */
+    
+    switch(reqinfo->mode) {
+
+        case MODE_GET:
+		{
+			QPST *pst = QPST::getInstance();
+			long s = pst->m_system->m_pstSystem.get_pstSystemTemperatureControlMode(0);
+            snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+		}
+            break;
+
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+            {
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+//			QPST *pst = QPST::getInstance();
+//			long s = (long)(*requests->requestvb->val.integer);
+//			pst->m_system->m_pstSystem.set_pstSystemTemperatureControlMode(0 , s);
+//			emit pst->sigSystemFanControlMode(s);
+
+			}
+            break;
+
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
+
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
+
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            {
+                {
+                ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+                if ( ret != SNMP_ERR_NOERROR ) {
+                    netsnmp_set_request_error(reqinfo, requests, ret );
+                }
+                QPST *pst = QPST::getInstance();
+                long s = (long)(*requests->requestvb->val.integer);
+                pst->m_system->m_pstSystem.set_pstSystemTemperatureControlMode(0 , s);
+                emit pst->sigSystemFanControlMode(s);
+
+                }
+
+                if (0/* XXX: error? */) {
+                    netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+                }
+            }
+            break;
+
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
+
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
+
+        default:
+            /* we should never get here, so this is a really bad error */
+            snmp_log(LOG_ERR, "unknown mode (%d) in handle_pstSystemTemperatureControlMode\n", reqinfo->mode );
+            return SNMP_ERR_GENERR;
+    }
+
+    return SNMP_ERR_NOERROR;
+}
+int
+ QPSTSystem::handle_pstSystemADG707Switch(netsnmp_mib_handler *handler,
+                          netsnmp_handler_registration *reginfo,
+                          netsnmp_agent_request_info   *reqinfo,
+                          netsnmp_request_info         *requests)
+{
+    int ret;
+    /* We are never called for a GETNEXT if it's registered as a
+       "instance", as it's "magically" handled for us.  */
+
+    /* a instance handler also only hands us one request at a time, so
+       we don't need to loop over a list of requests; we'll only get one. */
+    
+    switch(reqinfo->mode) {
+
+        case MODE_GET:
+			{
+			QPST *pst = QPST::getInstance();
+            long s = pst->m_system->m_pstSystem.get_pstSystemADG707Switch();
+			snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+            }
+			break;
+
+        /*
+         * SET REQUEST
+         *
+         * multiple states in the transaction.  See:
+         * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
+         */
+        case MODE_SET_RESERVE1:
+                /* or you could use netsnmp_check_vb_type_and_size instead */
+             {
+            ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+            if ( ret != SNMP_ERR_NOERROR ) {
+                netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+
+            }
+            break;
+
+        case MODE_SET_RESERVE2:
+            /* XXX malloc "undo" storage buffer */
+            if (0/* XXX if malloc, or whatever, failed: */) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_RESOURCEUNAVAILABLE);
+            }
+            break;
+
+        case MODE_SET_FREE:
+            /* XXX: free resources allocated in RESERVE1 and/or
+               RESERVE2.  Something failed somewhere, and the states
+               below won't be called. */
+            break;
+
+        case MODE_SET_ACTION:
+            /* XXX: perform the value change here */
+            {
+
+            QPST *pst = QPST::getInstance();
+            long s = (long)(*requests->requestvb->val.integer);
+            pst->m_system->m_pstSystem.set_pstSystemADG707Switch(s);
+            if (0/* XXX: error? */) {
+                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
+
+            }
+            break;
+
+        case MODE_SET_COMMIT:
+            /* XXX: delete temporary storage */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_COMMITFAILED);
+            }
+            break;
+
+        case MODE_SET_UNDO:
+            /* XXX: UNDO and return to previous value for the object */
+            if (0/* XXX: error? */) {
+                /* try _really_really_ hard to never get to this point */
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_UNDOFAILED);
+            }
+            break;
+
+        default:
+            /* we should never get here, so this is a really bad error */
+            snmp_log(LOG_ERR, "unknown mode (%d) in handle_pstSystemADG707Switch\n", reqinfo->mode );
+            return SNMP_ERR_GENERR;
+    }
+
+    return SNMP_ERR_NOERROR;
+}
+
+int
  QPSTSystem::handle_pstSystemFtpSrvIp(netsnmp_mib_handler *handler,
                           netsnmp_handler_registration *reginfo,
                           netsnmp_agent_request_info   *reqinfo,
@@ -1351,20 +1805,23 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-
-    struct sockaddr_in sa;
-    QPST *pst = QPST::getInstance();
-    QString s = pst->m_system->m_pstSystem.get_pstSystemFtpSrvIp();
-    inet_pton(AF_INET, s.toLatin1().data(), &(sa.sin_addr));
-
-    in_addr_t   it = sa.sin_addr.s_addr;
-    
     switch(reqinfo->mode) {
 
         case MODE_GET:
+    	{
+		
+		struct sockaddr_in sa;
+		QPST *pst = QPST::getInstance();
+		QString s = pst->m_system->m_pstSystem.get_pstSystemFtpSrvIp();
+		inet_pton(AF_INET, s.toLatin1().data(), &(sa.sin_addr));
+		
+		in_addr_t	it = sa.sin_addr.s_addr;
+		
             snmp_set_var_typed_value(requests->requestvb, ASN_IPADDRESS,
                                      &it/* XXX: a pointer to the scalar's data */,
                                      sizeof(it)/* XXX: the length of the data in bytes */);
+
+		}
             break;
 
         /*
@@ -1756,14 +2213,17 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    static long pstSystemUpgDstSlot = 2;
     switch(reqinfo->mode) {
 
         case MODE_GET:
+        {
+            QPST *pst = QPST::getInstance();
+            long s = pst->m_system->m_pstSystem.get_pstSystemUpgDstSlot();
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     &pstSystemUpgDstSlot/* XXX: a pointer to the scalar's data */,
-                                     sizeof(pstSystemUpgDstSlot)/* XXX: the length of the data in bytes */);
-            break;
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+        }
+        break;
 
         /*
          * SET REQUEST
@@ -1772,10 +2232,17 @@ int
          * http://www.net-snmp.org/tutorial-5/toolkit/mib_module/set-actions.jpg
          */
         case MODE_SET_RESERVE1:
+            {
                 /* or you could use netsnmp_check_vb_type_and_size instead */
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+            QPST *pst = QPST::getInstance();
+
+            long s = (long)(* requests->requestvb->val.integer);
+            pst->m_system->m_pstSystem.set_pstSystemUpgDstSlot(s);
+
             }
             break;
 
@@ -1835,14 +2302,18 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    static long pstSystemUpgAction = 0;
     switch(reqinfo->mode) {
 
         case MODE_GET:
+        {
+            QPST *pst = QPST::getInstance();
+            long s = pst->m_system->m_pstSystem.get_pstSystemUpgAction();
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     &pstSystemUpgAction/* XXX: a pointer to the scalar's data */,
-                                     sizeof(pstSystemUpgAction)/* XXX: the length of the data in bytes */);
-            break;
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+
+        }
+        break;
 
         /*
          * SET REQUEST
@@ -1852,9 +2323,12 @@ int
          */
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
+            {
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_INTEGER);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
+            }
+
             }
             break;
 
@@ -1873,8 +2347,17 @@ int
 
         case MODE_SET_ACTION:
             /* XXX: perform the value change here */
-            if (0/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            {
+            QPST *pst = QPST::getInstance();
+
+            long s = (long)(* requests->requestvb->val.integer);
+            pst->m_system->m_pstSystem.set_pstSystemUpgAction(s);
+
+
+            if ((s < 0)||(s > 2)) {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_BADVALUE);
+            }
+
             }
             break;
 
@@ -1913,14 +2396,19 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    static long pstSystemUpgStatus = 1;
+
     switch(reqinfo->mode) {
 
         case MODE_GET:
+        {
+            QPST *pst = QPST::getInstance();
+            int slot = pst->m_system->m_pstSystem.get_pstSystemUpgDstSlot();
+            long s = pst->m_system->m_pstSystem.get_pstSystemUpgStatus(slot);
             snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
-                                     &pstSystemUpgStatus/* XXX: a pointer to the scalar's data */,
-                                     sizeof(pstSystemUpgStatus)/* XXX: the length of the data in bytes */);
-            break;
+                                     &s/* XXX: a pointer to the scalar's data */,
+                                     sizeof(s)/* XXX: the length of the data in bytes */);
+          }
+        break;
 
 
         default:
@@ -1942,14 +2430,21 @@ int
 
     /* a instance handler also only hands us one request at a time, so
        we don't need to loop over a list of requests; we'll only get one. */
-    const char *pstSystemUpgResultInfo="success";
+
     switch(reqinfo->mode) {
 
         case MODE_GET:
+        {
+            QPST *pst = QPST::getInstance();
+            long slot = pst->m_system->m_pstSystem.get_pstSystemUpgDstSlot();
+
+            QString s = pst->m_system->m_pstSystem.get_pstSystemUpgResultInfo(slot);
             snmp_set_var_typed_value(requests->requestvb, ASN_OCTET_STR,
-                                     pstSystemUpgResultInfo/* XXX: a pointer to the scalar's data */,
-                                     strlen(pstSystemUpgResultInfo)/* XXX: the length of the data in bytes */);
-            break;
+                                     s.toLatin1().data()/* XXX: a pointer to the scalar's data */,
+                                     s.length()/* XXX: the length of the data in bytes */);
+
+        }
+        break;
 
 
         default:
@@ -2906,75 +3401,124 @@ QPSTSystem::pstSystemPowerTable_handler(
             }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE12VB:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltage12VB(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage12VB,
-                                          table_entry->pstSystemPowerVoltage12VB_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+            }
+
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE12VFAN:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltage12VFAN(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage12VFAN,
-                                          table_entry->pstSystemPowerVoltage12VFAN_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+
+            }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE12VOTDR1:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltage12VOTDR1(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage12VOTDR1,
-                                          table_entry->pstSystemPowerVoltage12VOTDR1_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+
+              }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE12VOTDR2:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltage12VOTDR2(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage12VOTDR2,
-                                          table_entry->pstSystemPowerVoltage12VOTDR2_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+
+           }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGEVDD5V:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltageVDD5V(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltageVDD5V,
-                                          table_entry->pstSystemPowerVoltageVDD5V_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+             }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGEVDD3V3:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltageVDD3V3(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltageVDD3V3,
-                                          table_entry->pstSystemPowerVoltageVDD3V3_len);
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+
+           }
                 break;
             case COLUMN_PSTSYSTEMPOWERVOLTAGE1V8RTC:
+            {
                 if ( !table_entry ) {
                     netsnmp_set_request_error(reqinfo, request,
                                               SNMP_NOSUCHINSTANCE);
                     continue;
                 }
+                QPST *pst = QPST::getInstance();
+                QString s =  pst->m_system->m_pstSystem.get_pstSystemPowerVoltage1V8RTC(1);
+
                 snmp_set_var_typed_value( request->requestvb, ASN_OCTET_STR,
-                                          table_entry->pstSystemPowerVoltage1V8RTC,
-                                          table_entry->pstSystemPowerVoltage1V8RTC_len);
-                break;
+                                          s.toLatin1().data(),
+                                          s.length()/*table_entry->pstSystemPowerVoltage12VA,
+                                          table_entry->pstSystemPowerVoltage12VA_len*/);
+
+           }
+
+            break;
             default:
                 netsnmp_set_request_error(reqinfo, request,
                                           SNMP_NOSUCHOBJECT);

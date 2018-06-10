@@ -39,6 +39,7 @@
 #define  OTDR_WORK_MODE_AUTO    1
 #define  OTDR_WORK_MODE_STOP    2
 #define  OTDR_WORK_MODE_SINGLE  3
+#define  OTDR_WORK_MODE_UPDATE  4
 
 #define  OTDR_MEASURE_STATUS_IDLE    			0
 #define  OTDR_MEASURE_STATUS_AUTO_RUNNING    	1
@@ -108,7 +109,10 @@ public:
         STATE_GOTGWAVELET2 = 18,            // 正在获取wavelet文件
         STATE_GOTWAVELET3 = 19,            // 正在获取wavelet文件
         STATE_GOTWAVELET4 = 20,            // 正在获取wavelet文件
-        STATE_DOWNLOADING = 21               // 下载状态
+        STATE_UPDATE_READY = 21,
+        STATE_UPDATE_UPDATING = 22,
+        STATE_UPDATE_SUCCESS = 23,             // update status
+        STATE_UPDATE_FAILED = 24,
     };
 
     // OTDR模块的错误类别
@@ -144,7 +148,7 @@ public:
     void    setModuleIndex(qint8 index);
     qint8   getModuleIndex();
 
-    quint16 getModuleMode(quint16 channel);
+    quint16 getModuleMode(quint16 module);
 
     void    initModuleData();
     void    initTcpConnection();
@@ -203,6 +207,7 @@ public:
     void OTDRChanged(quint16 module, quint16 channel);
     void setModuleMode(quint16 module, quint16 mode);
     void setMeasuringStaus(quint16 channel, quint32 status);
+    void updateModule(quint16 module);
 
     void run();
 
@@ -215,6 +220,7 @@ signals:
     void sigOTDRTrap(quint16 module, QString &data);
     void sigOTDRSetMode(quint16 module, quint16 mode);
     void sigOTDRSetMeasuringStatus(quint16 channel, quint32 status);
+    void sigOTDRUpdateStatus(quint16 module, int stauts);
 
 public slots:
     void onCatchException(quint16 module, const QString& info);

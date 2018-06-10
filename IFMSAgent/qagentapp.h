@@ -12,6 +12,7 @@
 
 #include "qotdrmodule.h"
 #include "qcommander.h"
+#include "qfancontrol.h"
 #include "qpst.h"
 
 using namespace std;
@@ -64,6 +65,7 @@ signals:
     void sigModuleStartMonitor(quint16 module);
     void sigModuleStopMonitor(quint16 module);
     void sigModuleSingleMonitor(quint16 module);
+    void sigModuleUpdate(quint16 module);
 public slots:
     void onSigExit(qint32 num);
     void onSwitchModule(quint16 module);
@@ -74,6 +76,7 @@ public slots:
     void onSigModuleStartMonitor(quint16 module);
     void onSigModuleStopMonitor(quint16 module);
     void onSigModuleSingleMonitor(quint16 module);
+    void onSigModuleUpdate(quint16 module);
 
 private:
     QAgentApp                   *m_app;
@@ -82,6 +85,8 @@ private:
 
     QOTDRModule                 *_module1;
     QOTDRModule                 *_module2;
+    QFanControl                 *m_fans;
+
 };
 
 #endif // QAGENTAPP_H

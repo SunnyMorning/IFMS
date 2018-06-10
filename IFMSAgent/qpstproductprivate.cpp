@@ -120,15 +120,51 @@ void QPSTProductPrivate::init_pstData()
 
 long QPSTProductPrivate::get_pstIFMS1000SysLedPW1(QObject *agent)
 {
-	return 0;
+    QPST *p = (QPST*)agent;
+//    p->m_gpios.configureGPIO(GPIO_ALERT_0, QString("in"));
+    if( p->m_gpios.readGPIO(GPIO_ALERT_0) == 1){
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 long QPSTProductPrivate::get_pstIFMS1000SysLedPW2(QObject *agent)
 {
-	return 0;
+    QPST *p = (QPST*)agent;
+//    p->m_gpios.configureGPIO(GPIO_ALERT_1, QString("in"));
+    if( p->m_gpios.readGPIO(GPIO_ALERT_1) == 1){
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 long QPSTProductPrivate::get_pstIFMS1000SysLedStatus(QObject *agent)
 {
-	return 0;
+    int sh = 0;
+    int sl = 0;
+    QPST *p = (QPST*)agent;
+//    p->m_gpios.configureGPIO(GPIO_STA_ALARMH, QString("out"));
+//    p->m_gpios.configureGPIO(GPIO_STA_ALARML, QString("out"));
+
+    sh = p->m_gpios.readGPIO(GPIO_STA_ALARMH);
+    sl = p->m_gpios.readGPIO(GPIO_STA_ALARML);
+
+
+    if(  sh == sl){
+        return 0;
+    }
+    else if(sh > sl)
+    {
+        return 1;
+    }
+    else
+    {
+        return 2;
+    }
 }
 
 QString QPSTProductPrivate::get_pstIFMS1000PortRxPwr(quint16 channel)
@@ -1181,4 +1217,157 @@ bool  QPSTProductPrivate::is_pstIFMS1000Measuring(quint16 channel)
         ret = false;
     }
     return ret;
+}
+
+long  QPSTProductPrivate::get_pstIFMS1000PortLedStatus(int index)
+{
+    return 0;
+}
+
+void  QPSTProductPrivate::set_pstIFMS1000PortLedStatus(int index, int status)
+{
+    QPST *pst = QPST::getInstance();
+    if(index == 1){
+        pst->m_gpios.configureGPIO(GPIO_FIBER1_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER1_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER1_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER1_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER1_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER1_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER1_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER1_ALARML, 1);
+        }
+    }
+    if(index == 2){
+        pst->m_gpios.configureGPIO(GPIO_FIBER2_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER2_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER2_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER2_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER2_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER2_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER2_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER2_ALARML, 1);
+        }
+    }
+    if(index == 3){
+        pst->m_gpios.configureGPIO(GPIO_FIBER3_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER3_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER3_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER3_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER3_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER3_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER3_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER3_ALARML, 1);
+        }
+
+    }
+    if(index == 4){
+        pst->m_gpios.configureGPIO(GPIO_FIBER4_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER4_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER4_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER4_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER4_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER4_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER4_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER4_ALARML, 1);
+        }
+
+    }
+    if(index == 5){
+        pst->m_gpios.configureGPIO(GPIO_FIBER5_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER5_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER5_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER5_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER5_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER5_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER5_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER5_ALARML, 1);
+        }
+
+    }
+    if(index == 6){
+        pst->m_gpios.configureGPIO(GPIO_FIBER6_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER6_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER6_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER6_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER6_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER6_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER6_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER6_ALARML, 1);
+        }
+
+    }
+    if(index == 7){
+        pst->m_gpios.configureGPIO(GPIO_FIBER7_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER7_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER7_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER7_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER7_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER7_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER7_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER7_ALARML, 1);
+        }
+
+    }
+    if(index == 8){
+        pst->m_gpios.configureGPIO(GPIO_FIBER8_ALARMH, QString("out"));
+        pst->m_gpios.configureGPIO(GPIO_FIBER8_ALARML, QString("out"));
+        if(status == 0){
+            pst->m_gpios.writeGPIO(GPIO_FIBER8_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER8_ALARML, 0);
+        }
+        else if(status == 1)
+        {
+            pst->m_gpios.writeGPIO(GPIO_FIBER8_ALARMH, 1);
+            pst->m_gpios.writeGPIO(GPIO_FIBER8_ALARML, 0);
+        }
+        else if(status == 2){
+            pst->m_gpios.writeGPIO(GPIO_FIBER8_ALARMH, 0);
+            pst->m_gpios.writeGPIO(GPIO_FIBER8_ALARML, 1);
+        }
+
+    }
+
 }
