@@ -44,7 +44,7 @@ void QFanControl::run()
             }
         }
 
-        if(get_FanControlMode(2) == 2){ // AUTOa
+        if(get_FanControlMode(2) == 2){ // AUTO
             if(currentTemperature > get_TemperatureHighThreshold()){
                 set_FanTargetSpeed(2, MAX_TARGET_SPEED);
             }

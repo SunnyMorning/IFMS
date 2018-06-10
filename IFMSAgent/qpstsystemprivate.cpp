@@ -554,7 +554,7 @@ QString QPSTSystemPrivate::get_pstSystemPowerVoltage1V8RTC(int index)
 
 long QPSTSystemPrivate::get_pstSystemFanStatus(long index)
 {
-    long status = 0;
+    long status = 1;
     QPST *pst = QPST::getInstance();
     if(index < 3){
 //        pst->m_gpios.configureGPIO(GPIO_ALERT_0, QString("in"));
@@ -565,13 +565,8 @@ long QPSTSystemPrivate::get_pstSystemFanStatus(long index)
 //        pst->m_gpios.configureGPIO(GPIO_ALERT_1, QString("in"));
         status = pst->m_gpios.readGPIO(GPIO_ALERT_1);
     }
-    if(status == 1){
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
+
+    return status;
 }
 
 long QPSTSystemPrivate::get_pstSystemFanSpeed(long index)

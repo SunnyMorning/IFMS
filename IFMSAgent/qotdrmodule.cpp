@@ -285,10 +285,11 @@ void QOTDRModule::run()
                 qDebug() << "\n Stop Monitoring on module: " << _moduleIndex << endl;
                 setProgress(0);
 
-                for(quint16 i =0; i<= 8; i++){
-                    _MeasuredCounts[i] = 0;
-                    _MeasuringProgresss[i] =  0;
-                    _SORsChanged[i] = false;
+                for(quint16 i =0; i< CHANNELS_PER_MODULE; i++){
+                    _MeasuredCounts[CHANNELS_PER_MODULE*_moduleIndex+i+1] = 0;
+                    _MeasuringProgresss[CHANNELS_PER_MODULE*_moduleIndex+i+1] =  0;
+                    _SORsChanged[CHANNELS_PER_MODULE*_moduleIndex+i+1] = false;
+                    emit this->sigSetMeasuredCount(CHANNELS_PER_MODULE*_moduleIndex+i+1,0);
                 }
 
                 if(_moduleIndex == 0){

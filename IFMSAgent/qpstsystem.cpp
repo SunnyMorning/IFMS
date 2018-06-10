@@ -355,17 +355,11 @@ int
         case MODE_SET_RESERVE1:
                 /* or you could use netsnmp_check_vb_type_and_size instead */
             {
-            {
             ret = netsnmp_check_vb_type(requests->requestvb, ASN_IPADDRESS);
             if ( ret != SNMP_ERR_NOERROR ) {
                 netsnmp_set_request_error(reqinfo, requests, ret );
             }
-            QPST *pst = QPST::getInstance();
-            in_addr_t s = (in_addr_t)(*requests->requestvb->val.integer);
-            char *ip = inet_ntoa(*((struct in_addr*)&s));
-            QString qs = QString("%1").arg(ip);
-            pst->m_system->m_pstSystem.set_devIpAddr(qs);
-            }
+
             }
             break;
 
@@ -384,8 +378,15 @@ int
 
         case MODE_SET_ACTION:
             /* XXX: perform the value change here */
+            {
+            QPST *pst = QPST::getInstance();
+            in_addr_t s = (in_addr_t)(*requests->requestvb->val.integer);
+            char *ip = inet_ntoa(*((struct in_addr*)&s));
+            QString qs = QString("%1").arg(ip);
+            pst->m_system->m_pstSystem.set_devIpAddr(qs);
             if (0/* XXX: error? */) {
                 netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
             }
             break;
 
@@ -633,9 +634,16 @@ int
             break;
 
         case MODE_SET_ACTION:
-            /* XXX: perform the value change here */
-            if (0/* XXX: error? */) {
-                netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            {
+                QPST *pst = QPST::getInstance();
+                long  s = (long)(*requests->requestvb->val.integer);
+                if(s == 1){
+                    pst->m_system->m_pstSystem.set_saveCurrentConfiguration(s);
+                }
+                else
+                {
+                netsnmp_set_request_error(reqinfo, requests, SNMP_ERR_BADVALUE);
+                }
             }
             break;
 

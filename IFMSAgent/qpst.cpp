@@ -53,8 +53,13 @@ void QPST::initConnections()
    m_gpios.configureGPIO(GPIO_ADG_AD0,QString("out"));
    m_gpios.configureGPIO(GPIO_ADG_AD1,QString("out"));
    m_gpios.configureGPIO(GPIO_ADG_AD2,QString("out"));
+   m_gpios.writeGPIO(GPIO_ADG_AD0,1);
+   m_gpios.writeGPIO(GPIO_ADG_AD1,1);
+   m_gpios.writeGPIO(GPIO_ADG_AD2,1);
    m_gpios.configureGPIO(GPIO_STA_ALARMH, QString("out"));
    m_gpios.configureGPIO(GPIO_STA_ALARML, QString("out"));
+   m_gpios.configureGPIO(GPIO_FAN_ALARMH, QString("out"));
+   m_gpios.configureGPIO(GPIO_FAN_ALARML, QString("out"));
    m_gpios.configureGPIO(GPIO_ALERT_1, QString("in"));
    m_gpios.configureGPIO(GPIO_ALERT_0, QString("in"));
 }
@@ -68,10 +73,27 @@ void QPST::onSigTemperatureChanged(int t)
 {
     int currentTemperature=0;
     int highTemperature = 0;
+    int fan1_status = 1;
+    int fan2_status = 1;
 //    QMutexLocker locker(&gPST_mutex);
     QString s = QString("%1").arg(t);
     currentTemperature = m_system->m_pstSystem.get_pstSystemTemperature().toInt();
     highTemperature = m_system->m_pstSystem.get_pstSystemTemperatureHighThreshold().toInt();
+
+    fan1_status = m_system->m_pstSystem.get_pstSystemFanStatus(1);
+    fan2_status = m_system->m_pstSystem.get_pstSystemFanStatus(2);
+
+    if((fan1_status == 1)||(fan2_status == 1))
+    {
+        m_gpios.writeGPIO(GPIO_FAN_ALARMH, 1);
+        m_gpios.writeGPIO(GPIO_FAN_ALARML, 0);
+    }
+    else
+    {
+        m_gpios.writeGPIO(GPIO_FAN_ALARMH, 0);
+        m_gpios.writeGPIO(GPIO_FAN_ALARML, 1);
+    }
+
     if(currentTemperature > highTemperature){
 //        m_gpios.configureGPIO(GPIO_STA_ALARMH, QString("out"));
 //        m_gpios.configureGPIO(GPIO_STA_ALARML, QString("out"));
