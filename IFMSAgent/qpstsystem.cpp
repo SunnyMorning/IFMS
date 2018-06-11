@@ -471,8 +471,15 @@ int
 
         case MODE_SET_ACTION:
             /* XXX: perform the value change here */
+            {
+            QPST *pst = QPST::getInstance();
+            in_addr_t s = (in_addr_t)(*requests->requestvb->val.integer);
+            char *ip = inet_ntoa(*((struct in_addr*)&s));
+            QString qs = QString("%1").arg(ip);
+            pst->m_system->m_pstSystem.set_devGateway(qs);
             if (0/* XXX: error? */) {
                 netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
+            }
             }
             break;
 
@@ -554,9 +561,16 @@ int
 
         case MODE_SET_ACTION:
             /* XXX: perform the value change here */
-            if (0/* XXX: error? */) {
+        {
+        QPST *pst = QPST::getInstance();
+        in_addr_t s = (in_addr_t)(*requests->requestvb->val.integer);
+        char *ip = inet_ntoa(*((struct in_addr*)&s));
+        QString qs = QString("%1").arg(ip);
+        pst->m_system->m_pstSystem.set_devNetMask(qs);
+        if (0/* XXX: error? */) {
                 netsnmp_set_request_error(reqinfo, requests, 0/* some error */);
             }
+        }
             break;
 
         case MODE_SET_COMMIT:
